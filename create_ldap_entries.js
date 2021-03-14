@@ -154,10 +154,10 @@ creator.do = async function () {
           "mail": user.mail,
           "memberOf": user_to_groups[user.id],
           "sambaAcctFlags": "[U          ]",
-          "sambaLMPassword": db[upName].sambaLMPassword || "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-          "sambaNTPassword": db[upName].sambaNTPassword || "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "sambaLMPassword": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "sambaNTPassword": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
           "sambaPasswordHistory": "0000000000000000000000000000000000000000000000000000000000000000",
-          "sambaPwdLastSet": db[upName].sambaPwdLastSet || 0,
+          "sambaPwdLastSet": 0,
           "shadowExpire": "-1",
           "shadowFlag": "0",
           "shadowInactive": "0",
@@ -169,6 +169,14 @@ creator.do = async function () {
           "structuralObjectClass": "inetOrgPerson",
           "subschemaSubentry": "cn=Subschema"
         };
+
+        let userAttr = db[upName];
+        if (userAttr && userAttr.hasOwnProperty("sambaNTPassword")) {
+          ldapgroup[upName].sambaLMPassword = userAttr.sambaLMPassword;
+          ldapgroup[upName].sambaNTPassword = userAttr.sambaNTPassword;
+          ldapgroup[upName].sambaPwdLastSet = userAttr.sambaPwdLastSet;
+        }
+
       }
 
     }
