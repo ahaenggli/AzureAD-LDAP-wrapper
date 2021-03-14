@@ -33,7 +33,7 @@ AZURE_APP_SECRET=iamasecret~yep-reallyreallysecret
 ## build image
 run
 ```bash
-docker build --tag "ldap-wrapper-o365-azure" .
+docker build -t ahaen/ldap-wrapper-o365-azure .
 ```
 
 ## run image
@@ -41,5 +41,5 @@ docker build --tag "ldap-wrapper-o365-azure" .
 2. set your environment variables
 3. run
 ```bash
-docker run -d -p 389:389 --env-file .env ldap-wrapper-o365-azure
+docker run -d -p 389:13389 --env-file .env ahaen/ldap-wrapper-o365-azure
 ```
