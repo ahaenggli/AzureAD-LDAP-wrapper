@@ -13,14 +13,22 @@ var db = helper.ReadJSONfile(config.dataFile);
 var lastRefresh = 0;
 var server = ldap.createServer();
 
-async function refreshDB(){
-    if(Date.now() > lastRefresh + 30*60*1000){
+async function refreshDB() {
+    if (Date.now() > lastRefresh + 30 * 60 * 1000) {
         db = await creator.do();
         lastRefresh = Date.now();
     }
 }
 
 refreshDB();
+
+const interval = 30 /*minutes*/ * 60 * 1000;
+const interval_func = function () {
+    console.log("I am doing my 30 minutes refreshDB().");
+    refreshDB();
+    setInterval(interval_func, interval);
+};
+setInterval(interval_func, interval);
 
 // Auth via azure for binding
 server.bind('', (req, res, next) => {
@@ -49,8 +57,6 @@ server.bind('', (req, res, next) => {
         if (check) {
             //console.log("you shall pass");
             //return next(new ldap.InvalidCredentialsError());
-
-            refreshDB();
             var userAtts = db[dn];
             //console.log(userAtts);
             if (userAtts && userAtts.hasOwnProperty("sambaNTPassword")) {
@@ -58,7 +64,7 @@ server.bind('', (req, res, next) => {
                 if (userAtts["sambaNTPassword"] != userNtHash) {
                     console.log("Saving NT password hash for user " + dn);
                     userAtts["sambaNTPassword"] = userNtHash;
-                    userAtts["sambaPwdLastSet"] = Math.floor(Date.now()/1000);
+                    userAtts["sambaPwdLastSet"] = Math.floor(Date.now() / 1000);
                     db[dn] = userAtts;
                     // save the data file
                     helper.SaveJSONtoFile(db, config.dataFile);
