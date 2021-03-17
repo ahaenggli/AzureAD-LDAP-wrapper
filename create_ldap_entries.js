@@ -11,7 +11,7 @@ creator.do = async function () {
 
     const graph_azureResponse = await graph_azure.getToken(graph_azure.tokenRequest);
     const db = helper.ReadJSONfile(config.dataFile);
-    ldapgroup = {};
+    ldapgroup = db || {};
 
     ldapgroup[config.baseDn] = {
       "objectClass": "domain",
@@ -42,6 +42,8 @@ creator.do = async function () {
     };
 
     var hash = Math.abs(encode().value(config.usersGroupDnSuffix)).toString();
+    if(ldapgroup[config.usersGroupDnSuffix] && ldapgroup[config.usersGroupDnSuffix].hasOwnProperty('gidNumber')) hash = ldapgroup[config.usersGroupDnSuffix].gidNumber;
+
     ldapgroup[config.usersGroupDnSuffix] = {
       "objectClass": [
         "sambaIdmapEntry",
@@ -72,7 +74,10 @@ creator.do = async function () {
     for (var i = 0, len = groups.length; i < len; i++) {
       group = groups[i];
       gpName = "cn=" + group.displayName.replace(/\s/g, '') + "," + config.groupDnSuffix;
+
       var hash = Math.abs(encode().value(group.id)).toString();
+      if(ldapgroup[gpName] && ldapgroup[gpName].hasOwnProperty('gidNumber')) hash = ldapgroup[gpName].gidNumber;
+
       ldapgroup[gpName] = {
         "objectClass": [
           "sambaIdmapEntry",
@@ -120,6 +125,7 @@ creator.do = async function () {
       if (userPrincipalName.indexOf("#EXT#") == -1) {
         upName = config.userRdn + "=" + userPrincipalName.replace(/\s/g, '') + "," + config.usersDnSuffix;
         var hash = Math.abs(encode().value(user.id)).toString();
+        if(ldapgroup[upName] && ldapgroup[upName].hasOwnProperty('uidNumber')) hash = ldapgroup[upName].uidNumber;
 
         for (var j = 0, jlen = user_to_groups[user.id].length; j < jlen; j++) {
           let g = user_to_groups[user.id][j];
