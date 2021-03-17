@@ -2,12 +2,14 @@
 const graph_azure = require('./graph_azure');
 const config = require('./config');
 const helper = require('./helper');
+const fs = require('fs');
 
 var encode = require('hashcode').hashCode;
 var creator = {};
 
 creator.do = async function () {
   try {
+    if(!fs.existsSync('./.cache')) fs.mkdirSync('./.cache');
 
     const graph_azureResponse = await graph_azure.getToken(graph_azure.tokenRequest);
     const db = helper.ReadJSONfile(config.dataFile);
