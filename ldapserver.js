@@ -18,7 +18,7 @@ async function refreshDB() {
         db = await creator.do();
         lastRefresh = Date.now();
     }
-    db = helper.ReadJSONfile(config.dataFile);
+    if (!db) db = helper.ReadJSONfile(config.dataFile);
 }
 
 refreshDB();
@@ -30,6 +30,9 @@ const interval_func = function () {
     setInterval(interval_func, interval);
 };
 setInterval(interval_func, interval);
+
+// source: https://www.iana.org/assignments/ldap-parameters/ldap-parameters.xhtml#ldap-parameters-8
+const ldapSyntaxes = helper.ReadCSVfile('./ldapSyntaxes.csv', function (row) { return '(' + row[0] + ' DESC ' + row[1] + ')'; });
 
 // Auth via azure for binding
 server.bind('', (req, res, next) => {
@@ -99,9 +102,6 @@ server.search('', (req, res, next) => {
         var schemadb = ['cn=SubSchema', 'cn=schema,cn=config'].map(v => v.toLowerCase());
         if (schemadb.indexOf(dn.toLowerCase()) > -1) {
 
-            // source: https://www.iana.org/assignments/ldap-parameters/ldap-parameters.xhtml#ldap-parameters-8
-            var ldapSyntaxes = helper.ReadCSVfile('./ldapSyntaxes.csv', function (row) { return '(' + row[0] + ' DESC ' + row[1] + ')'; });
-
             res.send({
                 dn: dn,
                 attributes: {
@@ -167,7 +167,6 @@ server.search('', (req, res, next) => {
     }
 });
 
-
 server.listen(config.LDAP_PORT, function () {
-    helper.log('LDAP server up at: %s', server.url);
+    helper.log('LDAP server up at: ', server.url);
 });

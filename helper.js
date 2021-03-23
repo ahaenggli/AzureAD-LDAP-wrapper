@@ -15,9 +15,11 @@ helper.SaveJSONtoFile = function (content, file, encoding = 'utf8') {
 };
 
 helper.ReadJSONfile = function (file, encoding = 'utf8') {
-    if (fs.existsSync(file))
-        return JSON.parse(fs.readFileSync(file, encoding));
+    if (fs.existsSync(file)) content = fs.readFileSync(file, encoding);
     else return {};
+
+    if (!content || content == "") return {};
+    else return JSON.parse(content);
 };
 
 helper.ReadCSVfile = function (file, func = null, encoding = 'utf8', ignorelines = 0) {
@@ -41,16 +43,14 @@ var log = console.log;
 var error = console.error;
 helper.log = function () {
     if (config.LDAP_DEBUG) {
-        var first_parameter = arguments[0];
-        var other_parameters = Array.prototype.slice.call(arguments, 1);
-        log.apply(console, ['INFO: ' + new Intl.DateTimeFormat('de-CH', { dateStyle: 'medium', timeStyle: 'medium' }).format(Date.now()) + ": " + first_parameter].concat(other_parameters));
+        var parameters = Array.prototype.slice.call(arguments);
+        log.apply(console, ['INFO: ' + new Date().toISOString() + ": "].concat(parameters));
     }
 };
 helper.error = function () {
     if (config.LDAP_DEBUG) {
-        var first_parameter = arguments[0];
-        var other_parameters = Array.prototype.slice.call(arguments, 1);
-        error.apply(console, ['ERROR: ' + new Intl.DateTimeFormat('de-CH', { dateStyle: 'medium', timeStyle: 'medium' }).format(Date.now()) + ": " + first_parameter].concat(other_parameters));
+        var parameters = Array.prototype.slice.call(arguments);
+        error.apply(console, ['ERROR: ' + new Date().toISOString() + ": "].concat(parameters));
     }
 };
 
