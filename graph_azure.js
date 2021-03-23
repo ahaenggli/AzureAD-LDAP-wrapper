@@ -1,4 +1,6 @@
 const config = require('./config');
+const helper = require('./helper');
+
 const msal = require('@azure/msal-node');
 const axios = require('axios');
 
@@ -69,9 +71,9 @@ graph.callApi = async function callApi(endpoint, accessToken, opts = {}) {
         const response = await axios.default.get(endpoint, options);
         return response.data.value;
     } catch (error) {
-        console.error('callApi', error);
-        console.error('callApi', endpoint);
-        console.error('callApi', opts);
+        helper.error('callApi', error);
+        helper.error('callApi', endpoint);
+        helper.error('callApi', opts);
         return error;
     }
 };
@@ -80,7 +82,8 @@ const msRestNodeauth = require("@azure/ms-rest-nodeauth");
 graph.loginWithUsernamePassword = function loginWithUsernamePassword(username, password) {
     return msRestNodeauth.loginWithUsernamePassword(username, password, { domain: config.AZURE_TENANTID }).then(() => {
         return true;
-    }).catch(() => {
+    }).catch((error) => {
+        helper.error("loginWithUsernamePassword", error);
         return false;
     });
 };

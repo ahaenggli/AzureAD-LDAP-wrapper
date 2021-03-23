@@ -9,7 +9,8 @@ var creator = {};
 
 creator.do = async function () {
   try {
-    if(!fs.existsSync('./.cache')) fs.mkdirSync('./.cache');
+    helper.log("create_ldap_entires", "start");
+    if (!fs.existsSync('./.cache')) fs.mkdirSync('./.cache');
 
     const graph_azureResponse = await graph_azure.getToken(graph_azure.tokenRequest);
     const db = helper.ReadJSONfile(config.dataFile);
@@ -44,7 +45,7 @@ creator.do = async function () {
     };
 
     var hash = Math.abs(encode().value(config.usersGroupDnSuffix)).toString();
-    if(ldapgroup[config.usersGroupDnSuffix] && ldapgroup[config.usersGroupDnSuffix].hasOwnProperty('gidNumber')) hash = ldapgroup[config.usersGroupDnSuffix].gidNumber;
+    if (ldapgroup[config.usersGroupDnSuffix] && ldapgroup[config.usersGroupDnSuffix].hasOwnProperty('gidNumber')) hash = ldapgroup[config.usersGroupDnSuffix].gidNumber;
 
     ldapgroup[config.usersGroupDnSuffix] = {
       "objectClass": [
@@ -70,6 +71,7 @@ creator.do = async function () {
 
     var groups = await graph_azure.callApi(graph_azure.apiConfig.gri, graph_azureResponse.accessToken);
     helper.SaveJSONtoFile(groups, './.cache/groups.json');
+    helper.log("create_ldap_entires", "groups.json saved.");
 
     var user_to_groups = [];
 
@@ -78,7 +80,7 @@ creator.do = async function () {
       gpName = "cn=" + group.displayName.replace(/\s/g, '') + "," + config.groupDnSuffix;
 
       var hash = Math.abs(encode().value(group.id)).toString();
-      if(ldapgroup[gpName] && ldapgroup[gpName].hasOwnProperty('gidNumber')) hash = ldapgroup[gpName].gidNumber;
+      if (ldapgroup[gpName] && ldapgroup[gpName].hasOwnProperty('gidNumber')) hash = ldapgroup[gpName].gidNumber;
 
       ldapgroup[gpName] = {
         "objectClass": [
@@ -113,11 +115,12 @@ creator.do = async function () {
       }
 
       helper.SaveJSONtoFile(members, './.cache/members_' + group.displayName + '.json');
-
+      helper.log("create_ldap_entires", 'members_' + group.displayName + '.json' + " saved.");
     }
 
     var users = await graph_azure.callApi(graph_azure.apiConfig.uri, graph_azureResponse.accessToken);
     helper.SaveJSONtoFile(users, './.cache/users.json');
+    helper.log("create_ldap_entires", 'users.json' + " saved.");
 
     for (var i = 0, len = users.length; i < len; i++) {
       user = users[i];
@@ -127,7 +130,7 @@ creator.do = async function () {
       if (userPrincipalName.indexOf("#EXT#") == -1) {
         upName = config.userRdn + "=" + userPrincipalName.replace(/\s/g, '') + "," + config.usersDnSuffix;
         var hash = Math.abs(encode().value(user.id)).toString();
-        if(ldapgroup[upName] && ldapgroup[upName].hasOwnProperty('uidNumber')) hash = ldapgroup[upName].uidNumber;
+        if (ldapgroup[upName] && ldapgroup[upName].hasOwnProperty('uidNumber')) hash = ldapgroup[upName].uidNumber;
 
         for (var j = 0, jlen = user_to_groups[user.id].length; j < jlen; j++) {
           let g = user_to_groups[user.id][j];
@@ -154,6 +157,7 @@ creator.do = async function () {
           "givenName": user.givenName,
           "displayName": user.displayName,
           "uid": userPrincipalName,
+          "sAMAccountName": userPrincipalName,
           "uidNumber": hash,
           "gidNumber": ldapgroup[config.usersGroupDnSuffix].gidNumber,
           "homeDirectory": "/home/" + userPrincipalName,
@@ -191,12 +195,14 @@ creator.do = async function () {
 
     // save the data file
     helper.SaveJSONtoFile(ldapgroup, config.dataFile);
+    helper.log("create_ldap_entires", "end");
     return ldapgroup;
 
   } catch (error) {
-    console.error(error);
+    helper.error("create_ldap_entires", error);
     return {};
   }
+
 };
 
 module.exports = creator;

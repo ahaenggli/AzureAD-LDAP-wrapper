@@ -1,3 +1,4 @@
+const config = require('./config');
 const fs = require('fs');
 
 var helper = {};
@@ -34,6 +35,23 @@ helper.ReadCSVfile = function (file, func = null, encoding = 'utf8', ignorelines
     }
 
     return result;
+};
+
+var log = console.log;
+var error = console.error;
+helper.log = function () {
+    if (config.LDAP_DEBUG) {
+        var first_parameter = arguments[0];
+        var other_parameters = Array.prototype.slice.call(arguments, 1);
+        log.apply(console, ['INFO: ' + new Intl.DateTimeFormat('de-CH', { dateStyle: 'medium', timeStyle: 'medium' }).format(Date.now()) + ": " + first_parameter].concat(other_parameters));
+    }
+};
+helper.error = function () {
+    if (config.LDAP_DEBUG) {
+        var first_parameter = arguments[0];
+        var other_parameters = Array.prototype.slice.call(arguments, 1);
+        error.apply(console, ['ERROR: ' + new Intl.DateTimeFormat('de-CH', { dateStyle: 'medium', timeStyle: 'medium' }).format(Date.now()) + ": " + first_parameter].concat(other_parameters));
+    }
 };
 
 module.exports = helper;
