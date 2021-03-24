@@ -26,13 +26,16 @@ refreshDB();
 const interval = 30 /*minutes*/ * 60 * 1000;
 const interval_func = function () {
     helper.log("I am doing my 30 minutes refreshDB().");
-    refreshDB();
-    setInterval(interval_func, interval);
+    try {
+        refreshDB();
+    } catch (error) {
+        helper.error("interval_func", error);
+    }
 };
 setInterval(interval_func, interval);
 
 // source: https://www.iana.org/assignments/ldap-parameters/ldap-parameters.xhtml#ldap-parameters-8
-const ldapSyntaxes = helper.ReadCSVfile('./ldapSyntaxes.csv', function (row) { return '(' + row[0] + ' DESC ' + row[1] + ')'; });
+const ldapSyntaxes = helper.ReadCSVfile('./data/ldapSyntaxes.csv', function (row) { return '(' + row[0] + ' DESC ' + row[1] + ')'; });
 
 // Auth via azure for binding
 server.bind('', (req, res, next) => {
