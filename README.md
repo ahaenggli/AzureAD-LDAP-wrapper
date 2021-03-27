@@ -10,7 +10,14 @@ This is especially useful when you don't want to maintain an on-premise AD contr
 5. Every 30 minutes users and groups are refetched
 (while keeping uid, gid, sambaNTPassword and sambaPwdLastSet)
 
-## Installation
+## Use on a Synology-NAS (with Docker)
+1. add the ldap-wrapper as a container, configure it and start it
+![grafik](https://user-images.githubusercontent.com/23347180/112722715-67928580-8f0b-11eb-9725-83f68fd2bb9c.png)
+2. enable ldap-client and connect it to your docker container
+![grafik](https://user-images.githubusercontent.com/23347180/112722734-79742880-8f0b-11eb-87f4-804c1363b296.png)
+3. give your synced groups the permissions you want and login with your azuread-users :)
+
+## General Installation
 Use a [docker container](https://hub.docker.com/r/ahaen/azuread-ldap-wrapper) and start it with the right environment variables.
 
 ## environment variables
