@@ -1,31 +1,30 @@
 const config = require('./config');
 
 const helper = require('./helper');
-const creator = require('./create_ldap_entries');
+const ldapwrapper = require('./ldapwrapper');
 const ldap = require('ldapjs');
-const graph = require('./graph_azure');
+const graph = require('./graph_azuread');
 
 var nthash = require('smbhash').nthash;
-//var lmhash = require('smbhash').lmhash;
 
-// defines
 var db = helper.ReadJSONfile(config.dataFile);
 var lastRefresh = 0;
 var server = ldap.createServer();
 
 async function refreshDB() {
     if (Date.now() > lastRefresh + 30 * 60 * 1000) {
-        db = await creator.do();
+        db = await ldapwrapper.do();
         lastRefresh = Date.now();
     }
     if (!db) db = helper.ReadJSONfile(config.dataFile);
 }
 
+// init data from azure before starting the server
 refreshDB();
 
 const interval = 30 /*minutes*/ * 60 * 1000;
 const interval_func = function () {
-    helper.log("I am doing my 30 minutes refreshDB().");
+    helper.log("every 30 minutes refreshDB()");
     try {
         refreshDB();
     } catch (error) {
@@ -64,15 +63,15 @@ server.bind('', (req, res, next) => {
             if (check) {
                 helper.log("server.bind", "check=true: you shall pass");
                 //return next(new ldap.InvalidCredentialsError());
-                var userAtts = db[dn];
-                //helper.log(userAtts);
-                if (userAtts && userAtts.hasOwnProperty("sambaNTPassword")) {
+                var userAttributes = db[dn];
+                //helper.log(userAttributes);
+                if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
                     var userNtHash = nthash(pass);
-                    if (userAtts["sambaNTPassword"] != userNtHash) {
+                    if (userAttributes["sambaNTPassword"] != userNtHash) {
                         helper.log("server.bind", "Saving NT password hash for user " + dn);
-                        userAtts["sambaNTPassword"] = userNtHash;
-                        userAtts["sambaPwdLastSet"] = Math.floor(Date.now() / 1000);
-                        db[dn] = userAtts;
+                        userAttributes["sambaNTPassword"] = userNtHash;
+                        userAttributes["sambaPwdLastSet"] = Math.floor(Date.now() / 1000);
+                        db[dn] = userAttributes;
                         // save the data file
                         helper.SaveJSONtoFile(db, config.dataFile);
                     }
@@ -97,7 +96,7 @@ server.bind('', (req, res, next) => {
 // search
 server.search('', (req, res, next) => {
     try {
-        var dn = req.dn.toString().replace(/ /g, '');
+        var dn = req.dn.toString().toLowerCase().replace(/ /g, '');
         if (!dn) dn = config.baseDn;
 
         helper.log("server.search", 'Search for => DB: ' + dn + '; Scope: ' + req.scope + '; Filter: ' + req.filter + '; Attributes: ' + req.attributes + ';');
@@ -153,7 +152,7 @@ server.search('', (req, res, next) => {
         const keys = Object.keys(db);
         for (const key of keys) {
             if (!scopeCheck(key))
-                return;
+                continue;
             if (req.filter.matches(db[key])) {
                 res.send({
                     dn: key,

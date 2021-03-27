@@ -1,16 +1,16 @@
 {
-  "name": "ldap-wrapper-o365-azure",
-  "version": "0.1.0",
-  "description": "LDAP-Wrapper for office365 users (via azure without AADDS)",
+  "name": "AzureAD-LDAP-wrapper",
+  "version": "0.2.0",
+  "description": "LDAP-Wrapper for 'microsoft 365' users (former 'office 365' - via AzureAD without AADDS)",
   "author": "Adriano Hänggli <adriano@haenggli.net>",
-  "main": "ldapserver.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node ldapserver.js"
+    "start": "node server.js"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ahaenggli/ldap-wrapper-o365-azure"
+    "url": "https://github.com/ahaenggli/AzureAD-LDAP-wrapper"
   },
   "dependencies": {
     "@azure/ms-rest-nodeauth": "3.0.7",

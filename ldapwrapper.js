@@ -1,5 +1,5 @@
 // read in env settings
-const graph_azure = require('./graph_azure');
+const graph_azure = require('./graph_azuread');
 const config = require('./config');
 const helper = require('./helper');
 const fs = require('fs');
@@ -78,6 +78,7 @@ creator.do = async function () {
     for (var i = 0, len = groups.length; i < len; i++) {
       group = groups[i];
       gpName = "cn=" + group.displayName.replace(/\s/g, '') + "," + config.groupDnSuffix;
+      gpName = gpName.toLowerCase();
 
       var hash = Math.abs(encode().value(group.id)).toString();
       if (ldapgroup[gpName] && ldapgroup[gpName].hasOwnProperty('gidNumber')) hash = ldapgroup[gpName].gidNumber;
@@ -129,6 +130,8 @@ creator.do = async function () {
       // ignore external users
       if (userPrincipalName.indexOf("#EXT#") == -1) {
         upName = config.userRdn + "=" + userPrincipalName.replace(/\s/g, '') + "," + config.usersDnSuffix;
+        upName = upName.toLowerCase();
+
         var hash = Math.abs(encode().value(user.id)).toString();
         if (ldapgroup[upName] && ldapgroup[upName].hasOwnProperty('uidNumber')) hash = ldapgroup[upName].uidNumber;
 
@@ -151,7 +154,7 @@ creator.do = async function () {
             "shadowAccount",
             "posixAccount",
             "top"],
-          "cn": userPrincipalName,
+          "cn": user.displayName,
           "entryDN": upName,
           "sn": user.surname,
           "givenName": user.givenName,
@@ -182,11 +185,11 @@ creator.do = async function () {
           "subschemaSubentry": "cn=Subschema"
         };
 
-        let userAttr = db[upName];
-        if (userAttr && userAttr.hasOwnProperty("sambaNTPassword")) {
-          ldapgroup[upName].sambaLMPassword = userAttr.sambaLMPassword;
-          ldapgroup[upName].sambaNTPassword = userAttr.sambaNTPassword;
-          ldapgroup[upName].sambaPwdLastSet = userAttr.sambaPwdLastSet;
+        let userAttributes = db[upName];
+        if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
+          ldapgroup[upName].sambaLMPassword = userAttributes.sambaLMPassword;
+          ldapgroup[upName].sambaNTPassword = userAttributes.sambaNTPassword;
+          ldapgroup[upName].sambaPwdLastSet = userAttributes.sambaPwdLastSet;
         }
 
       }
