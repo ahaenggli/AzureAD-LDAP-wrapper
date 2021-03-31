@@ -63,8 +63,11 @@ Format: "username|password". This can be useful to "join" a device (e.g. NAS).
 Multiple users can be split by "||". (ex. `ldapsearch1|mysecret||searchy2|othersecret`).
 Those users have full read permissions and can also see the sambaNTPassword-hash.
 
-### LDAP_ALLOWCACHEDLOGINONFAILURE (default: false)
-default: false; allows login from cached sambaNTPassword.
+### LDAP_DEBUG (default: false)
+If enabled there are more logs in the console outputs.
+
+### LDAP_ALLOWCACHEDLOGINONFAILURE (default: true)
+allows login from cached sambaNTPassword.
 If set to true, the login has failed and the error does NOT say "wrong credentials", the password is checked against the cached sambaNTPassword. If it matches, the authentification is successfull.
 
 

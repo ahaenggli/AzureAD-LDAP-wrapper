@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2021-03-31
 ### Added
 - new environment variable to allow login from cached sambaNTPassword
-`LDAP_ALLOWCACHEDLOGINONFAILURE`, default: false
+`LDAP_ALLOWCACHEDLOGINONFAILURE`, default: true
 if set to true and the login is failed, the login is retried against the sambaNTPassword, except the error says "wrong credentials".
 (useful for unstable internet connection)
 - this CHANGELOG file
