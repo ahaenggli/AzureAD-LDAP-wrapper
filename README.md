@@ -1,4 +1,4 @@
-# LDAP-Wrapper for 'microsoft 365' users (former 'office 365' - via AzureAD without AADDS) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social)](https://github.com/ahaenggli/ExcelAddIn_TableOfContents) <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px" ></a>
+# LDAP-Wrapper for 'microsoft 365' users (former 'office 365' - via AzureAD without AADDS) [![GitHub release (latest by date)](https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social)](https://github.com/ahaenggli/AzureAD-LDAP-wrapper) <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px" ></a>
 
 AzureAD-LDAP-wrapper is pseudo-ldap-server for authenticating against Microsoft 365 (AzureAD).
 This is especially useful when you don't want to maintain an on-premise AD controller.
