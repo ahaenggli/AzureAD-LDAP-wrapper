@@ -48,10 +48,10 @@ helper.log = function () {
     }
 };
 helper.error = function () {
-    if (config.LDAP_DEBUG) {
-        var parameters = Array.prototype.slice.call(arguments);
-        error.apply(console, ['ERROR: ' + new Date().toISOString() + ": "].concat(parameters));
-    }
+    //if (config.LDAP_DEBUG) {
+    var parameters = Array.prototype.slice.call(arguments);
+    error.apply(console, ['ERROR: ' + new Date().toISOString() + ": "].concat(parameters));
+    //}
 };
 
 module.exports = helper;

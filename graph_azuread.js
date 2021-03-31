@@ -79,12 +79,17 @@ graph.callApi = async function callApi(endpoint, accessToken, opts = {}) {
 };
 
 const msRestNodeauth = require("@azure/ms-rest-nodeauth");
-graph.loginWithUsernamePassword = function loginWithUsernamePassword(username, password) {
+graph.loginWithUsernamePassword = function loginWithUsernamePassword(username, password, func = null) {
     return msRestNodeauth.loginWithUsernamePassword(username, password, { domain: config.AZURE_TENANTID }).then(() => {
-        return true;
+        return 1;
     }).catch((error) => {
         helper.error("loginWithUsernamePassword", error);
-        return false;
+        // 50126: wrong credentials
+        if (error && error.toString().indexOf('[50126]') > -1) return 0;
+        // other errors (not wrong credentials)
+        if (error && error.toString().indexOf('[50126]') == -1) return 2;
+        // fallback...
+        return 0;
     });
 };
 

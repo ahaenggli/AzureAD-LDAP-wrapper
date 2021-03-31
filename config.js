@@ -19,5 +19,6 @@ config.removeDomainFromCn = process.env.LDAP_REMOVEDOMAIN || true; // set to tru
 config.LDAP_PORT = process.env.LDAP_PORT || 389;
 config.LDAP_BINDUSER = process.env.LDAP_BINDUSER;
 config.LDAP_DEBUG = (process.env.LDAP_DEBUG == "true") || false;
+config.LDAP_ALLOWCACHEDLOGINONFAILURE = (process.env.LDAP_ALLOWCACHEDLOGINONFAILURE == "true") || false;
 // export
 module.exports = config;

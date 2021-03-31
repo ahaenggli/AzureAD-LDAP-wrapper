@@ -41,56 +41,95 @@ server.bind('', (req, res, next) => {
     try {
         var dn = req.dn.toString().replace(/ /g, '');
 
-        helper.log("server.bind", 'bind => ', dn);
+        helper.log("server.bind", dn);
 
         // dn bind
-        var username = dn.replace(config.userRdn + "=", '').replace("," + config.usersDnSuffix, '');;
+        var username = dn.replace(config.userRdn + "=", '').replace("," + config.usersDnSuffix, '');
         var pass = req.credentials;
 
-        if (config.LDAP_BINDUSER && config.LDAP_BINDUSER == username + '|' + pass) {
-            helper.log("server.bind", "binduser, you shall pass");
+        if (config.LDAP_BINDUSER && config.LDAP_BINDUSER.toString().split("||").indexOf(username + '|' + pass) > -1) {
+            helper.log("server.bind", username, "binduser, you shall pass");
             res.end();
             return next();
-        }
+        } else {
 
-        if (config.removeDomainFromCn == true && username.indexOf("@") == -1)
-            username = username + "@" + config.azureDomain;
+            if (config.removeDomainFromCn == true && username.indexOf("@") == -1)
+                username = username + "@" + config.azureDomain;
 
-        var check = graph.loginWithUsernamePassword(username, pass);
-        check.then(function (check) {
-            //helper.log('check => ', check);
+            var userAttributes = db[dn];
 
-            if (check) {
-                helper.log("server.bind", "check=true: you shall pass");
-                //return next(new ldap.InvalidCredentialsError());
-                var userAttributes = db[dn];
-                //helper.log(userAttributes);
-                if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
-                    var userNtHash = nthash(pass);
-                    if (userAttributes["sambaNTPassword"] != userNtHash) {
-                        helper.log("server.bind", "Saving NT password hash for user " + dn);
-                        userAttributes["sambaNTPassword"] = userNtHash;
-                        userAttributes["sambaPwdLastSet"] = Math.floor(Date.now() / 1000);
-                        db[dn] = userAttributes;
-                        // save the data file
-                        helper.SaveJSONtoFile(db, config.dataFile);
-                    }
-                }
-
-                res.end();
-                return next();
-            }
-            else {
-                helper.error("server.bind", username + ": Failed login");
+            if (!userAttributes || !userAttributes.hasOwnProperty("sambaNTPassword")) {
+                helper.log("server.bind", username, "Failed login -> mybe not synced yet?");
                 return next(new ldap.InvalidCredentialsError());
+            } else {
+
+                var check = graph.loginWithUsernamePassword(username, pass);
+                var userNtHash = nthash(pass);
+
+                check.then(function (check) {
+
+                    if (check === 1) {
+                        helper.log("server.bind", username, "check=true: you shall pass");
+
+                        //helper.log(userAttributes);
+                        if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
+
+                            if (userAttributes["sambaNTPassword"] != userNtHash) {
+                                helper.log("server.bind", username, "Saving NT password hash for user " + dn);
+                                userAttributes["sambaNTPassword"] = userNtHash;
+                                userAttributes["sambaPwdLastSet"] = Math.floor(Date.now() / 1000);
+                                db[dn] = userAttributes;
+                                // save the data file
+                                helper.SaveJSONtoFile(db, config.dataFile);
+                            }
+                        }
+
+                        res.end();
+                        return next();
+                    }
+                    else if (check === 2 && config.LDAP_ALLOWCACHEDLOGINONFAILURE) {
+                        helper.error("server.bind", username, "wrong password, retry against sambaNTPassword");
+                        if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
+                            if (userAttributes["sambaNTPassword"] === userNtHash) {
+                                res.end();
+                                return next();
+                            }
+                        }
+                        return next(new ldap.InvalidCredentialsError());
+                    }
+                    else {
+                        helper.error("server.bind", username, " -> Failed login");
+                        return next(new ldap.InvalidCredentialsError());
+                    }
+                });
             }
-        });
+        }
     }
     catch (error) {
         helper.error("server.bind", error);
         return next(new ldap.InvalidCredentialsError());
     }
 });
+
+function removeSensitiveAttributes(binduser, dn, attributes) {
+    var allowSensitiveAttributes = false;
+
+    if (binduser.equals(dn)) allowSensitiveAttributes = true;
+
+    if (config.LDAP_BINDUSER) {
+        for (var u of config.LDAP_BINDUSER.toString().split("||")) {
+            u = u.split("|")[0];
+            var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.userRdn + "=", '').replace("," + config.usersDnSuffix, '');
+            if (u === username) allowSensitiveAttributes = true;
+        }
+    }
+
+    if (!allowSensitiveAttributes) {
+        if (attributes && attributes.hasOwnProperty("sambaNTPassword")) attributes.sambaNTPassword = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+        if (attributes && attributes.hasOwnProperty("sambaPwdLastSet")) attributes.sambaPwdLastSet = 0;
+    }
+    return attributes;
+}
 
 
 // search
@@ -119,12 +158,15 @@ server.search('', (req, res, next) => {
 
         let scopeCheck;
 
+        let bindDN = req.connection.ldap.bindDN;
+
         switch (req.scope) {
             case 'base':
-                if (req.filter.matches(db[dn])) {
+
+                if (req.filter.matches(removeSensitiveAttributes(bindDN, dn, db[dn]))) {
                     res.send({
                         dn: dn,
-                        attributes: db[dn]
+                        attributes: removeSensitiveAttributes(bindDN, dn, db[dn])
                     });
                 }
 
@@ -153,10 +195,11 @@ server.search('', (req, res, next) => {
         for (const key of keys) {
             if (!scopeCheck(key))
                 continue;
-            if (req.filter.matches(db[key])) {
+
+            if (req.filter.matches(removeSensitiveAttributes(bindDN, key, db[key]))) {
                 res.send({
                     dn: key,
-                    attributes: db[key]
+                    attributes: removeSensitiveAttributes(bindDN, key, db[key])
                 });
             }
         }
@@ -169,6 +212,11 @@ server.search('', (req, res, next) => {
     }
 });
 
+server.on("uncaughtException", (error) => {
+    helper.error("!!! uncaughtException !!!", error);
+})
+
 server.listen(config.LDAP_PORT, function () {
-    helper.log('LDAP server up at: ', server.url);
+    console.log('LDAP server up at: ', server.url);
 });
+

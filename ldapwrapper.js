@@ -8,15 +8,16 @@ var encode = require('hashcode').hashCode;
 var creator = {};
 
 creator.do = async function () {
+  helper.log("create_ldap_entires", "start");
+
+  var db = helper.ReadJSONfile(config.dataFile);
+
   try {
-    helper.log("create_ldap_entires", "start");
+
     if (!fs.existsSync('./.cache')) fs.mkdirSync('./.cache');
 
     const graph_azureResponse = await graph_azure.getToken(graph_azure.tokenRequest);
-    const db = helper.ReadJSONfile(config.dataFile);
-    ldapgroup = db || {};
-
-    ldapgroup[config.baseDn] = {
+    db[config.baseDn] = {
       "objectClass": "domain",
       "dc": config.baseDn.replace('dc=', '').split(",")[0],
       "entryDN": config.baseDn,
@@ -26,7 +27,7 @@ creator.do = async function () {
       "namingContexts": config.baseDn
     };
 
-    ldapgroup[config.usersDnSuffix] = {
+    db[config.usersDnSuffix] = {
       "objectClass": "organizationalRole",
       "cn": config.usersDnSuffix.replace("," + config.baseDn, '').replace('cn=', ''),
       "entryDN": config.usersDnSuffix,
@@ -35,7 +36,7 @@ creator.do = async function () {
       "subschemaSubentry": "cn=Subschema"
     };
 
-    ldapgroup[config.groupDnSuffix] = {
+    db[config.groupDnSuffix] = {
       "objectClass": "organizationalRole",
       "cn": config.groupDnSuffix.replace("," + config.baseDn, '').replace('cn=', ''),
       "entryDN": config.groupDnSuffix,
@@ -45,9 +46,9 @@ creator.do = async function () {
     };
 
     var hash = Math.abs(encode().value(config.usersGroupDnSuffix)).toString();
-    if (ldapgroup[config.usersGroupDnSuffix] && ldapgroup[config.usersGroupDnSuffix].hasOwnProperty('gidNumber')) hash = ldapgroup[config.usersGroupDnSuffix].gidNumber;
+    if (db[config.usersGroupDnSuffix] && db[config.usersGroupDnSuffix].hasOwnProperty('gidNumber')) hash = db[config.usersGroupDnSuffix].gidNumber;
 
-    ldapgroup[config.usersGroupDnSuffix] = {
+    db[config.usersGroupDnSuffix] = {
       "objectClass": [
         "sambaIdmapEntry",
         "sambaGroupMapping",
@@ -81,9 +82,9 @@ creator.do = async function () {
       gpName = gpName.toLowerCase();
 
       var hash = Math.abs(encode().value(group.id)).toString();
-      if (ldapgroup[gpName] && ldapgroup[gpName].hasOwnProperty('gidNumber')) hash = ldapgroup[gpName].gidNumber;
+      if (db[gpName] && db[gpName].hasOwnProperty('gidNumber')) hash = db[gpName].gidNumber;
 
-      ldapgroup[gpName] = {
+      db[gpName] = {
         "objectClass": [
           "sambaIdmapEntry",
           "sambaGroupMapping",
@@ -133,17 +134,23 @@ creator.do = async function () {
         upName = upName.toLowerCase();
 
         var hash = Math.abs(encode().value(user.id)).toString();
-        if (ldapgroup[upName] && ldapgroup[upName].hasOwnProperty('uidNumber')) hash = ldapgroup[upName].uidNumber;
+        var sambaNTPassword = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+        var sambaPwdLastSet = 0;
+        if (db[upName] && db[upName].hasOwnProperty('sambaNTPassword')) sambaNTPassword = db[upName].sambaNTPassword;
+        if (db[upName] && db[upName].hasOwnProperty('sambaPwdLastSet')) sambaPwdLastSet = db[upName].sambaPwdLastSet;
+
+
 
         for (var j = 0, jlen = user_to_groups[user.id].length; j < jlen; j++) {
           let g = user_to_groups[user.id][j];
-          ldapgroup[g].member = ldapgroup[g].member || [];
-          ldapgroup[g].memberUid = ldapgroup[g].memberUid || [];
-          ldapgroup[g].member.push(upName);
-          ldapgroup[g].memberUid.push(userPrincipalName);
+          db[g].member = db[g].member || [];
+          db[g].memberUid = db[g].memberUid || [];
+          db[g].member.push(upName);
+          db[g].memberUid.push(userPrincipalName);
         }
 
-        ldapgroup[upName] = {
+
+        db[upName] = {
           "objectClass": [
             "extensibleObject",
             "sambaIdmapEntry",
@@ -162,7 +169,7 @@ creator.do = async function () {
           "uid": userPrincipalName,
           "sAMAccountName": userPrincipalName,
           "uidNumber": hash,
-          "gidNumber": ldapgroup[config.usersGroupDnSuffix].gidNumber,
+          "gidNumber": db[config.usersGroupDnSuffix].gidNumber,
           "homeDirectory": "/home/" + userPrincipalName,
           "sambaSID": "S-1-5-21-" + hash + "-" + hash + "-" + hash,
           "loginShell": "/bin/sh",
@@ -170,9 +177,9 @@ creator.do = async function () {
           "memberOf": user_to_groups[user.id],
           "sambaAcctFlags": "[U          ]",
           "sambaLMPassword": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-          "sambaNTPassword": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+          "sambaNTPassword": sambaNTPassword,
           "sambaPasswordHistory": "0000000000000000000000000000000000000000000000000000000000000000",
-          "sambaPwdLastSet": 0,
+          "sambaPwdLastSet": sambaPwdLastSet,
           "shadowExpire": "-1",
           "shadowFlag": "0",
           "shadowInactive": "0",
@@ -185,27 +192,19 @@ creator.do = async function () {
           "subschemaSubentry": "cn=Subschema"
         };
 
-        let userAttributes = db[upName];
-        if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
-          ldapgroup[upName].sambaLMPassword = userAttributes.sambaLMPassword;
-          ldapgroup[upName].sambaNTPassword = userAttributes.sambaNTPassword;
-          ldapgroup[upName].sambaPwdLastSet = userAttributes.sambaPwdLastSet;
-        }
 
       }
-
     }
 
     // save the data file
-    helper.SaveJSONtoFile(ldapgroup, config.dataFile);
+    helper.SaveJSONtoFile(db, config.dataFile);
     helper.log("create_ldap_entires", "end");
-    return ldapgroup;
 
   } catch (error) {
     helper.error("create_ldap_entires", error);
-    return {};
+    return db || {};
   }
-
+  return db;
 };
 
 module.exports = creator;
