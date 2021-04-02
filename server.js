@@ -49,7 +49,7 @@ const interval_func = function () {
     try {
         refreshDB();
     } catch (error) {
-        helper.error("interval_func", error);
+        helper.error("server.js", "interval_func", error);
     }
 };
 setInterval(interval_func, interval);
@@ -109,7 +109,7 @@ server.bind('', (req, res, next) => {
                         return next();
                     }
                     else if (check === 2 && config.LDAP_ALLOWCACHEDLOGINONFAILURE) {
-                        helper.error("server.bind", username, "wrong password, retry against sambaNTPassword");
+                        helper.error("server.js", "server.bind", username, "wrong password, retry against sambaNTPassword");
                         if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
                             if (userAttributes["sambaNTPassword"] === userNtHash) {
                                 res.end();
@@ -119,7 +119,7 @@ server.bind('', (req, res, next) => {
                         return next(new ldap.InvalidCredentialsError());
                     }
                     else {
-                        helper.error("server.bind", username, " -> Failed login");
+                        helper.error("server.js", "server.bind", username, " -> Failed login");
                         return next(new ldap.InvalidCredentialsError());
                     }
                 });
@@ -127,7 +127,7 @@ server.bind('', (req, res, next) => {
         }
     }
     catch (error) {
-        helper.error("server.bind", error);
+        helper.error("server.js", "server.bind", error);
         return next(new ldap.InvalidCredentialsError());
     }
 });
@@ -228,15 +228,14 @@ server.search('', (req, res, next) => {
         return next();
     }
     catch (error) {
-        helper.error("server.search", error);
+        helper.error("server.js", "server.search", error);
     }
 });
 
 server.on("uncaughtException", (error) => {
-    helper.error("!!! uncaughtException !!!", error);
+    helper.error("server.js", "!!! uncaughtException !!!", error);
 })
 
 server.listen(config.LDAP_PORT, function () {
     console.log("server.js", '---->  LDAP server up at: ', server.url);
 });
-

@@ -6,12 +6,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2021-04-02
+
+### Fixed
+- format logs
+- distinct user membership (user could be in same group multiple times due to wrong creation/edit)
+
+### Security
+- no login from cache for inactive users
+
+
+
 ## [1.0.1] - 2021-04-02
 ### Added
 - more logs for debugging
 
 ### Fixed
 - users without groups
+
+
 
 ## [1.0.0] - 2021-03-31
 ### Added
@@ -32,6 +45,8 @@ if set to true and the login is failed, the login is retried against the sambaNT
 ### Security
 - sambaNTPassword can only be accessed from defined LDAP_BINDUSER and on accessing your own entries (userA can only access userA-sambaNTPassword, LDAP_BINDUSER-user can access all sambaNTPasswords)
 
+
+
 ## [0.2.0-beta] - 2021-03-27
 ### Added
 - LDAP server
@@ -41,6 +56,7 @@ if set to true and the login is failed, the login is retried against the sambaNT
 
 
 [Unreleased]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/projects/1
+[1.0.2]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.0.2
 [1.0.1]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.0.1
 [1.0.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.0.0
 [0.2.0-beta]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v0.2.0-beta

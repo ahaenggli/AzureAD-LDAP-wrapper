@@ -1,6 +1,6 @@
 {
   "name": "AzureAD-LDAP-wrapper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "LDAP-Wrapper for 'microsoft 365' users (former 'office 365' - via AzureAD without AADDS)",
   "author": "Adriano Hänggli <adriano@haenggli.net>",
   "main": "server.js",

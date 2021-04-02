@@ -73,9 +73,9 @@ graph.callApi = async function callApi(endpoint, accessToken, opts = {}) {
         const response = await axios.default.get(endpoint, options);
         return response.data.value;
     } catch (error) {
-        helper.error('callApi', error);
-        helper.error('callApi', endpoint);
-        helper.error('callApi', opts);
+        helper.error('graph_azuread.js', 'callApi-error', error);
+        helper.error('graph_azuread.js', 'callApi-endpoint', endpoint);
+        helper.error('graph_azuread.js', 'callApi-opts', opts);
         return error;
     }
 };
@@ -85,11 +85,15 @@ graph.loginWithUsernamePassword = function loginWithUsernamePassword(username, p
     return msRestNodeauth.loginWithUsernamePassword(username, password, { domain: config.AZURE_TENANTID }).then(() => {
         return 1;
     }).catch((error) => {
-        helper.error("loginWithUsernamePassword", error);
+        helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
+
         // 50126: wrong credentials
         if (error && error.toString().indexOf('[50126]') > -1) return 0;
+        // 50057: account disabled
+        else if (error && error.toString().indexOf('[50057]') > -1) return 0;
         // other errors (not wrong credentials)
-        if (error && error.toString().indexOf('[50126]') == -1) return 2;
+        else if (error) return 2;
+
         // fallback...
         return 0;
     });

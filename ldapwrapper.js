@@ -140,8 +140,10 @@ creator.do = async function () {
       for (let t = 0, tlen = members.length; t < tlen; t++) {
         let member = members[t];
         if (member.id != group.id) {
-          user_to_groups[member.id] = user_to_groups[member.id] || [config.usersGroupDnSuffix];
-          user_to_groups[member.id].push(gpName);
+          user_to_groups[member.id] = user_to_groups[member.id] || [];
+          if (user_to_groups[member.id].indexOf(gpName) < 0) {
+            user_to_groups[member.id].push(gpName);
+          }
         }
       }
     }
@@ -189,14 +191,16 @@ creator.do = async function () {
         }
 
         // default `users`-group
-        user_to_groups[user.id].push(config.usersGroupDnSuffix);
+        if (user_to_groups[user.id].indexOf(config.usersGroupDnSuffix) < 0) {
+          user_to_groups[user.id].push(config.usersGroupDnSuffix);
+        }
 
         for (let j = 0, jlen = user_to_groups[user.id].length; j < jlen; j++) {
           let g = user_to_groups[user.id][j];
           db[g].member = db[g].member || [];
           db[g].memberUid = db[g].memberUid || [];
-          db[g].member.push(upName);
-          db[g].memberUid.push(userPrincipalName);
+          if (db[g].member.indexOf(upName) < 0) { db[g].member.push(upName); }
+          if (db[g].memberUid.indexOf(userPrincipalName) < 0) { db[g].memberUid.push(userPrincipalName); }
         }
 
         db[upName] = {
