@@ -1,3 +1,5 @@
+'use strict';
+
 const config = require('./config');
 
 const helper = require('./helper');
@@ -12,6 +14,7 @@ var lastRefresh = 0;
 var server = ldap.createServer();
 
 async function refreshDB() {
+    helper.log("server.js", "refreshDB()", "func called");
     if (Date.now() > lastRefresh + 30 * 60 * 1000) {
         db = await ldapwrapper.do();
         lastRefresh = Date.now();
@@ -19,12 +22,30 @@ async function refreshDB() {
     if (!db) db = helper.ReadJSONfile(config.dataFile);
 }
 
+if (!config.AZURE_APP_ID)     helper.error("config", "env var `AZURE_APP_ID` must be set");
+if (!config.AZURE_APP_SECRET) helper.error("config", "env var `AZURE_APP_SECRET` must be set");
+if (!config.AZURE_TENANTID)   helper.error("config", "env var `AZURE_TENANTID` must be set");
+
+if (!config.azureDomain)      helper.error("config", "env var `LDAP_DOMAIN` must be set");
+if (!config.baseDn)           helper.error("config", "env var `LDAP_BASEDN` must be set");
+if (config.baseDn.indexOf(",") < 0)  helper.warn("config", "env var `LDAP_BASEDN` has the wrong format: `dc=DOMAIN,dc=TLD`");
+if (config.baseDn.indexOf(" ") > -1) helper.warn("config", "env var `LDAP_BASEDN` should not have spaces in it");
+
+if (!config.LDAP_PORT)      helper.error("config", "env var `LDAP_PORT` must be set");
+if (!config.LDAP_BINDUSER)  helper.forceLog("config", "env var `LDAP_BINDUSER` is not set; If you plan to handle multiple synced users on a Synology-NAS you should set it to bind your NAS with it.");
+
+if (!config.groupDnSuffix) helper.error("config", "env var `LDAP_GROUPSDN` not set correctly");
+if (!config.usersDnSuffix) helper.error("config", "env var `LDAP_USERSDN` not set correctly");
+if (!config.usersGroupDnSuffix) helper.error("config", "env var `LDAP_USERSGROUPSBASEDN` not set correctly");
+if (!config.userRdn) helper.error("config",  "env var `LDAP_USERRDN` not set correctly");
+if (!config.dataFile) helper.error("config", "env var `LDAP_DATAFILE` not set correctly");
+
 // init data from azure before starting the server
 refreshDB();
 
 const interval = 30 /*minutes*/ * 60 * 1000;
 const interval_func = function () {
-    helper.log("every 30 minutes refreshDB()");
+    helper.log("server.js", "every 30 minutes refreshDB()");
     try {
         refreshDB();
     } catch (error) {
@@ -41,14 +62,14 @@ server.bind('', (req, res, next) => {
     try {
         var dn = req.dn.toString().replace(/ /g, '');
 
-        helper.log("server.bind", dn);
+        helper.log("server.js", "server.bind", dn);
 
         // dn bind
         var username = dn.replace(config.userRdn + "=", '').replace("," + config.usersDnSuffix, '');
         var pass = req.credentials;
 
         if (config.LDAP_BINDUSER && config.LDAP_BINDUSER.toString().split("||").indexOf(username + '|' + pass) > -1) {
-            helper.log("server.bind", username, "binduser, you shall pass");
+            helper.log("server.js", "server.bind", username, "binduser, you shall pass");
             res.end();
             return next();
         } else {
@@ -59,7 +80,7 @@ server.bind('', (req, res, next) => {
             var userAttributes = db[dn];
 
             if (!userAttributes || !userAttributes.hasOwnProperty("sambaNTPassword")) {
-                helper.log("server.bind", username, "Failed login -> mybe not synced yet?");
+                helper.log("server.js", "server.bind", username, "Failed login -> mybe not synced yet?");
                 return next(new ldap.InvalidCredentialsError());
             } else {
 
@@ -69,13 +90,13 @@ server.bind('', (req, res, next) => {
                 check.then(function (check) {
 
                     if (check === 1) {
-                        helper.log("server.bind", username, "check=true: you shall pass");
+                        helper.log("server.js", "server.bind", username, "check=true: you shall pass");
 
-                        //helper.log(userAttributes);
+                        //helper.log("server.js", userAttributes);
                         if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
 
                             if (userAttributes["sambaNTPassword"] != userNtHash) {
-                                helper.log("server.bind", username, "Saving NT password hash for user " + dn);
+                                helper.log("server.js", "server.bind", username, "Saving NT password hash for user " + dn);
                                 userAttributes["sambaNTPassword"] = userNtHash;
                                 userAttributes["sambaPwdLastSet"] = Math.floor(Date.now() / 1000);
                                 db[dn] = userAttributes;
@@ -131,14 +152,13 @@ function removeSensitiveAttributes(binduser, dn, attributes) {
     return attributes;
 }
 
-
 // search
 server.search('', (req, res, next) => {
     try {
         var dn = req.dn.toString().toLowerCase().replace(/ /g, '');
         if (!dn) dn = config.baseDn;
 
-        helper.log("server.search", 'Search for => DB: ' + dn + '; Scope: ' + req.scope + '; Filter: ' + req.filter + '; Attributes: ' + req.attributes + ';');
+        helper.log("server.js", "server.search", 'Search for => DB: ' + dn + '; Scope: ' + req.scope + '; Filter: ' + req.filter + '; Attributes: ' + req.attributes + ';');
 
         var schemadb = ['cn=SubSchema', 'cn=schema,cn=config'].map(v => v.toLowerCase());
         if (schemadb.indexOf(dn.toLowerCase()) > -1) {
@@ -217,6 +237,6 @@ server.on("uncaughtException", (error) => {
 })
 
 server.listen(config.LDAP_PORT, function () {
-    console.log('LDAP server up at: ', server.url);
+    console.log("server.js", '---->  LDAP server up at: ', server.url);
 });
 

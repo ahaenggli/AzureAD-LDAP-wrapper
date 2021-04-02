@@ -1,3 +1,5 @@
+'use strict';
+
 // read in env settings
 const graph_azure = require('./graph_azuread');
 const config = require('./config');
@@ -8,15 +10,24 @@ var encode = require('hashcode').hashCode;
 var creator = {};
 
 creator.do = async function () {
-  helper.log("create_ldap_entires", "start");
+  helper.log("ldapwrapper.js", "start");
 
   var db = helper.ReadJSONfile(config.dataFile);
+  if (typeof db === 'undefined' || db === undefined || db === null || !db) db = {};
 
   try {
 
-    if (!fs.existsSync('./.cache')) fs.mkdirSync('./.cache');
+    if (!fs.existsSync('./.cache')) {
+      helper.log("ldapwrapper.js", "mkdirSync: .cache");
+      fs.mkdirSync('./.cache');
+    }
+    else {
+      helper.log("ldapwrapper.js", "mkdirSync: nothing to do");
+    }
 
     const graph_azureResponse = await graph_azure.getToken(graph_azure.tokenRequest);
+    if (!graph_azureResponse) helper.error("ldapwrapper.js", "graph_azureResponse missing");
+
     db[config.baseDn] = {
       "objectClass": "domain",
       "dc": config.baseDn.replace('dc=', '').split(",")[0],
@@ -45,8 +56,8 @@ creator.do = async function () {
       "subschemaSubentry": "cn=Subschema"
     };
 
-    var hash = Math.abs(encode().value(config.usersGroupDnSuffix)).toString();
-    if (db[config.usersGroupDnSuffix] && db[config.usersGroupDnSuffix].hasOwnProperty('gidNumber')) hash = db[config.usersGroupDnSuffix].gidNumber;
+    var usersGroupDn_hash = Math.abs(encode().value(config.usersGroupDnSuffix)).toString();
+    if (db[config.usersGroupDnSuffix] && db[config.usersGroupDnSuffix].hasOwnProperty('gidNumber')) usersGroupDn_hash = db[config.usersGroupDnSuffix].gidNumber;
 
     db[config.usersGroupDnSuffix] = {
       "objectClass": [
@@ -60,9 +71,9 @@ creator.do = async function () {
       "entryDN": config.usersGroupDnSuffix,
       "description": "Users default group",
       "displayName": "users",
-      "gidNumber": hash,
+      "gidNumber": usersGroupDn_hash,
       "sambaGroupType": "2",
-      "sambaSID": "S-1-5-21-" + hash + "-" + hash + "-" + hash,
+      "sambaSID": "S-1-5-21-" + usersGroupDn_hash + "-" + usersGroupDn_hash + "-" + usersGroupDn_hash,
       "member": [],
       "memberUid": [],
       "hasSubordinates": "FALSE",
@@ -70,19 +81,27 @@ creator.do = async function () {
       "subschemaSubentry": "cn=Subschema"
     };
 
-    var groups = await graph_azure.callApi(graph_azure.apiConfig.gri, graph_azureResponse.accessToken);
-    helper.SaveJSONtoFile(groups, './.cache/groups.json');
-    helper.log("create_ldap_entires", "groups.json saved.");
+    helper.log("ldapwrapper.js", "try fetching the groups");
+    var groups = [];
+    groups = await graph_azure.callApi(graph_azure.apiConfig.gri, graph_azureResponse.accessToken);
+    if (typeof groups === 'undefined' || !groups) {
+      helper.warn("ldapwrapper.js", "no groups found");
+      groups = [];
+    }
+    else {
+      helper.SaveJSONtoFile(groups, './.cache/groups.json');
+      helper.log("ldapwrapper.js", "groups.json saved.");
+    }
 
     var user_to_groups = [];
 
-    for (var i = 0, len = groups.length; i < len; i++) {
-      group = groups[i];
-      gpName = "cn=" + group.displayName.replace(/\s/g, '') + "," + config.groupDnSuffix;
+    for (let i = 0, len = groups.length; i < len; i++) {
+      let group = groups[i];
+      let gpName = "cn=" + group.displayName.replace(/\s/g, '') + "," + config.groupDnSuffix;
       gpName = gpName.toLowerCase();
 
-      var hash = Math.abs(encode().value(group.id)).toString();
-      if (db[gpName] && db[gpName].hasOwnProperty('gidNumber')) hash = db[gpName].gidNumber;
+      let group_hash = Math.abs(encode().value(group.id)).toString();
+      if (db[gpName] && db[gpName].hasOwnProperty('gidNumber')) group_hash = db[gpName].gidNumber;
 
       db[gpName] = {
         "objectClass": [
@@ -96,7 +115,7 @@ creator.do = async function () {
         "entryDN": gpName,
         "description": group.description,
         "displayName": group.displayName,
-        "gidNumber": hash,
+        "gidNumber": group_hash,
         "sambaGroupType": "2",
         "sambaSID": group.securityIdentifier,
         "member": [],
@@ -106,49 +125,79 @@ creator.do = async function () {
         "subschemaSubentry": "cn=Subschema"
       };
 
-      var members = await graph_azure.callApi(graph_azure.apiConfig.mri, graph_azureResponse.accessToken, { id: group.id });
+      helper.log("ldapwrapper.js", "try fetching the members for group: ", group.displayName);
+      var members = [];
+      members = await graph_azure.callApi(graph_azure.apiConfig.mri, graph_azureResponse.accessToken, { id: group.id });
+      if (typeof members === 'undefined' || !members) {
+        helper.warn("ldapwrapper.js", "no members found for group", group.displayName);
+        members = [];
+      }
+      else {
+        helper.SaveJSONtoFile(members, './.cache/members_' + group.displayName + '.json');
+        helper.log("ldapwrapper.js", 'members_' + group.displayName + '.json' + " saved.");
+      }
 
-      for (var t = 0, tlen = members.length; t < tlen; t++) {
-        var member = members[t];
+      for (let t = 0, tlen = members.length; t < tlen; t++) {
+        let member = members[t];
         if (member.id != group.id) {
           user_to_groups[member.id] = user_to_groups[member.id] || [config.usersGroupDnSuffix];
           user_to_groups[member.id].push(gpName);
         }
       }
-
-      helper.SaveJSONtoFile(members, './.cache/members_' + group.displayName + '.json');
-      helper.log("create_ldap_entires", 'members_' + group.displayName + '.json' + " saved.");
     }
 
-    var users = await graph_azure.callApi(graph_azure.apiConfig.uri, graph_azureResponse.accessToken);
-    helper.SaveJSONtoFile(users, './.cache/users.json');
-    helper.log("create_ldap_entires", 'users.json' + " saved.");
+    if (typeof user_to_groups === 'undefined' || !user_to_groups) {
+      helper.warn("ldapwrapper.js", "no user-groups found");
+      user_to_groups = [];
+    }
 
-    for (var i = 0, len = users.length; i < len; i++) {
-      user = users[i];
-      userPrincipalName = user.userPrincipalName.replace("@" + config.azureDomain, '');
+    helper.log("ldapwrapper.js", "try fetching the users");
+    var users = [];
+    users = await graph_azure.callApi(graph_azure.apiConfig.uri, graph_azureResponse.accessToken);
+    if (typeof users === 'undefined' || !users) {
+      helper.warn("ldapwrapper.js", "no users found");
+      users = [];
+    }
+    else {
+      helper.SaveJSONtoFile(users, './.cache/users.json');
+      helper.log("ldapwrapper.js", 'users.json' + " saved.");
+    }
+
+    for (let i = 0, len = users.length; i < len; i++) {
+      let user = users[i];
+      let userPrincipalName = user.userPrincipalName.replace("@" + config.azureDomain, '');
 
       // ignore external users
-      if (userPrincipalName.indexOf("#EXT#") == -1) {
-        upName = config.userRdn + "=" + userPrincipalName.replace(/\s/g, '') + "," + config.usersDnSuffix;
+      if (userPrincipalName.indexOf("#EXT#") > -1) {
+        helper.warn("ldapwrapper.js", '#EXT#-user ignored:', userPrincipalName);
+        helper.log("ldapwrapper.js", '#EXT#-users may be included in a future version');
+      }
+      else {
+        let upName = config.userRdn + "=" + userPrincipalName.replace(/\s/g, '') + "," + config.usersDnSuffix;
         upName = upName.toLowerCase();
 
-        var hash = Math.abs(encode().value(user.id)).toString();
-        var sambaNTPassword = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-        var sambaPwdLastSet = 0;
+        let user_hash = Math.abs(encode().value(user.id)).toString();
+        let sambaNTPassword = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+        let sambaPwdLastSet = 0;
+
         if (db[upName] && db[upName].hasOwnProperty('sambaNTPassword')) sambaNTPassword = db[upName].sambaNTPassword;
         if (db[upName] && db[upName].hasOwnProperty('sambaPwdLastSet')) sambaPwdLastSet = db[upName].sambaPwdLastSet;
 
+        if (typeof user_to_groups[user.id] === 'undefined' || !user_to_groups[user.id]) {
+          helper.warn("ldapwrapper.js", "no groups found for user", upName);
+          user_to_groups[user.id] = [];
+        }
 
+        // default `users`-group
+        user_to_groups[user.id].push(config.usersGroupDnSuffix);
 
-        for (var j = 0, jlen = user_to_groups[user.id].length; j < jlen; j++) {
+        for (let j = 0, jlen = user_to_groups[user.id].length; j < jlen; j++) {
           let g = user_to_groups[user.id][j];
           db[g].member = db[g].member || [];
           db[g].memberUid = db[g].memberUid || [];
           db[g].member.push(upName);
           db[g].memberUid.push(userPrincipalName);
         }
-
 
         db[upName] = {
           "objectClass": [
@@ -168,10 +217,10 @@ creator.do = async function () {
           "displayName": user.displayName,
           "uid": userPrincipalName,
           "sAMAccountName": userPrincipalName,
-          "uidNumber": hash,
+          "uidNumber": user_hash,
           "gidNumber": db[config.usersGroupDnSuffix].gidNumber,
           "homeDirectory": "/home/" + userPrincipalName,
-          "sambaSID": "S-1-5-21-" + hash + "-" + hash + "-" + hash,
+          "sambaSID": "S-1-5-21-" + user_hash + "-" + user_hash + "-" + user_hash,
           "loginShell": "/bin/sh",
           "mail": user.mail,
           "memberOf": user_to_groups[user.id],
@@ -192,16 +241,15 @@ creator.do = async function () {
           "subschemaSubentry": "cn=Subschema"
         };
 
-
       }
     }
 
     // save the data file
     helper.SaveJSONtoFile(db, config.dataFile);
-    helper.log("create_ldap_entires", "end");
+    helper.log("ldapwrapper.js", "end");
 
   } catch (error) {
-    helper.error("create_ldap_entires", error);
+    helper.error("ldapwrapper.js", error);
     return db || {};
   }
   return db;
