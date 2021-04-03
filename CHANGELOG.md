@@ -8,8 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - env var `LDAP_SAMBANTPWD_MAXCACHETIME`
 allows to limit the time a cached sambaNTPassword hash can be used
+- entryUID and osx-attributes for ldap entries
+
 ### Changed
 - the docker image is now using tini (nodejs is not running as PID 1 anymore)
+- always log 30 minutes refresh info (to be sure it's still running)
+
 
 ## [1.0.2] - 2021-04-02
 

@@ -32,16 +32,18 @@ creator.do = async function () {
       "objectClass": "domain",
       "dc": config.baseDn.replace('dc=', '').split(",")[0],
       "entryDN": config.baseDn,
+      "entryUUID": "e927be8d-aab8-42f2-80c3-b2762415aed1",
       "hasSubordinates": "TRUE",
+      "namingContexts": config.baseDn,
       "structuralObjectClass": "domain",
-      "subschemaSubentry": "cn=Subschema",
-      "namingContexts": config.baseDn
+      "subschemaSubentry": "cn=Subschema"
     };
 
     db[config.usersDnSuffix] = {
       "objectClass": "organizationalRole",
       "cn": config.usersDnSuffix.replace("," + config.baseDn, '').replace('cn=', ''),
       "entryDN": config.usersDnSuffix,
+      "entryUUID": "3e01f47d-96a1-4cb4-803f-7dd17991c6bd",
       "hasSubordinates": "TRUE",
       "structuralObjectClass": "organizationalRole",
       "subschemaSubentry": "cn=Subschema"
@@ -51,6 +53,7 @@ creator.do = async function () {
       "objectClass": "organizationalRole",
       "cn": config.groupDnSuffix.replace("," + config.baseDn, '').replace('cn=', ''),
       "entryDN": config.groupDnSuffix,
+      "entryUUID": "39af84ac-8e5a-483e-9621-e657385b07b5",
       "hasSubordinates": "TRUE",
       "structuralObjectClass": "organizationalRole",
       "subschemaSubentry": "cn=Subschema"
@@ -61,22 +64,23 @@ creator.do = async function () {
 
     db[config.usersGroupDnSuffix] = {
       "objectClass": [
-        "sambaIdmapEntry",
-        "sambaGroupMapping",
         "extensibleObject",
         "posixGroup",
+        "sambaGroupMapping",
+        "sambaIdmapEntry",
         "top"
       ],
-      "cn": "users",
-      "entryDN": config.usersGroupDnSuffix,
+      "cn": config.usersGroupDnSuffix.replace("," + config.groupDnSuffix, '').replace('cn=', ""),
       "description": "Users default group",
-      "displayName": "users",
+      "displayName": config.usersGroupDnSuffix.replace("," + config.groupDnSuffix, '').replace('cn=', ""),
+      "entryDN": config.usersGroupDnSuffix,
+      "entryUUID": "938f7407-8e5a-48e9-a852-d862fa3bb1bc",
       "gidNumber": usersGroupDn_hash,
-      "sambaGroupType": "2",
-      "sambaSID": "S-1-5-21-" + usersGroupDn_hash + "-" + usersGroupDn_hash + "-" + usersGroupDn_hash,
+      "hasSubordinates": "FALSE",
       "member": [],
       "memberUid": [],
-      "hasSubordinates": "FALSE",
+      "sambaGroupType": "2",
+      "sambaSID": "S-1-5-21-" + usersGroupDn_hash + "-" + usersGroupDn_hash + "-" + usersGroupDn_hash,
       "structuralObjectClass": "posixGroup",
       "subschemaSubentry": "cn=Subschema"
     };
@@ -105,22 +109,23 @@ creator.do = async function () {
 
       db[gpName] = {
         "objectClass": [
-          "sambaIdmapEntry",
-          "sambaGroupMapping",
           "extensibleObject",
           "posixGroup",
+          "sambaGroupMapping",
+          "sambaIdmapEntry",
           "top"
         ],
         "cn": group.displayName.replace(/\s/g, ''),
-        "entryDN": gpName,
         "description": group.description,
         "displayName": group.displayName,
+        "entryDN": gpName,
+        "entryUUID": group.id,
         "gidNumber": group_hash,
-        "sambaGroupType": "2",
-        "sambaSID": group.securityIdentifier,
+        "hasSubordinates": "FALSE",
         "member": [],
         "memberUid": [],
-        "hasSubordinates": "FALSE",
+        "sambaGroupType": "2",
+        "sambaSID": group.securityIdentifier,
         "structuralObjectClass": "posixGroup",
         "subschemaSubentry": "cn=Subschema"
       };
@@ -205,26 +210,26 @@ creator.do = async function () {
 
         db[upName] = {
           "objectClass": [
+            "apple-user",
             "extensibleObject",
-            "sambaIdmapEntry",
-            "sambaSamAccount",
             "inetOrgPerson",
             "organizationalPerson",
             "person",
-            "shadowAccount",
             "posixAccount",
+            "sambaIdmapEntry",
+            "sambaSamAccount",
+            "shadowAccount",
             "top"],
+          "apple-generateduid": user.id,
+          "authAuthority": ";basic;",
           "cn": user.displayName,
-          "entryDN": upName,
-          "sn": user.surname,
-          "givenName": user.givenName,
           "displayName": user.displayName,
-          "uid": userPrincipalName,
-          "sAMAccountName": userPrincipalName,
-          "uidNumber": user_hash,
+          "entryDN": upName,
+          "entryUUID": user.id,
           "gidNumber": db[config.usersGroupDnSuffix].gidNumber,
+          "givenName": user.givenName,
+          "hasSubordinates": "FALSE",
           "homeDirectory": "/home/" + userPrincipalName,
-          "sambaSID": "S-1-5-21-" + user_hash + "-" + user_hash + "-" + user_hash,
           "loginShell": "/bin/sh",
           "mail": user.mail,
           "memberOf": user_to_groups[user.id],
@@ -233,6 +238,8 @@ creator.do = async function () {
           "sambaNTPassword": sambaNTPassword,
           "sambaPasswordHistory": "0000000000000000000000000000000000000000000000000000000000000000",
           "sambaPwdLastSet": sambaPwdLastSet,
+          "sambaSID": "S-1-5-21-" + user_hash + "-" + user_hash + "-" + user_hash,
+          "sAMAccountName": userPrincipalName,
           "shadowExpire": "-1",
           "shadowFlag": "0",
           "shadowInactive": "0",
@@ -240,7 +247,9 @@ creator.do = async function () {
           "shadowMax": "99999",
           "shadowMin": "100000",
           "shadowWarning": "7",
-          "hasSubordinates": "FALSE",
+          "sn": user.surname,
+          "uid": userPrincipalName,
+          "uidNumber": user_hash,
           "structuralObjectClass": "inetOrgPerson",
           "subschemaSubentry": "cn=Subschema"
         };
