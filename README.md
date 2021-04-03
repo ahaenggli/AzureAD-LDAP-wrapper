@@ -25,6 +25,18 @@ This is especially useful when you don't want to maintain an on-premise AD contr
 ![grafik](https://user-images.githubusercontent.com/23347180/112722734-79742880-8f0b-11eb-87f4-804c1363b296.png)
 3. give your synced groups the permissions you want and login with your azuread-users :)
 
+### Update a container on Synology-NAS
+1. Redownload the latest version
+![grafik](https://user-images.githubusercontent.com/23347180/113425401-15050d80-93d2-11eb-9e6a-61416497aa5e.png)
+2. Stop your container
+3. Clear your container
+![grafik](https://user-images.githubusercontent.com/23347180/113425576-6a411f00-93d2-11eb-8c45-31550b64d8bc.png)
+
+4. Start your container
+5. Check the logs for (new) errors (right click on container and choose "Details")
+![grafik](https://user-images.githubusercontent.com/23347180/113425753-b7bd8c00-93d2-11eb-8bd4-1c032096c7cf.png)
+6. Keep in mind you need to login in your dsm-web-gui before accessing files via network/samba
+
 ## General Installation
 The API-Results and a local copy of the LDAP-Entries are save in here: /app/.cache
 
