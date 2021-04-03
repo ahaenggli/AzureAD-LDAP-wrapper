@@ -47,7 +47,7 @@ refreshDB();
 
 const interval = 30 /*minutes*/ * 60 * 1000;
 const interval_func = function () {
-    helper.log("server.js", "every 30 minutes refreshDB()");
+    helper.forceLog("server.js", "every 30 minutes refreshDB()");
     try {
         refreshDB();
     } catch (error) {
