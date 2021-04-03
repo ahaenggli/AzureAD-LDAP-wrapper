@@ -98,13 +98,16 @@ server.bind('', (req, res, next) => {
                         if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
 
                             if (userAttributes["sambaNTPassword"] != userNtHash) {
-                                helper.log("server.js", "server.bind", username, "Saving NT password hash for user " + dn);
+                                helper.log("server.js", "server.bind", username, "Saving NT password hash for user ", dn);
                                 userAttributes["sambaNTPassword"] = userNtHash;
-                                userAttributes["sambaPwdLastSet"] = Math.floor(Date.now() / 1000);
-                                db[dn] = userAttributes;
-                                // save the data file
-                                helper.SaveJSONtoFile(db, config.dataFile);
                             }
+
+                            helper.log("server.js", "server.bind", username, "Saving PwdLastSet for user ", dn);
+                            userAttributes["sambaPwdLastSet"] = Math.floor(Date.now() / 1000);
+
+                            // save the data file
+                            db[dn] = userAttributes;
+                            helper.SaveJSONtoFile(db, config.dataFile);
                         }
 
                         res.end();
