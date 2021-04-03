@@ -64,12 +64,16 @@ Multiple users can be split by "||". (ex. `ldapsearch1|mysecret||searchy2|others
 Those users have full read permissions and can also see the sambaNTPassword-hash.
 
 ### LDAP_DEBUG (default: false)
-If enabled there are more logs in the console outputs.
+If set to true there are more detailed logs in the console output.
 
 ### LDAP_ALLOWCACHEDLOGINONFAILURE (default: true)
 allows login from cached sambaNTPassword.
 If set to true, the login has failed and the error does NOT say "wrong credentials", the password is checked against the cached sambaNTPassword. If it matches, the authentification is successfull.
 
+### LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity)
+Maximum time in minutes that defines how long a cached sambaNTPassword hash can be used (for login and samba access).
+After that time, a user has to login 'normal' via the bind method (ex. dsm-web-gui) to reset the cached value.
+As default there is no time limit (-1=infinity).
 
 # Docker
 ## run image

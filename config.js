@@ -17,11 +17,22 @@ config.usersDnSuffix = (process.env.LDAP_USERSDN || "cn=users," + config.baseDn)
 config.usersGroupDnSuffix = (process.env.LDAP_USERSGROUPSBASEDN || "cn=users," + config.groupDnSuffix).toLowerCase().replace(/ /g, '');
 config.userRdn = (process.env.LDAP_USERRDN || "uid").toLowerCase().replace(/ /g, '');
 config.dataFile = process.env.LDAP_DATAFILE || "./.cache/azure.json";
-config.removeDomainFromCn = process.env.LDAP_REMOVEDOMAIN || true; // set to true to remove the domain e.g. "alice@example.net" will just be "alice" for login
-config.LDAP_PORT = process.env.LDAP_PORT || 389;
+
+// set to true to remove the domain e.g. "alice@example.net" will just be "alice" for login
+config.removeDomainFromCn = true;
+if (process.env.LDAP_REMOVEDOMAIN) config.removeDomainFromCn = (process.env.LDAP_REMOVEDOMAIN == "true");
+
+
+config.LDAP_PORT = parseInt(process.env.LDAP_PORT) || 389;
 config.LDAP_BINDUSER = process.env.LDAP_BINDUSER;
-config.LDAP_DEBUG = (process.env.LDAP_DEBUG == "true") || false;
-config.LDAP_ALLOWCACHEDLOGINONFAILURE = (process.env.LDAP_ALLOWCACHEDLOGINONFAILURE == "true") || true;
+
+config.LDAP_DEBUG = false;
+if (process.env.LDAP_DEBUG) config.LDAP_DEBUG = (process.env.LDAP_DEBUG == "true");
+
+config.LDAP_ALLOWCACHEDLOGINONFAILURE = true;
+if (process.env.LDAP_ALLOWCACHEDLOGINONFAILURE) config.LDAP_ALLOWCACHEDLOGINONFAILURE = (process.env.LDAP_ALLOWCACHEDLOGINONFAILURE == "true");
+
+config.LDAP_SAMBANTPWD_MAXCACHETIME = process.env.LDAP_SAMBANTPWD_MAXCACHETIME || -1;
 
 // export
 module.exports = config;

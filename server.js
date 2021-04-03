@@ -22,23 +22,25 @@ async function refreshDB() {
     if (!db) db = helper.ReadJSONfile(config.dataFile);
 }
 
-if (!config.AZURE_APP_ID)     helper.error("config", "env var `AZURE_APP_ID` must be set");
+if (!config.AZURE_APP_ID) helper.error("config", "env var `AZURE_APP_ID` must be set");
 if (!config.AZURE_APP_SECRET) helper.error("config", "env var `AZURE_APP_SECRET` must be set");
-if (!config.AZURE_TENANTID)   helper.error("config", "env var `AZURE_TENANTID` must be set");
+if (!config.AZURE_TENANTID) helper.error("config", "env var `AZURE_TENANTID` must be set");
 
-if (!config.azureDomain)      helper.error("config", "env var `LDAP_DOMAIN` must be set");
-if (!config.baseDn)           helper.error("config", "env var `LDAP_BASEDN` must be set");
-if (config.baseDn.indexOf(",") < 0)  helper.warn("config", "env var `LDAP_BASEDN` has the wrong format: `dc=DOMAIN,dc=TLD`");
+if (!config.azureDomain) helper.error("config", "env var `LDAP_DOMAIN` must be set");
+if (!config.baseDn) helper.error("config", "env var `LDAP_BASEDN` must be set");
+if (config.baseDn.indexOf(",") < 0) helper.warn("config", "env var `LDAP_BASEDN` has the wrong format: `dc=DOMAIN,dc=TLD`");
 if (config.baseDn.indexOf(" ") > -1) helper.warn("config", "env var `LDAP_BASEDN` should not have spaces in it");
 
-if (!config.LDAP_PORT)      helper.error("config", "env var `LDAP_PORT` must be set");
-if (!config.LDAP_BINDUSER)  helper.forceLog("config", "env var `LDAP_BINDUSER` is not set; If you plan to handle multiple synced users on a Synology-NAS you should set it to bind your NAS with it.");
+if (!config.LDAP_PORT) helper.error("config", "env var `LDAP_PORT` must be set");
+if (!config.LDAP_BINDUSER) helper.forceLog("config", "env var `LDAP_BINDUSER` is not set; If you plan to handle multiple synced users on a Synology-NAS you should set it to bind your NAS with it.");
 
 if (!config.groupDnSuffix) helper.error("config", "env var `LDAP_GROUPSDN` not set correctly");
 if (!config.usersDnSuffix) helper.error("config", "env var `LDAP_USERSDN` not set correctly");
 if (!config.usersGroupDnSuffix) helper.error("config", "env var `LDAP_USERSGROUPSBASEDN` not set correctly");
-if (!config.userRdn) helper.error("config",  "env var `LDAP_USERRDN` not set correctly");
+if (!config.userRdn) helper.error("config", "env var `LDAP_USERRDN` not set correctly");
 if (!config.dataFile) helper.error("config", "env var `LDAP_DATAFILE` not set correctly");
+
+if (isNaN(parseInt(config.LDAP_SAMBANTPWD_MAXCACHETIME))) helper.error("config", "env var `LDAP_SAMBANTPWD_MAXCACHETIME` must be a number.");
 
 // init data from azure before starting the server
 refreshDB();
@@ -77,7 +79,7 @@ server.bind('', (req, res, next) => {
             if (config.removeDomainFromCn == true && username.indexOf("@") == -1)
                 username = username + "@" + config.azureDomain;
 
-            var userAttributes = db[dn];
+            var userAttributes = removeSensitiveAttributes(req.dn, dn, db[dn]);// db[dn];
 
             if (!userAttributes || !userAttributes.hasOwnProperty("sambaNTPassword")) {
                 helper.log("server.js", "server.bind", username, "Failed login -> mybe not synced yet?");
@@ -133,22 +135,32 @@ server.bind('', (req, res, next) => {
 });
 
 function removeSensitiveAttributes(binduser, dn, attributes) {
-    var allowSensitiveAttributes = false;
 
-    if (binduser.equals(dn)) allowSensitiveAttributes = true;
+    if (attributes && attributes.hasOwnProperty("sambaNTPassword")) {
+        var allowSensitiveAttributes = false;
 
-    if (config.LDAP_BINDUSER) {
-        for (var u of config.LDAP_BINDUSER.toString().split("||")) {
-            u = u.split("|")[0];
-            var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.userRdn + "=", '').replace("," + config.usersDnSuffix, '');
-            if (u === username) allowSensitiveAttributes = true;
+        if (binduser.equals(dn)) allowSensitiveAttributes = true;
+
+        if (config.LDAP_BINDUSER) {
+            for (var u of config.LDAP_BINDUSER.toString().split("||")) {
+                u = u.split("|")[0];
+                var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.userRdn + "=", '').replace("," + config.usersDnSuffix, '');
+                if (u === username) allowSensitiveAttributes = true;
+            }
         }
+
+        if (config.LDAP_SAMBANTPWD_MAXCACHETIME && attributes["sambaPwdLastSet"])
+            if (config.LDAP_SAMBANTPWD_MAXCACHETIME != -1)
+                if ((attributes["sambaPwdLastSet"] + config.LDAP_SAMBANTPWD_MAXCACHETIME * 60) < Math.floor(Date.now() / 1000))
+                    allowSensitiveAttributes = false;
+
+        if (!allowSensitiveAttributes) {
+            attributes["sambaNTPassword"] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+            attributes["sambaPwdLastSet"] = 0;
+        }
+
     }
 
-    if (!allowSensitiveAttributes) {
-        if (attributes && attributes.hasOwnProperty("sambaNTPassword")) attributes.sambaNTPassword = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-        if (attributes && attributes.hasOwnProperty("sambaPwdLastSet")) attributes.sambaPwdLastSet = 0;
-    }
     return attributes;
 }
 
