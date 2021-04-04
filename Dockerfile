@@ -1,15 +1,16 @@
 FROM node:lts-alpine as build
-USER node
 
 ENV NODE_ENV="production"
 
+RUN mkdir -p /app && chown -R node:node /app
 WORKDIR /app
 COPY . .
+
+USER node
 RUN npm install --production && npm prune --production
 
 FROM node:lts-alpine as final
 RUN apk add --no-cache tini
-USER node
 
 ENV NODE_ENV="production"
 ENV LDAP_DOMAIN="example.com"
@@ -23,8 +24,11 @@ ENV AZURE_APP_ID="*secret*"
 ENV AZURE_TENANTID="*secret*"
 ENV AZURE_APP_SECRET="*secret*"
 
+RUN mkdir -p /app && chown -R node:node /app
 WORKDIR /app
 COPY --chown=node:node --from=build /app /app
+
+USER node
 
 EXPOSE 13389
 
