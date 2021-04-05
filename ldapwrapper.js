@@ -7,9 +7,10 @@ const helper = require('./helper');
 const fs = require('fs');
 
 var encode = require('hashcode').hashCode;
-var creator = {};
 
-creator.do = async function () {
+var ldapwrapper = {};
+
+ldapwrapper.do = async function () {
   helper.log("ldapwrapper.js", "start");
 
   var db = helper.ReadJSONfile(config.dataFile);
@@ -172,7 +173,8 @@ creator.do = async function () {
 
     for (let i = 0, len = users.length; i < len; i++) {
       let user = users[i];
-      let userPrincipalName = user.userPrincipalName.replace("@" + config.azureDomain, '');
+      let userPrincipalName = user.userPrincipalName;
+      if(config.removeDomainFromCn) userPrincipalName = userPrincipalName.replace("@" + config.azureDomain, '');
 
       // ignore external users
       if (userPrincipalName.indexOf("#EXT#") > -1) {
@@ -182,6 +184,12 @@ creator.do = async function () {
       else {
         let upName = config.userRdn + "=" + userPrincipalName.replace(/\s/g, '') + "," + config.usersDnSuffix;
         upName = upName.toLowerCase();
+
+        var mergeRenamed = Object.values(db).filter(u => u.entryUUID == user.id && u.entryDN != upName);
+        if(mergeRenamed.length == 1){
+            db[upName] = mergeRenamed[0];
+            delete db[db[upName].entryDN];
+        }
 
         let user_hash = Math.abs(encode().value(user.id)).toString();
         let sambaNTPassword = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
@@ -268,4 +276,4 @@ creator.do = async function () {
   return db;
 };
 
-module.exports = creator;
+module.exports = ldapwrapper;
