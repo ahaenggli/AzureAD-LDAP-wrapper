@@ -253,7 +253,7 @@ ldapwrapper.do = async function () {
           "shadowInactive": "0",
           "shadowLastChange": "17399",
           "shadowMax": "99999",
-          "shadowMin": "100000",
+          "shadowMin": "0",
           "shadowWarning": "7",
           "sn": user.surname,
           "uid": userPrincipalName,

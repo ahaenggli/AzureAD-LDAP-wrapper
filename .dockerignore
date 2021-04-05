@@ -12,3 +12,4 @@ LICENSE
 data/*.json
 .cache/*
 .env
+synology-openldap-export
