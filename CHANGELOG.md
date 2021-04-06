@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 allows to limit the time a cached sambaNTPassword hash can be used
 - entryUID and osx-attributes for ldap entries
 - "rename" user if another with same entryUID exists
+- LDAPS (LDAP over SSL) support
 
 ### Changed
 - the docker image is now using tini (nodejs is not running as PID 1 anymore)

@@ -38,7 +38,7 @@ This is especially useful when you don't want to maintain an on-premise AD contr
 6. Keep in mind you need to login in your dsm-web-gui before accessing files via network/samba
 
 ## General Installation
-The API-Results and a local copy of the LDAP-Entries are save in here: /app/.cache
+The API-Results and a local copy of the LDAP-Entries are saved in here: /app/.cache
 
 Attention: If you map this folder, the files will be persistent, but other users could maybe see the cached sambaNTPassword-value in there.
 
@@ -86,6 +86,33 @@ If set to true, the login has failed and the error does NOT say "wrong credentia
 Maximum time in minutes that defines how long a cached sambaNTPassword hash can be used (for login and samba access).
 After that time, a user has to login 'normal' via the bind method (ex. dsm-web-gui) to reset the cached value.
 As default there is no time limit (-1=infinity).
+
+### LDAPS_CERTIFICATE
+Path to your certificate.pem file.
+You also have to set `LDAPS_KEY` to run LDAP over SSL.
+You may also need to set `LDAP_PORT` to 636.
+
+### LDAPS_KEY
+Path to private key file.
+You also have to set `LDAPS_CERTIFICATE` to run LDAP over SSL.
+You may also need to set `LDAP_PORT` to 636.
+
+# FAQ
+> Does it support MFA (multi-factor authentication)?
+
+Nope, see [here](https://github.com/Azure/ms-rest-nodeauth/issues/93). The login will just fail as mentioned [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth-ropc).
+
+> I would like to give some synced user the DMS-Administrator permission on a Synology-NAS?
+
+Just create a group called "Administrators" and put the users in it.
+
+> Can I use LDAPS (LDAP over SSL) instead of LDAP (with no encryption)?
+
+Sure. Mount your certificate file and private key file to the docker container and then set the environment variables LDAPS_CERTIFICATE and LDAPS_KEY. You may also set LDAP_PORT to 636.
+
+> Can I use LDAP over TLS (STARTTLS) instead of LDAP (with no encryption)?
+
+Nope, that's not (yet) possible.
 
 # Docker
 ## run image

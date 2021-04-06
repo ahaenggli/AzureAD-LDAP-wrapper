@@ -1,17 +1,46 @@
 'use strict';
 
+const helper = require('./helper');
 const config = require('./config');
 
-const helper = require('./helper');
+var env_check = true;
+
+if (!config.AZURE_APP_ID) { helper.error("config", "env var `AZURE_APP_ID` must be set"); env_check = false; }
+if (!config.AZURE_APP_SECRET) { helper.error("config", "env var `AZURE_APP_SECRET` must be set"); env_check = false; }
+if (!config.AZURE_TENANTID) { helper.error("config", "env var `AZURE_TENANTID` must be set"); env_check = false; }
+
+if (!config.LDAP_DOMAIN) { helper.error("config", "env var `LDAP_DOMAIN` must be set"); env_check = false; }
+if (!config.LDAP_BASEDN) { helper.error("config", "env var `LDAP_BASEDN` must be set"); env_check = false; }
+if (config.LDAP_BASEDN.indexOf(",") < 0) { helper.warn("config", "env var `LDAP_BASEDN` has the wrong format: `dc=DOMAIN,dc=TLD`"); }
+if (config.LDAP_BASEDN.indexOf(" ") > -1) { helper.warn("config", "env var `LDAP_BASEDN` should not have spaces in it"); }
+
+if (!config.LDAP_PORT) { helper.error("config", "env var `LDAP_PORT` must be set"); env_check = false; }
+if (!config.LDAP_BINDUSER) helper.forceLog("config", "env var `LDAP_BINDUSER` is not set; If you plan to handle multiple synced users on a Synology-NAS you should set it to bind your NAS with it.");
+
+if (!config.LDAP_GROUPSDN) { helper.error("config", "env var `LDAP_GROUPSDN` not set correctly"); env_check = false; }
+if (!config.LDAP_USERSDN) { helper.error("config", "env var `LDAP_USERSDN` not set correctly"); env_check = false; }
+if (!config.LDAP_USERSGROUPSBASEDN) { helper.error("config", "env var `LDAP_USERSGROUPSBASEDN` not set correctly"); env_check = false; }
+if (!config.LDAP_USERRDN) { helper.error("config", "env var `LDAP_USERRDN` not set correctly"); env_check = false; }
+if (!config.LDAP_DATAFILE) { helper.error("config", "env var `LDAP_DATAFILE` not set correctly"); env_check = false; }
+
+if (isNaN(parseInt(config.LDAP_SAMBANTPWD_MAXCACHETIME))) { helper.error("config", "env var `LDAP_SAMBANTPWD_MAXCACHETIME` must be a number."); env_check = false; }
+
+if ((config.LDAPS_CERTIFICATE || config.LDAPS_KEY) && !(config.LDAPS_CERTIFICATE && config.LDAPS_KEY)) { helper.error("config", "env var `LDAPS_CERTIFICATE` AND `LDAPS_KEY` must be set."); env_check = false; }
+if (config.LDAPS_CERTIFICATE && config.LDAPS_KEY && config.LDAP_PORT != 636) { helper.warn("config", "LDAPS usually runs on port 636. So you may need to set the env var `LDAP_PORT` to 636."); }
+if (!env_check) return;
+
 const ldapwrapper = require('./ldapwrapper');
 const ldap = require('ldapjs');
 const graph = require('./graph_azuread');
 
 var nthash = require('smbhash').nthash;
 
-var db = helper.ReadJSONfile(config.dataFile);
+var db = helper.ReadJSONfile(config.LDAP_DATAFILE);
 var lastRefresh = 0;
-var server = ldap.createServer();
+var tlsOptions = {};
+//if(config.LDAPS_CERTIFICATE && config.LDAPS_KEY)
+tlsOptions = { certificate: helper.ReadFile(config.LDAPS_CERTIFICATE), key: helper.ReadFile(config.LDAPS_KEY) };
+var server = ldap.createServer(tlsOptions);
 
 async function refreshDB() {
     helper.log("server.js", "refreshDB()", "func called");
@@ -19,28 +48,10 @@ async function refreshDB() {
         db = await ldapwrapper.do();
         lastRefresh = Date.now();
     }
-    if (!db) db = helper.ReadJSONfile(config.dataFile);
+    if (!db) db = helper.ReadJSONfile(config.LDAP_DATAFILE);
 }
 
-if (!config.AZURE_APP_ID) helper.error("config", "env var `AZURE_APP_ID` must be set");
-if (!config.AZURE_APP_SECRET) helper.error("config", "env var `AZURE_APP_SECRET` must be set");
-if (!config.AZURE_TENANTID) helper.error("config", "env var `AZURE_TENANTID` must be set");
 
-if (!config.azureDomain) helper.error("config", "env var `LDAP_DOMAIN` must be set");
-if (!config.baseDn) helper.error("config", "env var `LDAP_BASEDN` must be set");
-if (config.baseDn.indexOf(",") < 0) helper.warn("config", "env var `LDAP_BASEDN` has the wrong format: `dc=DOMAIN,dc=TLD`");
-if (config.baseDn.indexOf(" ") > -1) helper.warn("config", "env var `LDAP_BASEDN` should not have spaces in it");
-
-if (!config.LDAP_PORT) helper.error("config", "env var `LDAP_PORT` must be set");
-if (!config.LDAP_BINDUSER) helper.forceLog("config", "env var `LDAP_BINDUSER` is not set; If you plan to handle multiple synced users on a Synology-NAS you should set it to bind your NAS with it.");
-
-if (!config.groupDnSuffix) helper.error("config", "env var `LDAP_GROUPSDN` not set correctly");
-if (!config.usersDnSuffix) helper.error("config", "env var `LDAP_USERSDN` not set correctly");
-if (!config.usersGroupDnSuffix) helper.error("config", "env var `LDAP_USERSGROUPSBASEDN` not set correctly");
-if (!config.userRdn) helper.error("config", "env var `LDAP_USERRDN` not set correctly");
-if (!config.dataFile) helper.error("config", "env var `LDAP_DATAFILE` not set correctly");
-
-if (isNaN(parseInt(config.LDAP_SAMBANTPWD_MAXCACHETIME))) helper.error("config", "env var `LDAP_SAMBANTPWD_MAXCACHETIME` must be a number.");
 
 // init data from azure before starting the server
 refreshDB();
@@ -67,7 +78,7 @@ server.bind('', (req, res, next) => {
         helper.log("server.js", "server.bind", dn);
 
         // dn bind
-        var username = dn.replace(config.userRdn + "=", '').replace("," + config.usersDnSuffix, '');
+        var username = dn.replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
         var pass = req.credentials;
 
         if (config.LDAP_BINDUSER && config.LDAP_BINDUSER.toString().split("||").indexOf(username + '|' + pass) > -1) {
@@ -76,8 +87,8 @@ server.bind('', (req, res, next) => {
             return next();
         } else {
 
-            if (config.removeDomainFromCn == true && username.indexOf("@") == -1)
-                username = username + "@" + config.azureDomain;
+            if (config.LDAP_REMOVEDOMAIN == true && username.indexOf("@") == -1)
+                username = username + "@" + config.LDAP_DOMAIN;
 
             var userAttributes = removeSensitiveAttributes(req.dn, dn, db[dn]);// db[dn];
 
@@ -107,7 +118,7 @@ server.bind('', (req, res, next) => {
 
                             // save the data file
                             db[dn] = userAttributes;
-                            helper.SaveJSONtoFile(db, config.dataFile);
+                            helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);
                         }
 
                         res.end();
@@ -147,7 +158,7 @@ function removeSensitiveAttributes(binduser, dn, attributes) {
         if (config.LDAP_BINDUSER) {
             for (var u of config.LDAP_BINDUSER.toString().split("||")) {
                 u = u.split("|")[0];
-                var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.userRdn + "=", '').replace("," + config.usersDnSuffix, '');
+                var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
                 if (u === username) allowSensitiveAttributes = true;
             }
         }
@@ -171,7 +182,7 @@ function removeSensitiveAttributes(binduser, dn, attributes) {
 server.search('', (req, res, next) => {
     try {
         var dn = req.dn.toString().toLowerCase().replace(/ /g, '');
-        if (!dn) dn = config.baseDn;
+        if (!dn) dn = config.LDAP_BASEDN;
 
         helper.log("server.js", "server.search", 'Search for => DB: ' + dn + '; Scope: ' + req.scope + '; Filter: ' + req.filter + '; Attributes: ' + req.attributes + ';');
 

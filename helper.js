@@ -65,4 +65,10 @@ helper.ReadCSVfile = function (file, func = null, encoding = 'utf8', ignorelines
     return result;
 };
 
+helper.ReadFile = function (file, encoding = 'utf8') {
+    if (fs.existsSync(file)) return fs.readFileSync(file, encoding);
+    else return "";
+};
+
+
 module.exports = helper;

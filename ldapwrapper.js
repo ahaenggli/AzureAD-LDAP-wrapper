@@ -13,7 +13,7 @@ var ldapwrapper = {};
 ldapwrapper.do = async function () {
   helper.log("ldapwrapper.js", "start");
 
-  var db = helper.ReadJSONfile(config.dataFile);
+  var db = helper.ReadJSONfile(config.LDAP_DATAFILE);
   if (typeof db === 'undefined' || db === undefined || db === null || !db) db = {};
 
   try {
@@ -29,41 +29,41 @@ ldapwrapper.do = async function () {
     const graph_azureResponse = await graph_azure.getToken(graph_azure.tokenRequest);
     if (!graph_azureResponse) helper.error("ldapwrapper.js", "graph_azureResponse missing");
 
-    db[config.baseDn] = {
+    db[config.LDAP_BASEDN] = {
       "objectClass": "domain",
-      "dc": config.baseDn.replace('dc=', '').split(",")[0],
-      "entryDN": config.baseDn,
+      "dc": config.LDAP_BASEDN.replace('dc=', '').split(",")[0],
+      "entryDN": config.LDAP_BASEDN,
       "entryUUID": "e927be8d-aab8-42f2-80c3-b2762415aed1",
       "hasSubordinates": "TRUE",
-      "namingContexts": config.baseDn,
+      "namingContexts": config.LDAP_BASEDN,
       "structuralObjectClass": "domain",
       "subschemaSubentry": "cn=Subschema"
     };
 
-    db[config.usersDnSuffix] = {
+    db[config.LDAP_USERSDN] = {
       "objectClass": "organizationalRole",
-      "cn": config.usersDnSuffix.replace("," + config.baseDn, '').replace('cn=', ''),
-      "entryDN": config.usersDnSuffix,
+      "cn": config.LDAP_USERSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
+      "entryDN": config.LDAP_USERSDN,
       "entryUUID": "3e01f47d-96a1-4cb4-803f-7dd17991c6bd",
       "hasSubordinates": "TRUE",
       "structuralObjectClass": "organizationalRole",
       "subschemaSubentry": "cn=Subschema"
     };
 
-    db[config.groupDnSuffix] = {
+    db[config.LDAP_GROUPSDN] = {
       "objectClass": "organizationalRole",
-      "cn": config.groupDnSuffix.replace("," + config.baseDn, '').replace('cn=', ''),
-      "entryDN": config.groupDnSuffix,
+      "cn": config.LDAP_GROUPSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
+      "entryDN": config.LDAP_GROUPSDN,
       "entryUUID": "39af84ac-8e5a-483e-9621-e657385b07b5",
       "hasSubordinates": "TRUE",
       "structuralObjectClass": "organizationalRole",
       "subschemaSubentry": "cn=Subschema"
     };
 
-    var usersGroupDn_hash = Math.abs(encode().value(config.usersGroupDnSuffix)).toString();
-    if (db[config.usersGroupDnSuffix] && db[config.usersGroupDnSuffix].hasOwnProperty('gidNumber')) usersGroupDn_hash = db[config.usersGroupDnSuffix].gidNumber;
+    var usersGroupDn_hash = Math.abs(encode().value(config.LDAP_USERSGROUPSBASEDN)).toString();
+    if (db[config.LDAP_USERSGROUPSBASEDN] && db[config.LDAP_USERSGROUPSBASEDN].hasOwnProperty('gidNumber')) usersGroupDn_hash = db[config.LDAP_USERSGROUPSBASEDN].gidNumber;
 
-    db[config.usersGroupDnSuffix] = {
+    db[config.LDAP_USERSGROUPSBASEDN] = {
       "objectClass": [
         "extensibleObject",
         "posixGroup",
@@ -71,10 +71,10 @@ ldapwrapper.do = async function () {
         "sambaIdmapEntry",
         "top"
       ],
-      "cn": config.usersGroupDnSuffix.replace("," + config.groupDnSuffix, '').replace('cn=', ""),
+      "cn": config.LDAP_USERSGROUPSBASEDN.replace("," + config.LDAP_GROUPSDN, '').replace('cn=', ""),
       "description": "Users default group",
-      "displayName": config.usersGroupDnSuffix.replace("," + config.groupDnSuffix, '').replace('cn=', ""),
-      "entryDN": config.usersGroupDnSuffix,
+      "displayName": config.LDAP_USERSGROUPSBASEDN.replace("," + config.LDAP_GROUPSDN, '').replace('cn=', ""),
+      "entryDN": config.LDAP_USERSGROUPSBASEDN,
       "entryUUID": "938f7407-8e5a-48e9-a852-d862fa3bb1bc",
       "gidNumber": usersGroupDn_hash,
       "hasSubordinates": "FALSE",
@@ -102,7 +102,7 @@ ldapwrapper.do = async function () {
 
     for (let i = 0, len = groups.length; i < len; i++) {
       let group = groups[i];
-      let gpName = "cn=" + group.displayName.replace(/\s/g, '') + "," + config.groupDnSuffix;
+      let gpName = "cn=" + group.displayName.replace(/\s/g, '') + "," + config.LDAP_GROUPSDN;
       gpName = gpName.toLowerCase();
 
       let group_hash = Math.abs(encode().value(group.id)).toString();
@@ -174,7 +174,7 @@ ldapwrapper.do = async function () {
     for (let i = 0, len = users.length; i < len; i++) {
       let user = users[i];
       let userPrincipalName = user.userPrincipalName;
-      if(config.removeDomainFromCn) userPrincipalName = userPrincipalName.replace("@" + config.azureDomain, '');
+      if(config.LDAP_REMOVEDOMAIN) userPrincipalName = userPrincipalName.replace("@" + config.LDAP_DOMAIN, '');
 
       // ignore external users
       if (userPrincipalName.indexOf("#EXT#") > -1) {
@@ -182,7 +182,7 @@ ldapwrapper.do = async function () {
         helper.log("ldapwrapper.js", '#EXT#-users may be included in a future version');
       }
       else {
-        let upName = config.userRdn + "=" + userPrincipalName.replace(/\s/g, '') + "," + config.usersDnSuffix;
+        let upName = config.LDAP_USERRDN + "=" + userPrincipalName.replace(/\s/g, '') + "," + config.LDAP_USERSDN;
         upName = upName.toLowerCase();
 
         var mergeRenamed = Object.values(db).filter(u => u.entryUUID == user.id && u.entryDN != upName);
@@ -204,8 +204,8 @@ ldapwrapper.do = async function () {
         }
 
         // default `users`-group
-        if (user_to_groups[user.id].indexOf(config.usersGroupDnSuffix) < 0) {
-          user_to_groups[user.id].push(config.usersGroupDnSuffix);
+        if (user_to_groups[user.id].indexOf(config.LDAP_USERSGROUPSBASEDN) < 0) {
+          user_to_groups[user.id].push(config.LDAP_USERSGROUPSBASEDN);
         }
 
         for (let j = 0, jlen = user_to_groups[user.id].length; j < jlen; j++) {
@@ -234,7 +234,7 @@ ldapwrapper.do = async function () {
           "displayName": user.displayName,
           "entryDN": upName,
           "entryUUID": user.id,
-          "gidNumber": db[config.usersGroupDnSuffix].gidNumber,
+          "gidNumber": db[config.LDAP_USERSGROUPSBASEDN].gidNumber,
           "givenName": user.givenName,
           "hasSubordinates": "FALSE",
           "homeDirectory": "/home/" + userPrincipalName,
@@ -266,7 +266,7 @@ ldapwrapper.do = async function () {
     }
 
     // save the data file
-    helper.SaveJSONtoFile(db, config.dataFile);
+    helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);
     helper.log("ldapwrapper.js", "end");
 
   } catch (error) {
