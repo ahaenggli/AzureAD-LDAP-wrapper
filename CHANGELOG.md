@@ -5,9 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased] (in 'dev')
+
+## [1.1.0] - 2021-04-06
+
 ### Added
-- env var `LDAP_SAMBANTPWD_MAXCACHETIME`
-allows to limit the time a cached sambaNTPassword hash can be used
+- limit the time a cached sambaNTPassword hash can be used with env var `LDAP_SAMBANTPWD_MAXCACHETIME`
 - entryUID and osx-attributes for ldap entries
 - "rename" user if another with same entryUID exists
 - LDAPS (LDAP over SSL) support
@@ -67,6 +69,7 @@ if set to true and the login is failed, the login is retried against the sambaNT
 
 
 [Unreleased]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/projects/1
+[1.1.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.1.0
 [1.0.2]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.0.2
 [1.0.1]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.0.1
 [1.0.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.0.0
