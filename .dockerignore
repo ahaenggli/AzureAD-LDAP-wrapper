@@ -5,6 +5,7 @@ dockerfile*
 docker-compose*
 .dockerignore
 .git
+.github
 .gitignore
 README.md
 LICENSE

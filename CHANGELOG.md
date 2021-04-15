@@ -6,6 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+## [1.2.0] - 2021-04-15
+
+### Added
+- "rename" group if another with same entryUID exists
+
+### Changed
+- groups `entryDN`:
+  - replace accents with the latin alternatives
+   (ç -> c, è -> e, ö -> o, ...)
+  - replace non alpha-numeric chars with dashes
+
+
+
 ## [1.1.0] - 2021-04-06
 
 ### Added

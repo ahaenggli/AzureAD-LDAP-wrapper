@@ -5,10 +5,15 @@ const graph_azure = require('./graph_azuread');
 const config = require('./config');
 const helper = require('./helper');
 const fs = require('fs');
+var diacritic = require('diacritic');
 
 var encode = require('hashcode').hashCode;
 
 var ldapwrapper = {};
+
+function removeSpecialChars(str) {
+  return diacritic.clean(str).replace(/[^A-Za-z0-9\s]+/g, '-');
+}
 
 ldapwrapper.do = async function () {
   helper.log("ldapwrapper.js", "start");
@@ -102,8 +107,22 @@ ldapwrapper.do = async function () {
 
     for (let i = 0, len = groups.length; i < len; i++) {
       let group = groups[i];
-      let gpName = "cn=" + group.displayName.replace(/\s/g, '') + "," + config.LDAP_GROUPSDN;
+      let groupDisplayName = group.displayName.replace(/\s/g, '');
+      let groupDisplayNameClean = removeSpecialChars(groupDisplayName);
+
+      if (groupDisplayName !== groupDisplayNameClean) {
+        helper.warn("ldapwrapper.js", 'group names may not contain any special chars. We are using ', groupDisplayNameClean, 'instead of', groupDisplayName);
+        groupDisplayName = groupDisplayNameClean;
+      }
+
+      let gpName = "cn=" + groupDisplayName + "," + config.LDAP_GROUPSDN;
       gpName = gpName.toLowerCase();
+
+      let mergeRenamedGroups = Object.values(db).filter(g => g.entryUUID == group.id && g.entryDN != gpName);
+      if (mergeRenamedGroups.length == 1) {
+        db[gpName] = mergeRenamedGroups[0];
+        delete db[db[gpName].entryDN];
+      }
 
       let group_hash = Math.abs(encode().value(group.id)).toString();
       if (db[gpName] && db[gpName].hasOwnProperty('gidNumber')) group_hash = db[gpName].gidNumber;
@@ -116,7 +135,7 @@ ldapwrapper.do = async function () {
           "sambaIdmapEntry",
           "top"
         ],
-        "cn": group.displayName.replace(/\s/g, ''),
+        "cn": group.displayName,
         "description": group.description,
         "displayName": group.displayName,
         "entryDN": gpName,
@@ -139,8 +158,8 @@ ldapwrapper.do = async function () {
         members = [];
       }
       else {
-        helper.SaveJSONtoFile(members, './.cache/members_' + group.displayName + '.json');
-        helper.log("ldapwrapper.js", 'members_' + group.displayName + '.json' + " saved.");
+        helper.SaveJSONtoFile(members, './.cache/members_' + groupDisplayName + '.json');
+        helper.log("ldapwrapper.js", 'members_' + groupDisplayName + '.json' + " saved.");
       }
 
       for (let t = 0, tlen = members.length; t < tlen; t++) {
@@ -174,7 +193,7 @@ ldapwrapper.do = async function () {
     for (let i = 0, len = users.length; i < len; i++) {
       let user = users[i];
       let userPrincipalName = user.userPrincipalName;
-      if(config.LDAP_REMOVEDOMAIN) userPrincipalName = userPrincipalName.replace("@" + config.LDAP_DOMAIN, '');
+      if (config.LDAP_REMOVEDOMAIN) userPrincipalName = userPrincipalName.replace("@" + config.LDAP_DOMAIN, '');
 
       // ignore external users
       if (userPrincipalName.indexOf("#EXT#") > -1) {
@@ -182,13 +201,19 @@ ldapwrapper.do = async function () {
         helper.log("ldapwrapper.js", '#EXT#-users may be included in a future version');
       }
       else {
+        let userPrincipalNameClean = removeSpecialChars(userPrincipalName);
+        if (userPrincipalName !== userPrincipalNameClean) {
+          helper.warn("ldapwrapper.js", 'userPrincipalNames may not contain any special chars. In a future version we are using ', userPrincipalNameClean, 'instead of', userPrincipalName);
+          // userPrincipalName = userPrincipalNameClean;
+        }
+
         let upName = config.LDAP_USERRDN + "=" + userPrincipalName.replace(/\s/g, '') + "," + config.LDAP_USERSDN;
         upName = upName.toLowerCase();
 
         var mergeRenamed = Object.values(db).filter(u => u.entryUUID == user.id && u.entryDN != upName);
-        if(mergeRenamed.length == 1){
-            db[upName] = mergeRenamed[0];
-            delete db[db[upName].entryDN];
+        if (mergeRenamed.length == 1) {
+          db[upName] = mergeRenamed[0];
+          delete db[db[upName].entryDN];
         }
 
         let user_hash = Math.abs(encode().value(user.id)).toString();
