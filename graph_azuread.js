@@ -19,6 +19,7 @@ graph.tokenRequest = {
 };
 
 graph.apiConfig = {
+    //dri: MS_GRAPH_SCOPE + 'v1.0/domains',
     uri: MS_GRAPH_SCOPE + 'v1.0/users',
     gri: MS_GRAPH_SCOPE + 'v1.0/groups',
     mri: MS_GRAPH_SCOPE + 'v1.0/groups/{id}/members',

@@ -34,6 +34,9 @@ ldapwrapper.do = async function () {
     const graph_azureResponse = await graph_azure.getToken(graph_azure.tokenRequest);
     if (!graph_azureResponse) helper.error("ldapwrapper.js", "graph_azureResponse missing");
 
+    //var domains = [];
+    //domains = await graph_azure.callApi(graph_azure.apiConfig.dri, graph_azureResponse.accessToken);
+
     db[config.LDAP_BASEDN] = {
       "objectClass": "domain",
       "dc": config.LDAP_BASEDN.replace('dc=', '').split(",")[0],
@@ -202,8 +205,11 @@ ldapwrapper.do = async function () {
       }
       else {
         let userPrincipalNameClean = removeSpecialChars(userPrincipalName);
-        if (userPrincipalName !== userPrincipalNameClean) {
-          helper.warn("ldapwrapper.js", 'userPrincipalNames may not contain any special chars. In a future version we are using ', userPrincipalNameClean, 'instead of', userPrincipalName);
+
+        if (userPrincipalName.indexOf("@") > -1 && userPrincipalName.indexOf("@" + config.LDAP_DOMAIN) === -1) {
+          helper.warn("ldapwrapper.js", 'userPrincipalName', userPrincipalName, 'does not contain your `LDAP_DOMAIN`', config.LDAP_DOMAIN, '. This can cause some unexpected problems.');
+        } else if (userPrincipalName !== userPrincipalNameClean) {
+          helper.warn("ldapwrapper.js", 'userPrincipalNames may not contain any special chars. In a future version we are maybe using ', userPrincipalNameClean, 'instead of', userPrincipalName);
           // userPrincipalName = userPrincipalNameClean;
         }
 
