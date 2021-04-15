@@ -82,6 +82,7 @@ if set to true and the login is failed, the login is retried against the sambaNT
 
 
 [Unreleased]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/projects/1
+[1.2.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.2.0
 [1.1.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.1.0
 [1.0.2]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.0.2
 [1.0.1]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.0.1
