@@ -12,7 +12,7 @@ var encode = require('hashcode').hashCode;
 var ldapwrapper = {};
 
 function removeSpecialChars(str) {
-  return diacritic.clean(str).replace(/[^A-Za-z0-9\s]+/g, '-');
+  return diacritic.clean(str).replace(/[^A-Za-z0-9._\s]+/g, '-');
 }
 
 ldapwrapper.do = async function () {
