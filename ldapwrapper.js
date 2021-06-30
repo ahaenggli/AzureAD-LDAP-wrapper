@@ -130,6 +130,9 @@ ldapwrapper.do = async function () {
       let group_hash = Math.abs(encode().value(group.id)).toString();
       if (db[gpName] && db[gpName].hasOwnProperty('gidNumber')) group_hash = db[gpName].gidNumber;
 
+      if(group.securityIdentifier.startsWith('S-1-12-1-'))
+      group.securityIdentifier = group.securityIdentifier.replace('S-1-12-1-', 'S-1-5-21-');
+
       db[gpName] = {
         "objectClass": [
           "extensibleObject",
