@@ -67,8 +67,21 @@ const interval_func = function () {
 };
 setInterval(interval_func, interval);
 
+/* build schema */
+var schemaDB = {
+            "ldapSyntaxes": "",
+            "matchingRules": "",
+            "matchingRuleUse": "",
+            "attributeTypes": "",
+            "objectClasses": ""
+            };
 // source: https://www.iana.org/assignments/ldap-parameters/ldap-parameters.xhtml#ldap-parameters-8
-const ldapSyntaxes = helper.ReadCSVfile('./data/ldapSyntaxes.csv', function (row) { return '(' + row[0] + ' DESC ' + row[1] + ')'; });
+schemaDB["ldapSyntaxes"] = helper.ReadCSVfile('./schema/ldapSyntaxes.csv', function (row) { return '(' + row[0] + ' DESC ' + row[1] + ')'; });
+// source: extraced via ./schema/ldap_seacher.ps1
+schemaDB["matchingRules"] = helper.ReadCSVfile('./schema/matchingRules.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });
+schemaDB["matchingRuleUse"] = helper.ReadCSVfile('./schema/matchingRuleUse.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });
+schemaDB["attributeTypes"] = helper.ReadCSVfile('./schema/attributeTypes.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });
+schemaDB["objectClasses"] = helper.ReadCSVfile('./schema/objectClasses.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });
 
 // Auth via azure for binding
 server.bind('', (req, res, next) => {
@@ -186,14 +199,10 @@ server.search('', (req, res, next) => {
 
         helper.log("server.js", "server.search", 'Search for => DB: ' + dn + '; Scope: ' + req.scope + '; Filter: ' + req.filter + '; Attributes: ' + req.attributes + ';');
 
-        var schemadb = ['cn=SubSchema', 'cn=schema,cn=config'].map(v => v.toLowerCase());
-        if (schemadb.indexOf(dn.toLowerCase()) > -1) {
-
+        if (['cn=SubSchema', 'cn=schema,cn=config', 'cn=schema,cn=configuration'].map(v => v.toLowerCase()).indexOf(dn.toLowerCase()) > -1) {
             res.send({
                 dn: dn,
-                attributes: {
-                    ldapSyntaxes: ldapSyntaxes
-                }
+                attributes: schemaDB
             });
             res.end();
             return next();
