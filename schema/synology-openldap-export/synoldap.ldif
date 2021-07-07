@@ -1,0 +1,454 @@
+dn: dc=han,dc=net
+dc: han
+objectClass: domain
+structuralObjectClass: domain
+entryUUID: 2987f25a-fb91-47fc-ae50-bd87f033b6e8
+
+dn: cn=users,dc=han,dc=net
+cn: users
+objectClass: organizationalRole
+structuralObjectClass: organizationalRole
+entryUUID: 788f1aab-cb2e-4fd7-abca-ad5e31176c80
+
+dn: cn=groups,dc=han,dc=net
+cn: groups
+objectClass: organizationalRole
+structuralObjectClass: organizationalRole
+entryUUID: 1387f54d-2ec1-4649-b5fb-aabab2d12dcc
+
+dn: cn=synoconf,dc=han,dc=net
+cn: synoconf
+objectClass: organizationalRole
+structuralObjectClass: organizationalRole
+entryUUID: 7af7363b-4849-4694-ba6f-4f82465e1e72
+
+dn: cn=MinID,cn=synoconf,dc=han,dc=net
+cn: MinID
+uidNumber: 1000000
+gidNumber: 1000000
+objectClass: organizationalRole
+objectClass: sambaUnixIdPool
+structuralObjectClass: organizationalRole
+entryUUID: 98b9b550-a82d-4074-a70e-74caec0cb607
+
+dn: cn=MaxID,cn=synoconf,dc=han,dc=net
+cn: MaxID
+uidNumber: 2097151
+gidNumber: 2097151
+objectClass: organizationalRole
+objectClass: sambaUnixIdPool
+structuralObjectClass: organizationalRole
+entryUUID: 888ad0ff-193f-43a0-8ff8-80a1c5bddf83
+
+dn: cn=CurID,cn=synoconf,dc=han,dc=net
+cn: CurID
+objectClass: organizationalRole
+objectClass: sambaUnixIdPool
+structuralObjectClass: organizationalRole
+entryUUID: f7ec51e4-1dd5-4ed2-9340-57aedfd6a3f3
+uidNumber: 1000002
+gidNumber: 1000004
+
+dn: cn=MaxNum,cn=synoconf,dc=han,dc=net
+cn: MaxNum
+uidNumber: 20000
+gidNumber: 20000
+objectClass: organizationalRole
+objectClass: sambaUnixIdPool
+structuralObjectClass: organizationalRole
+entryUUID: 885eda1f-686d-439d-9e0b-3e523a2813cb
+
+dn: sambaDomainName=han,dc=han,dc=net
+sambaDomainName: han
+sambaLogonToChgPwd: 0
+sambaLockoutObservationWindow: 30
+sambaMaxPwdAge: -1
+sambaRefuseMachinePwdChange: 0
+sambaLockoutThreshold: 0
+sambaMinPwdAge: 0
+sambaForceLogoff: -1
+sambaLockoutDuration: 30
+sambaSID: S-1-5-21-2475342291-1480345137-508597502
+sambaPwdHistoryLength: 0
+sambaMinPwdLength: 1
+sambaAlgorithmicRidBase: 1000
+objectClass: sambaDomain
+structuralObjectClass: sambaDomain
+entryUUID: 1af6e064-8a89-4ea0-853b-c5476a50877f
+sambaNextUserRid: 1008
+
+dn: ou=pwpolicies,dc=han,dc=net
+objectClass: organizationalUnit
+objectClass: top
+ou: pwpolicies
+description: Password Policies
+structuralObjectClass: organizationalUnit
+entryUUID: 3533d992-ec3f-4685-9179-ee1b53eb2f47
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103056Z
+entryCSN: 20210707103056.010707Z#000000#000#000000
+modifiersName: uid=root,cn=users,dc=han,dc=net
+modifyTimestamp: 20210707103056Z
+
+dn: cn=default,ou=pwpolicies,dc=han,dc=net
+objectClass: organizationalRole
+objectClass: pwdPolicy
+objectClass: pwdPolicyChecker
+cn: default
+pwdAttribute: userPassword
+pwdCheckQuality: 2
+pwdExpireWarning: 0
+pwdGraceAuthNLimit: 0
+pwdMustChange: TRUE
+pwdAllowUserChange: TRUE
+pwdSafeModify: FALSE
+pwdCheckModule: /lib/libsynoppolicychecker.so
+structuralObjectClass: organizationalRole
+entryUUID: 9a8161f0-0e29-4b5f-b805-199a0e4ab1c6
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103056Z
+pwdMinLength: 0
+pwdInHistory: 0
+pwdLockout: FALSE
+pwdMaxFailure: 0
+pwdFailureCountInterval: 0
+pwdLockoutDuration: 0
+pwdMinAge: 0
+pwdMaxAge: 0
+entryCSN: 20210707103502.381586Z#000000#000#000000
+modifiersName: uid=root,cn=users,dc=han,dc=net
+modifyTimestamp: 20210707103502Z
+
+dn: cn=noexpire,ou=pwpolicies,dc=han,dc=net
+objectClass: organizationalRole
+objectClass: pwdPolicy
+objectClass: pwdPolicyChecker
+cn: noexpire
+pwdAttribute: userPassword
+pwdMaxAge: 0
+pwdCheckQuality: 2
+pwdExpireWarning: 0
+pwdGraceAuthNLimit: 0
+pwdMustChange: TRUE
+pwdAllowUserChange: TRUE
+pwdSafeModify: FALSE
+pwdCheckModule: /lib/libsynoppolicychecker.so
+structuralObjectClass: organizationalRole
+entryUUID: 05b05f65-70ad-42cc-b4fc-456a4ee63a4c
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103056Z
+pwdMinLength: 0
+pwdInHistory: 0
+pwdLockout: FALSE
+pwdMaxFailure: 0
+pwdFailureCountInterval: 0
+pwdLockoutDuration: 0
+pwdMinAge: 0
+entryCSN: 20210707103502.399907Z#000000#000#000000
+modifiersName: uid=root,cn=users,dc=han,dc=net
+modifyTimestamp: 20210707103502Z
+
+dn: cn=synopwpolicy,cn=synoconf,dc=han,dc=net
+objectClass: organizationalRole
+objectClass: pwdPolicy
+objectClass: pwdPolicyChecker
+objectClass: synoPwdPolicy
+pwdAttribute: userPassword
+pwdCheckQuality: 2
+pwdExpireWarning: 0
+pwdGraceAuthNLimit: 0
+pwdMustChange: TRUE
+pwdAllowUserChange: TRUE
+pwdSafeModify: FALSE
+pwdCheckModule: /lib/libsynoppolicychecker.so
+structuralObjectClass: organizationalRole
+cn: synopwpolicy
+entryUUID: 074eab6c-1540-4ab0-b029-e906ede36875
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103056Z
+pwdMinAge: 0
+pwdMaxAge: 0
+pwdInHistory: 0
+pwdMinLength: 8
+pwdLockout: FALSE
+pwdLockoutDuration: 0
+pwdMaxFailure: 0
+pwdFailureCountInterval: 0
+pwdSynoExcludeNameDesc: TRUE
+pwdSynoExcludeCommonPwd: FALSE
+pwdSynoMixedCase: TRUE
+pwdSynoNumber: TRUE
+pwdSynoSpecialChar: FALSE
+pwdSynoExpireChange: FALSE
+pwdSynoExpireMail: FALSE
+pwdSynoLoginFailInfo: TRUE
+pwdSynoPwdChangeOnly: FALSE
+pwdSynoPwdExpire: FALSE
+pwdSynoStrongPwd: FALSE
+pwdSynoLockoutExpire: FALSE
+pwdSynoMinAgeEnable: FALSE
+pwdSynoInHistoryEnable: FALSE
+pwdSynoMinLengthEnable: TRUE
+pwdSynoPwdReset: FALSE
+pwdSynoExpireWarningEnable: FALSE
+pwdSynoExpireWarning: 0
+pwdSynoMailTaskId: -1
+pwdSynoExpireMailTime: 00:00
+pwdSynoExpireMailBeforeDays: 0
+entryCSN: 20210707103502.355689Z#000000#000#000000
+modifiersName: uid=root,cn=users,dc=han,dc=net
+modifyTimestamp: 20210707103502Z
+
+dn: cn=users,cn=groups,dc=han,dc=net
+objectClass: top
+objectClass: posixGroup
+objectClass: extensibleObject
+objectClass: apple-group
+objectClass: sambaGroupMapping
+objectClass: sambaIdmapEntry
+cn: users
+gidNumber: 1000001
+description: Directory default group
+apple-generateduid: CE992438-AF0A-4F60-8020-14DFC4D021FB
+sambaSID: S-1-5-21-2475342291-1480345137-508597502-1000
+displayName: users
+sambaGroupType: 2
+structuralObjectClass: posixGroup
+entryUUID: d3b164f9-33e4-4c81-9744-01bf44fcf024
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103056Z
+member: uid=admin,cn=users,dc=han,dc=net
+member: uid=adriano,cn=users,dc=han,dc=net
+memberUid: admin
+memberUid: adriano
+entryCSN: 20210707103128.457400Z#000000#000#000000
+modifiersName: uid=root,cn=users,dc=han,dc=net
+modifyTimestamp: 20210707103128Z
+
+dn: cn=Directory Operators,cn=groups,dc=han,dc=net
+objectClass: top
+objectClass: posixGroup
+objectClass: extensibleObject
+objectClass: apple-group
+objectClass: sambaGroupMapping
+objectClass: sambaIdmapEntry
+cn: Directory Operators
+gidNumber: 1000000
+description: Directory default admin group
+apple-generateduid: 22D1E5D7-D2F7-407C-894C-2F5E4FE60B91
+sambaSID: S-1-5-21-2475342291-1480345137-508597502-1001
+displayName: Directory Operators
+sambaGroupType: 2
+structuralObjectClass: posixGroup
+entryUUID: 7e7a0130-775e-429e-9863-c2332ae342e0
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103056Z
+member: uid=admin,cn=users,dc=han,dc=net
+memberUid: admin
+entryCSN: 20210707103057.233189Z#000000#000#000000
+modifiersName: uid=root,cn=users,dc=han,dc=net
+modifyTimestamp: 20210707103057Z
+
+dn: cn=Directory Clients,cn=groups,dc=han,dc=net
+objectClass: top
+objectClass: posixGroup
+objectClass: extensibleObject
+objectClass: apple-group
+objectClass: sambaGroupMapping
+objectClass: sambaIdmapEntry
+cn: Directory Clients
+gidNumber: 2097149
+description: Directory default client group
+apple-generateduid: B7627F55-FCD2-432D-9116-8B810AD6427B
+sambaSID: S-1-5-21-2475342291-1480345137-508597502-1002
+displayName: Directory Clients
+sambaGroupType: 2
+structuralObjectClass: posixGroup
+entryUUID: 294b08de-5ea2-4c8c-aaf8-7f266643595d
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103056Z
+entryCSN: 20210707103056.603214Z#000000#000#000000
+modifiersName: uid=root,cn=users,dc=han,dc=net
+modifyTimestamp: 20210707103056Z
+
+dn: cn=Directory Consumers,cn=groups,dc=han,dc=net
+objectClass: top
+objectClass: posixGroup
+objectClass: extensibleObject
+objectClass: apple-group
+objectClass: sambaGroupMapping
+objectClass: sambaIdmapEntry
+cn: Directory Consumers
+gidNumber: 2097150
+description: Directory default consumer group
+apple-generateduid: 264DC683-C80E-4FAC-B854-2985EE4A0D67
+sambaSID: S-1-5-21-2475342291-1480345137-508597502-1003
+displayName: Directory Consumers
+sambaGroupType: 2
+structuralObjectClass: posixGroup
+entryUUID: aa74a368-39b9-4a44-a7f8-abce49fc4d1c
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103056Z
+entryCSN: 20210707103056.780048Z#000000#000#000000
+modifiersName: uid=root,cn=users,dc=han,dc=net
+modifyTimestamp: 20210707103056Z
+
+dn: cn=administrators,cn=groups,dc=han,dc=net
+objectClass: top
+objectClass: posixGroup
+objectClass: extensibleObject
+objectClass: apple-group
+objectClass: sambaGroupMapping
+objectClass: sambaIdmapEntry
+cn: administrators
+gidNumber: 1000002
+description: System default admin group
+apple-generateduid: 33576277-375F-4957-86E1-E8566D5D8E6E
+sambaSID: S-1-5-21-2475342291-1480345137-508597502-1004
+displayName: administrators
+sambaGroupType: 2
+structuralObjectClass: posixGroup
+entryUUID: 67cbc4e1-4fb5-4c66-bdb6-df0c0765e6ce
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103056Z
+member: uid=admin,cn=users,dc=han,dc=net
+memberUid: admin
+entryCSN: 20210707103057.308927Z#000000#000#000000
+modifiersName: uid=root,cn=users,dc=han,dc=net
+modifyTimestamp: 20210707103057Z
+
+dn: uid=admin,cn=users,dc=han,dc=net
+objectClass: top
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: apple-user
+objectClass: sambaSamAccount
+objectClass: sambaIdmapEntry
+objectClass: extensibleObject
+cn: admin
+uid: admin
+gecos: Directory/Diskstation default admin user
+uidNumber: 1000000
+gidNumber: 1000001
+loginShell: /bin/sh
+homeDirectory: /home/admin
+shadowLastChange: 18815
+shadowMin: 0
+shadowMax: 99999
+shadowWarning: 7
+shadowInactive: 0
+shadowFlag: 0
+sn: admin
+authAuthority: ;basic;
+apple-generateduid: 876F29F7-951B-4B7F-9847-D89C28B3BD84
+sambaSID: S-1-5-21-2475342291-1480345137-508597502-1005
+sambaNTPassword: BF5AE2BA70CC2E423AFF23ABA07C39A3
+sambaLMPassword: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+sambaPasswordHistory: 000000000000000000000000000000000000000000000000000000
+ 0000000000
+sambaPwdLastSet: 1625653857
+sambaAcctFlags: [U          ]
+displayName: admin
+structuralObjectClass: inetOrgPerson
+entryUUID: 9d3ad6cb-ae03-4d33-909f-d7f977778512
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103057Z
+userPassword:: e0NSWVBUfSQ2JG1tQXplb0FtJC5vQzZBMmxyZUMzRzQ3NUpuYTUzSk1wcDNhQ
+ 1pRQUxsTzFxZ2MwR2x1S2dwbVJDN05yeUZxS3RHdFZCYkFMYm5rTkdmV3NwUml0LzVMNFhLc1BV
+ U0Iv
+pwdChangedTime: 20210707103057Z
+memberOf: cn=users,cn=groups,dc=han,dc=net
+memberOf: cn=Directory Operators,cn=groups,dc=han,dc=net
+memberOf: cn=administrators,cn=groups,dc=han,dc=net
+pwdPolicySubentry: cn=noexpire,ou=pwpolicies,dc=han,dc=net
+shadowExpire: -1
+entryCSN: 20210707103447.241014Z#000000#000#000000
+modifiersName: uid=root,cn=users,dc=han,dc=net
+modifyTimestamp: 20210707103447Z
+
+dn: cn=connection,cn=synoconf,dc=han,dc=net
+objectClass: synoConnectionSetting
+cn: connection
+structuralObjectClass: synoConnectionSetting
+entryUUID: 615c4016-8738-45be-adad-43e7f5ca88d7
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103057Z
+synoIdleTimeout: 60
+entryCSN: 20210707103311.168752Z#000000#000#000000
+modifiersName: uid=root,cn=users,dc=han,dc=net
+modifyTimestamp: 20210707103311Z
+
+dn: uid=adriano,cn=users,dc=han,dc=net
+objectClass: top
+objectClass: posixAccount
+objectClass: shadowAccount
+objectClass: person
+objectClass: organizationalPerson
+objectClass: inetOrgPerson
+objectClass: apple-user
+objectClass: sambaSamAccount
+objectClass: sambaIdmapEntry
+objectClass: extensibleObject
+cn: adriano
+uid: adriano
+uidNumber: 1000001
+gidNumber: 1000001
+loginShell: /bin/sh
+homeDirectory: /home/adriano
+shadowLastChange: 18815
+shadowMin: 0
+shadowMax: 99999
+shadowWarning: 7
+shadowExpire: -1
+shadowInactive: 0
+shadowFlag: 0
+sn: adriano
+authAuthority: ;basic;
+apple-generateduid: 1B3A787E-18E3-4069-AE4A-7802EC3016F1
+sambaSID: S-1-5-21-2475342291-1480345137-508597502-1006
+sambaNTPassword: 535CDE297425E542DC10B430E9369EC0
+sambaLMPassword: XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+sambaPasswordHistory: 000000000000000000000000000000000000000000000000000000
+sambaPwdLastSet: 1625653888
+sambaAcctFlags: [U          ]
+displayName: adriano
+structuralObjectClass: inetOrgPerson
+entryUUID: 913754e3-5d4e-40ac-bc81-80d296e5afbc
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103128Z
+userPassword:: e0NSWVBUfSQ2JHE0OWFTZ2lEJGwwbjdZRU9Nd0JNOHJIU2JvZmFzMTRwb3hCS
+ mV2STF3aWpuWGxCbllrZ2gzaFQvUFdGcU5wc05YeDlFZnlQckVtQi4vYjFsNlJ5TGhYME5adk9u
+ RlAw
+pwdChangedTime: 20210707103128Z
+entryCSN: 20210707103128.384118Z#000000#000#000000
+modifyTimestamp: 20210707103128Z
+memberOf: cn=users,cn=groups,dc=han,dc=net
+memberOf: cn=AAD Admin,cn=groups,dc=han,dc=net
+modifiersName: uid=root,cn=users,dc=han,dc=net
+
+dn: cn=AAD Admin,cn=groups,dc=han,dc=net
+objectClass: top
+objectClass: posixGroup
+objectClass: extensibleObject
+objectClass: apple-group
+objectClass: sambaGroupMapping
+objectClass: sambaIdmapEntry
+cn: AAD Admin
+gidNumber: 1000003
+apple-generateduid: F95A799E-E815-48B1-A4CA-C5E5130A91D4
+sambaSID: S-1-5-21-2475342291-1480345137-508597502-1007
+displayName: AAD Admin
+sambaGroupType: 2
+structuralObjectClass: posixGroup
+entryUUID: 42a3a079-6b4f-4aec-a280-9be09a8f0d6e
+creatorsName: uid=root,cn=users,dc=han,dc=net
+createTimestamp: 20210707103147Z
+member: uid=adriano,cn=users,dc=han,dc=net
+memberUid: adriano
+entryCSN: 20210707103156.424145Z#000000#000#000000
+modifiersName: uid=root,cn=users,dc=han,dc=net
+modifyTimestamp: 20210707103156Z
+

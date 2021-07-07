@@ -1,0 +1,14 @@
+dn: olcDatabase={2}shell,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcShellConfig
+olcDatabase: {2}shell
+olcSuffix: cn=shell
+olcRootDN: cn=shell
+olcRootPW:: e0NSWVBUfSQ2JGxkZmZFdE1EJEpZVUozNi5jaDRvczVlcTM1dlJEbHJZZUxIV3Zy
+ dlptdXl6WWRuRTlxdGdld3ZlejFNRC5sV3NhNG9hSTg3SVNOV0VKenZVWUdjdU1JMWJ4UWJINk8
+ x
+olcShellSearch: /var/packages/DirectoryServer/target/tool/synoldapshellbacke
+ nd
+structuralObjectClass: olcShellConfig
+entryUUID: 8f8764c9-943a-4d4c-a8ce-8e37be5050bb
+

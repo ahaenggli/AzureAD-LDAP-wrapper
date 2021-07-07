@@ -1,0 +1,89 @@
+dn: olcDatabase={1}bdb,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcBdbConfig
+olcDatabase: {1}bdb
+olcDbDirectory: /var/packages/DirectoryServer/target/etc/data/bdb
+olcSuffix: dc=han,dc=net
+olcRootDN: uid=root,cn=users,dc=han,dc=net
+olcSyncrepl: {0}rid=001 provider=ldap://synoldapmaster binddn="uid=root,cn=u
+ sers,dc=han,dc=net" bindmethod=simple credentials="synology" searchbase="dc
+ =han,dc=net" type=refreshAndPersist filter="(objectClass=*)" scope="sub" at
+ trs="*,+" schemachecking=off retry="5 10 300 +" timeout=3 tls_reqcert=never
+olcUpdateRef: ldap://synoldapmaster
+olcDbCheckpoint: 1024 30
+olcDbIndex: default sub
+olcDbIndex: objectClass eq
+olcDbIndex: cn pres,eq,sub
+olcDbIndex: uid pres,eq,sub
+olcDbIndex: uidNumber pres,eq
+olcDbIndex: gidNumber pres,eq
+olcDbIndex: memberUid eq
+olcDbIndex: member eq
+olcDbIndex: sambaDomainName eq
+olcDbIndex: sambaSID eq
+olcDbIndex: entryCSN eq
+olcDbIndex: entryUUID eq
+structuralObjectClass: olcBdbConfig
+entryUUID: 60ca3342-11e5-41c0-9d84-8edf9278170d
+olcRootPW:: e0NSWVBUfSQ2JFlnQkFtblhhJG9CU1hjRmdqVGtQd2ZnNzB1TFBWL1lBbUtkb2c2
+ ZlRRUEI1WnNweWZDZVhjLkJjM2FqQmRHUlh2WVozSS5UTjVhMnRneVdiNFl1VXNybGhiTGttZlI
+ x
+olcAccess: {0}to dn.base="" by * read
+olcAccess: {1}to dn.base="cn=Subschema" by * read
+olcAccess: {2}to attrs=userPassword by self write by set="[cn=Directory Oper
+ ators,cn=groups,dc=han,dc=net]/member* & user" =w by set="[cn=Directory Con
+ sumers,cn=groups,dc=han,dc=net]/member* & user" read by anonymous auth
+olcAccess: {3}to attrs=sambaLMPassword,sambaNTPassword by self write by set=
+ "[cn=Directory Operators,cn=groups,dc=han,dc=net]/member* & user" write by
+ set="[cn=Directory Consumers,cn=groups,dc=han,dc=net]/member* & user" read
+ by set="[cn=Directory Clients,cn=groups,dc=han,dc=net]/member* & user" read
+olcAccess: {4}to attrs=shadowLastChange,sambaPwdLastSet by self write by set
+ ="[cn=Directory Operators,cn=groups,dc=han,dc=net]/member* & user" write by
+  users read
+olcAccess: {5}to attrs=homeDirectory,uid,cn,uidNumber,gidNumber by set="[cn=
+ Directory Operators,cn=groups,dc=han,dc=net]/member* & user" write by * rea
+ d
+olcAccess: {6}to attrs=gecos,@inetOrgPerson by self write by set="[cn=Direct
+ ory Operators,cn=groups,dc=han,dc=net]/member* & user" write by * read
+olcAccess: {7}to attrs=pwdHistory by set="[cn=Directory Consumers,cn=groups,
+ dc=han,dc=net]/member* & user" read
+olcAccess: {8}to * by set="[cn=Directory Operators,cn=groups,dc=han,dc=net]/
+ member* & user" write by * read
+olcReadOnly: TRUE
+
+dn: olcOverlay={0}memberof,olcDatabase={1}bdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcMemberOf
+olcOverlay: {0}memberof
+olcMemberOfDangling: ignore
+olcMemberOfRefInt: FALSE
+olcMemberOfGroupOC: posixGroup
+structuralObjectClass: olcMemberOf
+entryUUID: d24a2454-44e6-4c9b-8511-9925a05c3f3e
+
+dn: olcOverlay={1}ppolicy,olcDatabase={1}bdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcPPolicyConfig
+olcOverlay: {1}ppolicy
+olcPPolicyDefault: cn=default,ou=pwpolicies,dc=han,dc=net
+olcPPolicyHashCleartext: FALSE
+olcPPolicyForwardUpdates: TRUE
+structuralObjectClass: olcPPolicyConfig
+entryUUID: c410404c-7b46-4696-a28d-8209fb7f4ede
+olcPPolicyUseLockout: TRUE
+
+dn: olcOverlay={2}syncprov,olcDatabase={1}bdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcSyncProvConfig
+olcOverlay: {2}syncprov
+olcSpCheckpoint: 100 10
+olcSpSessionlog: 100
+structuralObjectClass: olcSyncProvConfig
+entryUUID: a927971d-d38d-4053-805a-e004966a8d2b
+
+dn: olcOverlay={3}sssvlv,olcDatabase={1}bdb,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcSssVlvConfig
+olcOverlay: {3}sssvlv
+structuralObjectClass: olcSssVlvConfig
+entryUUID: 502cb8e3-cb54-4b4e-ac2c-e7fbaa6d201b

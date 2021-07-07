@@ -1,0 +1,54 @@
+dn: cn=config
+objectClass: olcGlobal
+cn: config
+olcArgsFile: /var/run/slapd.args
+olcPasswordCryptSaltFormat: $6$%.8s
+olcPidFile: /var/run/slapd.pid
+olcTLSCertificateFile: /usr/local/etc/certificate/DirectoryServer/slapd/cert
+ .pem
+olcTLSCertificateKeyFile: /usr/local/etc/certificate/DirectoryServer/slapd/p
+ rivkey.pem
+structuralObjectClass: olcGlobal
+entryUUID: 62ac5b40-a3e3-46c3-aa00-f4ab1f27039a
+olcIdleTimeout: 0
+olcSecurity: tls=0
+olcTLSProtocolMin: 3.1
+olcTLSCACertificateFile: /usr/local/etc/certificate/DirectoryServer/slapd/fu
+ llchain.pem
+
+dn: olcDatabase={-1}frontend,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcFrontendConfig
+olcDatabase: {-1}frontend
+olcSizeLimit: unlimited
+olcPasswordHash: {CRYPT}
+structuralObjectClass: olcDatabaseConfig
+entryUUID: 8f6d62bf-fa93-44e7-8aaa-3abaf1256cbe
+
+dn: olcDatabase={0}config,cn=config
+objectClass: olcDatabaseConfig
+olcDatabase: {0}config
+olcAddContentAcl: TRUE
+olcRootDN: cn=config
+olcSyncrepl: {0}rid=001 provider=ldap://synoldapmaster binddn="cn=config" bi
+ ndmethod=simple credentials="synology" searchbase="cn=config" type=refreshA
+ ndPersist filter="(objectClass=*)" scope="sub" attrs="*,+" schemachecking=o
+ ff retry="5 10 300 +" timeout=3 tls_reqcert=never
+olcUpdateRef: ldap://synoldapmaster
+structuralObjectClass: olcDatabaseConfig
+entryUUID: 7dcae127-2dab-49fd-9e7a-f339567b52c7
+olcRootPW:: e0NSWVBUfSQ2JFlnQkFtblhhJG9CU1hjRmdqVGtQd2ZnNzB1TFBWL1lBbUtkb2c2
+ ZlRRUEI1WnNweWZDZVhjLkJjM2FqQmRHUlh2WVozSS5UTjVhMnRneVdiNFl1VXNybGhiTGttZlI
+ x
+olcAccess: {0}to * by set="[cn=Directory Consumers,cn=groups,dc=han,dc=net]/
+ member* & user" read
+olcAccess: {1}to * by * none
+
+dn: olcOverlay={0}syncprov,olcDatabase={0}config,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcSyncProvConfig
+olcOverlay: {0}syncprov
+olcSpCheckpoint: 100 10
+olcSpSessionlog: 100
+structuralObjectClass: olcSyncProvConfig
+entryUUID: 0be54b41-d5ec-4e5d-8318-b855db2a595c
