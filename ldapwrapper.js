@@ -49,7 +49,6 @@ ldapwrapper.do = async function () {
       "dc": config.LDAP_BASEDN.replace('dc=', '').split(",")[0],
       "entryDN": config.LDAP_BASEDN,
       "entryUUID": "e927be8d-aab8-42f2-80c3-b2762415aed1",
-      //"hasSubordinates": "TRUE",
       "namingContexts": config.LDAP_BASEDN,
       "structuralObjectClass": "domain",
       "subschemaSubentry": "cn=Subschema"
@@ -78,12 +77,10 @@ ldapwrapper.do = async function () {
       ,"sambaSID": "S-1-5-21-2475342291-1480345137-508597502"
       ,"sambaPwdHistoryLength": 0
       ,"sambaMinPwdLength": 1
-      //,"sambaAlgorithmicRidBase": 1000
       ,"objectClass": "sambaDomain"
       ,"structuralObjectClass": "sambaDomain"
       ,"entryUUID": "1af6e064-8a89-4ea0-853b-c5476a50877f"
       ,"entryDN": LDAP_SAMBA
-      //,"sambaNextUserRid": 1008
     };
 
     let mergeUSERSDN = Object.values(db).filter(g => g.entryUUID == '3e01f47d-96a1-4cb4-803f-7dd17991c6bd' && g.entryDN != config.LDAP_USERSDN);
@@ -97,9 +94,7 @@ ldapwrapper.do = async function () {
       "cn": config.LDAP_USERSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
       "entryDN": config.LDAP_USERSDN,
       "entryUUID": "3e01f47d-96a1-4cb4-803f-7dd17991c6bd",
-      //"hasSubordinates": "TRUE",
       "structuralObjectClass": "organizationalRole"
-      //,"subschemaSubentry": "cn=Subschema"
     };
 
     let mergeGROUPSDN = Object.values(db).filter(g => g.entryUUID == '39af84ac-8e5a-483e-9621-e657385b07b5' && g.entryDN != config.LDAP_GROUPSDN);
@@ -113,9 +108,7 @@ ldapwrapper.do = async function () {
       "cn": config.LDAP_GROUPSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
       "entryDN": config.LDAP_GROUPSDN,
       "entryUUID": "39af84ac-8e5a-483e-9621-e657385b07b5",
-      //"hasSubordinates": "TRUE",
       "structuralObjectClass": "organizationalRole"
-      //,"subschemaSubentry": "cn=Subschema"
     };
 
     var usersGroupDn_hash = Math.abs(encode().value(config.LDAP_USERSGROUPSBASEDN));
@@ -144,13 +137,11 @@ ldapwrapper.do = async function () {
       "entryUUID": "938f7407-8e5a-48e9-a852-d862fa3bb1bc",
       "apple-generateduid": "938f7407-8e5a-48e9-a852-d862fa3bb1bc",
       "gidNumber": usersGroupDn_hash,
-      //"hasSubordinates": "FALSE",
       "member": [],
       "memberUid": [],
       "sambaGroupType": 2,
       "sambaSID": "S-1-5-21-" + usersGroupDn_hash + "-" + usersGroupDn_hash + "-" + usersGroupDn_hash,
       "structuralObjectClass": "posixGroup"
-      //,"subschemaSubentry": "cn=Subschema"
     };
 
     helper.log("ldapwrapper.js", "try fetching the groups");
@@ -205,18 +196,11 @@ ldapwrapper.do = async function () {
         "entryUUID": group.id,
         "apple-generateduid": group.id,
         "gidNumber": group_hash,
-        //"hasSubordinates": "FALSE",
         "member": [],
         "memberUid": [],
         "sambaGroupType": 2,
         "sambaSID": group.securityIdentifier,
         "structuralObjectClass": "posixGroup"
-        //"creatorsName": "uid=root,cn=users,dc=haenggli,dc=net",
-        //"createTimestamp": "20210405175035Z",
-        //"entryCSN": "20210405175157.299823Z#000000#000#000000",
-        //"modifiersName": "uid=root,cn=users,dc=haenggli,dc=net",
-        //"modifyTimestamp": "20210405175157Z"
-        //,"subschemaSubentry": "cn=Subschema"
       };
 
       helper.log("ldapwrapper.js", "try fetching the members for group: ", group.displayName);
@@ -335,7 +319,6 @@ ldapwrapper.do = async function () {
           "entryUUID": user.id,
           "gidNumber": db[config.LDAP_USERSGROUPSBASEDN].gidNumber,
           "givenName": user.givenName,
-          //"hasSubordinates": "FALSE",
           "homeDirectory": "/home/" + userPrincipalName,
           "loginShell": "/bin/sh",
           "mail": user.mail,
@@ -358,7 +341,6 @@ ldapwrapper.do = async function () {
           "uid": userPrincipalName,
           "uidNumber": user_hash,
           "structuralObjectClass": "inetOrgPerson"
-          //,"subschemaSubentry": "cn=Subschema"
         };
 
       }
