@@ -198,7 +198,7 @@ ldapwrapper.do = async function () {
         ],
         "cn": groupDisplayName.toLowerCase(),
         "description": (group.description || ""),
-        "displayName": groupDisplayName,
+        "displayName": groupDisplayName.toLowerCase(),
         "entryDN": gpName,
         "entryUUID": group.id,
         "apple-generateduid": group.id,
