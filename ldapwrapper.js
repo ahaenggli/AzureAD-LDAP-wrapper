@@ -51,6 +51,7 @@ ldapwrapper.do = async function () {
       "entryUUID": "e927be8d-aab8-42f2-80c3-b2762415aed1",
       "namingContexts": config.LDAP_BASEDN,
       "structuralObjectClass": "domain",
+      "hasSubordinates": "TRUE",
       "subschemaSubentry": "cn=Subschema"
     };
 
@@ -94,7 +95,9 @@ ldapwrapper.do = async function () {
       "cn": config.LDAP_USERSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
       "entryDN": config.LDAP_USERSDN,
       "entryUUID": "3e01f47d-96a1-4cb4-803f-7dd17991c6bd",
-      "structuralObjectClass": "organizationalRole"
+      "structuralObjectClass": "organizationalRole",
+      "hasSubordinates": "TRUE",
+      "subschemaSubentry": "cn=Subschema"
     };
 
     let mergeGROUPSDN = Object.values(db).filter(g => g.entryUUID == '39af84ac-8e5a-483e-9621-e657385b07b5' && g.entryDN != config.LDAP_GROUPSDN);
@@ -108,7 +111,9 @@ ldapwrapper.do = async function () {
       "cn": config.LDAP_GROUPSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
       "entryDN": config.LDAP_GROUPSDN,
       "entryUUID": "39af84ac-8e5a-483e-9621-e657385b07b5",
-      "structuralObjectClass": "organizationalRole"
+      "structuralObjectClass": "organizationalRole",
+      "hasSubordinates": "TRUE",
+      "subschemaSubentry": "cn=Subschema"
     };
 
     var usersGroupDn_hash = Math.abs(encode().value(config.LDAP_USERSGROUPSBASEDN));
@@ -141,7 +146,9 @@ ldapwrapper.do = async function () {
       "memberUid": [],
       "sambaGroupType": 2,
       "sambaSID": "S-1-5-21-" + usersGroupDn_hash + "-" + usersGroupDn_hash + "-" + usersGroupDn_hash,
-      "structuralObjectClass": "posixGroup"
+      "structuralObjectClass": "posixGroup",
+      "hasSubordinates": "FALSE",
+      "subschemaSubentry": "cn=Subschema"
     };
 
     helper.log("ldapwrapper.js", "try fetching the groups");
@@ -200,7 +207,9 @@ ldapwrapper.do = async function () {
         "memberUid": [],
         "sambaGroupType": 2,
         "sambaSID": group.securityIdentifier,
-        "structuralObjectClass": "posixGroup"
+        "structuralObjectClass": "posixGroup",
+        "hasSubordinates": "FALSE",
+        "subschemaSubentry": "cn=Subschema"
       };
 
       helper.log("ldapwrapper.js", "try fetching the members for group: ", group.displayName);
@@ -340,7 +349,9 @@ ldapwrapper.do = async function () {
           "sn": user.surname,
           "uid": userPrincipalName,
           "uidNumber": user_hash,
-          "structuralObjectClass": "inetOrgPerson"
+          "structuralObjectClass": "inetOrgPerson",
+          "hasSubordinates": "FALSE",
+          "subschemaSubentry": "cn=Subschema"
         };
 
       }
