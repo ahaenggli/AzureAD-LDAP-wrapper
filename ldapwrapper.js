@@ -116,7 +116,7 @@ ldapwrapper.do = async function () {
       "subschemaSubentry": "cn=Subschema"
     };
 
-    var usersGroupDn_hash = Math.abs(encode().value(config.LDAP_USERSGROUPSBASEDN));
+    var usersGroupDn_hash = Math.abs(encode().value(config.LDAP_USERSGROUPSBASEDN)).toString();
 
     let mergeUSERSGROUPSBASEDN = Object.values(db).filter(g => g.entryUUID == '938f7407-8e5a-48e9-a852-d862fa3bb1bc' && g.entryDN != config.LDAP_USERSGROUPSBASEDN);
     if (mergeUSERSGROUPSBASEDN.length == 1) {
@@ -124,7 +124,7 @@ ldapwrapper.do = async function () {
       delete db[db[config.LDAP_USERSGROUPSBASEDN].entryDN];
     }
 
-    if (db[config.LDAP_USERSGROUPSBASEDN] && db[config.LDAP_USERSGROUPSBASEDN].hasOwnProperty('gidNumber')) usersGroupDn_hash = parseInt(db[config.LDAP_USERSGROUPSBASEDN].gidNumber);
+    if (db[config.LDAP_USERSGROUPSBASEDN] && db[config.LDAP_USERSGROUPSBASEDN].hasOwnProperty('gidNumber')) usersGroupDn_hash = (db[config.LDAP_USERSGROUPSBASEDN].gidNumber.toString());
 
     db[config.LDAP_USERSGROUPSBASEDN] = {
       "objectClass": [
@@ -184,8 +184,8 @@ ldapwrapper.do = async function () {
         delete db[db[gpName].entryDN];
       }
 
-      let group_hash = Math.abs(encode().value(group.id));
-      if (db[gpName] && db[gpName].hasOwnProperty('gidNumber')) group_hash = parseInt(db[gpName].gidNumber);
+      let group_hash = Math.abs(encode().value(group.id)).toString();
+      if (db[gpName] && db[gpName].hasOwnProperty('gidNumber')) group_hash = (db[gpName].gidNumber.toString());
 
       db[gpName] = {
         "objectClass": [
@@ -198,7 +198,7 @@ ldapwrapper.do = async function () {
         ],
         "cn": groupDisplayName.toLowerCase(),
         "description": (group.description || ""),
-        "displayName": groupDisplayName.toLowerCase(),
+        "displayName": groupDisplayName,
         "entryDN": gpName,
         "entryUUID": group.id,
         "apple-generateduid": group.id,
@@ -281,13 +281,13 @@ ldapwrapper.do = async function () {
           delete db[db[upName].entryDN];
         }
 
-        let user_hash = Math.abs(encode().value(user.id));
+        let user_hash = Math.abs(encode().value(user.id)).toString();
         let sambaNTPassword = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
         let sambaPwdLastSet = 0;
 
         if (db[upName] && db[upName].hasOwnProperty('sambaNTPassword')) sambaNTPassword = db[upName].sambaNTPassword;
         if (db[upName] && db[upName].hasOwnProperty('sambaPwdLastSet')) sambaPwdLastSet = db[upName].sambaPwdLastSet;
-        if (db[upName] && db[upName].hasOwnProperty('uidNumber')) user_hash = parseInt(db[upName].uidNumber);
+        if (db[upName] && db[upName].hasOwnProperty('uidNumber')) user_hash = (db[upName].uidNumber.toString());
 
         if (typeof user_to_groups[user.id] === 'undefined' || !user_to_groups[user.id]) {
           helper.warn("ldapwrapper.js", "no groups found for user", upName);
