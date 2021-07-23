@@ -66,7 +66,7 @@ ldapwrapper.do = async function () {
     }
 
     db[LDAP_SAMBA] = {
-       "sambaDomainName": sambaDomainName
+       "sambaDomainName": sambaDomainName.toUpperCase()
       ,"sambaLogonToChgPwd": 0
       ,"sambaLockoutObservationWindow": 30
       ,"sambaMaxPwdAge": -1
