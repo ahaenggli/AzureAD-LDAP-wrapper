@@ -105,3 +105,4 @@ dist
 
 # private data
 /data/*.json
+customizer/ldap_customizer.js

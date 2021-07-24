@@ -11,6 +11,9 @@ customizer.ModifyLDAPGroup = function (ldapgroup, azuregroup) {
         if (isNaN(parsed)) parsed = ldapgroup.gidNumber;
         ldapgroup.gidNumber = parsed;
     }
+
+    //if(ldapgroup.hasOwnProperty("hasSubordinates"))   delete ldapgroup.hasSubordinates;
+    //if(ldapgroup.hasOwnProperty("subschemaSubentry")) delete ldapgroup.subschemaSubentry;
     return ldapgroup;
 };
 
@@ -22,12 +25,33 @@ customizer.ModifyLDAPUser = function (ldapuser, azureuser) {
         if (isNaN(parsed)) parsed = ldapuser.gidNumber;
         ldapuser.gidNumber = parsed;
     }
+    if(ldapuser.hasOwnProperty("uidNumber")){
+        let parsed = parseInt(ldapuser.uidNumber);
+        if (isNaN(parsed)) parsed = ldapuser.uidNumber;
+        ldapuser.uidNumber = parsed;
+    }
+    //if(ldapuser.hasOwnProperty("hasSubordinates"))   delete ldapuser.hasSubordinates;
+    //if(ldapuser.hasOwnProperty("subschemaSubentry")) delete ldapuser.subschemaSubentry;
     return ldapuser;
 };
 
+customizer.ModifyLDAPGlobal = function (all) {
+
+    for (var key of Object.keys(all)) {
+        //console.log(`${key}: ${value}`);
+
+        if(!all[key].hasOwnProperty("namingContexts")){
+            //if(all[key].hasOwnProperty("hasSubordinates"))   delete all[key].hasSubordinates;
+            //if(all[key].hasOwnProperty("subschemaSubentry")) delete all[key].subschemaSubentry;
+        }
+    }
+
+
+    return all;
+
+};
 
 // customizer.ModifyLDAPUser = function (ldapuser, azureuser) { return ldapuser; };
-// customizer.ModifyLDAPGlobal = function (all) { return all; };
 // customizer.ModifyAzureUsers  = function (azureusers) { return azureusers; };
 // customizer.ModifyAzureGroups = function (azuregroups) { return azuregroups; };
 
