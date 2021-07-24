@@ -32,6 +32,16 @@ ldapwrapper.do = async function () {
       helper.log("ldapwrapper.js", "mkdirSync: nothing to do");
     }
 
+    var customizer = {};
+    if (fs.existsSync('./customizer/ldap_customizer.js')) {
+      customizer = require('./customizer/ldap_customizer');
+    }
+    if (typeof customizer.ModifyLDAPUser   === "undefined") customizer.ModifyLDAPUser = function (ldapuser, azureuser) { return ldapuser; };
+    if (typeof customizer.ModifyLDAPGroup  === "undefined") customizer.ModifyLDAPGroup = function (ldapgroup, azuregroup) { return ldapgroup; };
+    if (typeof customizer.ModifyLDAPGlobal === "undefined") customizer.ModifyLDAPGlobal = function (all) { return all; };
+    if (typeof customizer.ModifyAzureUsers   === "undefined") customizer.ModifyAzureUsers  = function (azureusers) { return azureusers; };
+    if (typeof customizer.ModifyAzureGroups  === "undefined") customizer.ModifyAzureGroups = function (azuregroups) { return azuregroups; };
+
     const graph_azureResponse = await graph_azure.getToken(graph_azure.tokenRequest);
     if (!graph_azureResponse) helper.error("ldapwrapper.js", "graph_azureResponse missing");
 
@@ -66,7 +76,7 @@ ldapwrapper.do = async function () {
     }
 
     db[LDAP_SAMBA] = {
-       "sambaDomainName": sambaDomainName.toUpperCase()
+       "sambaDomainName": sambaDomainName.toUpperCase() /* must be uppercase */
       ,"sambaLogonToChgPwd": 0
       ,"sambaLockoutObservationWindow": 30
       ,"sambaMaxPwdAge": -1
@@ -151,6 +161,8 @@ ldapwrapper.do = async function () {
       "subschemaSubentry": "cn=Subschema"
     };
 
+    db[config.LDAP_USERSGROUPSBASEDN] = customizer.ModifyLDAPGroup(db[config.LDAP_USERSGROUPSBASEDN], {});
+
     helper.log("ldapwrapper.js", "try fetching the groups");
     var groups = [];
     groups = await graph_azure.callApi(graph_azure.apiConfig.gri, graph_azureResponse.accessToken);
@@ -163,6 +175,7 @@ ldapwrapper.do = async function () {
       helper.log("ldapwrapper.js", "groups.json saved.");
     }
 
+    groups = customizer.ModifyAzureGroups(groups);
     var user_to_groups = [];
 
     for (let i = 0, len = groups.length; i < len; i++) {
@@ -212,6 +225,8 @@ ldapwrapper.do = async function () {
         "subschemaSubentry": "cn=Subschema"
       };
 
+      db[gpName] = customizer.ModifyLDAPGroup(db[gpName], group);
+
       helper.log("ldapwrapper.js", "try fetching the members for group: ", group.displayName);
       var members = [];
       members = await graph_azure.callApi(graph_azure.apiConfig.mri, graph_azureResponse.accessToken, { id: group.id });
@@ -251,6 +266,8 @@ ldapwrapper.do = async function () {
       helper.SaveJSONtoFile(users, './.cache/users.json');
       helper.log("ldapwrapper.js", 'users.json' + " saved.");
     }
+
+    users = customizer.ModifyAzureUsers(users);
 
     for (let i = 0, len = users.length; i < len; i++) {
       let user = users[i];
@@ -354,10 +371,14 @@ ldapwrapper.do = async function () {
           "subschemaSubentry": "cn=Subschema"
         };
 
+        db[upName] = customizer.ModifyLDAPUser(db[upName], user);
+
+
       }
     }
 
     // save the data file
+    db = customizer.ModifyLDAPGlobal(db);
     helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);
     helper.log("ldapwrapper.js", "end");
 

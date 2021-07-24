@@ -13,4 +13,5 @@ LICENSE
 data/*.json
 .cache/*
 .env
+customizer/ldap_customizer.js
 synology-openldap-export
