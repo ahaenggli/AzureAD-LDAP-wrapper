@@ -6,6 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+## [1.4.0] - 2021-07-25
+### Added
+- entry point for customizable schema modifications
+
+### Changed
+- Changed the "sambaDomainName" attribute to be in upper case to respect the standard configuration of samba configs. (thx @DreydenGys)
+
 ## [1.3.1] - 2021-07-15
 ### Fixed
 - gidNumber and uidNumber are strings again
@@ -99,6 +106,7 @@ if set to true and the login is failed, the login is retried against the sambaNT
 
 
 [Unreleased]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/projects/1
+[1.4.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.4.0
 [1.3.1]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.3.1
 [1.3.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.3.0
 [1.2.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.2.0
