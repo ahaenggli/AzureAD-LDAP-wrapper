@@ -100,5 +100,34 @@ graph.loginWithUsernamePassword = function loginWithUsernamePassword(username, p
     });
 };
 
+//"@azure/identity": "1.5.1",
+/*
+const aIdentity = require("@azure/identity");
+graph.loginWithUsernamePasswordAzureIdentity = function loginWithUsernamePassword(username, password, func = null) {
+    let credential = new UsernamePasswordCredential(
+        config.AZURE_TENANTID,
+        config.AZURE_APP_ID,
+        username,
+        password
+    );
+
+    try {
+        let token = credential.getToken();
+        return 1;
+    } catch(error) {
+        helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
+        // 50126: wrong credentials
+        if (error && error.toString().indexOf('[50126]') > -1) return 0;
+        // 50057: account disabled
+        else if (error && error.toString().indexOf('[50057]') > -1) return 0;
+        // other errors (not wrong credentials)
+        else if (error) return 2;
+
+        // fallback...
+        return 0;
+    }
+};
+*/
+
 // exports
 module.exports = graph;
