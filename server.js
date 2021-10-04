@@ -22,6 +22,7 @@ if (!config.LDAP_USERSDN) { helper.error("config", "env var `LDAP_USERSDN` not s
 if (!config.LDAP_USERSGROUPSBASEDN) { helper.error("config", "env var `LDAP_USERSGROUPSBASEDN` not set correctly"); env_check = false; }
 if (!config.LDAP_USERRDN) { helper.error("config", "env var `LDAP_USERRDN` not set correctly"); env_check = false; }
 if (!config.LDAP_DATAFILE) { helper.error("config", "env var `LDAP_DATAFILE` not set correctly"); env_check = false; }
+if (!config.LDAP_SYNC_TIME) { helper.error("config", "env var `LDAP_SYNC_TIME` not set correctly"); env_check = false; }
 
 if (isNaN(parseInt(config.LDAP_SAMBANTPWD_MAXCACHETIME))) { helper.error("config", "env var `LDAP_SAMBANTPWD_MAXCACHETIME` must be a number."); env_check = false; }
 
@@ -42,9 +43,11 @@ var tlsOptions = {};
 tlsOptions = { certificate: helper.ReadFile(config.LDAPS_CERTIFICATE), key: helper.ReadFile(config.LDAPS_KEY) };
 var server = ldap.createServer(tlsOptions);
 
+const interval = config.LDAP_SYNC_TIME /*minutes*/ * 60 * 1000;
+
 async function refreshDB() {
     helper.log("server.js", "refreshDB()", "func called");
-    if (Date.now() > lastRefresh + 30 * 60 * 1000) {
+    if (Date.now() > lastRefresh + interval) {
         db = await ldapwrapper.do();
         lastRefresh = Date.now();
     }
@@ -56,9 +59,9 @@ async function refreshDB() {
 // init data from azure before starting the server
 refreshDB();
 
-const interval = 30 /*minutes*/ * 60 * 1000;
+
 const interval_func = function () {
-    helper.forceLog("server.js", "every 30 minutes refreshDB()");
+    helper.forceLog("server.js", "every", config.LDAP_SYNC_TIME, "minutes refreshDB()");
     try {
         refreshDB();
     } catch (error) {
