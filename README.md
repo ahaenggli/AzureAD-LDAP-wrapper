@@ -97,6 +97,9 @@ Path to private key file.
 You also have to set `LDAPS_CERTIFICATE` to run LDAP over SSL.
 You may also need to set `LDAP_PORT` to 636.
 
+### LDAP_SYNC_TIME
+Interval refresh database. Default is 30 minutes.
+
 # FAQ
 > Does it support MFA (multi-factor authentication)?
 

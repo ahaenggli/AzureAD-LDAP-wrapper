@@ -23,6 +23,7 @@ ENV LDAP_SAMBANTPWD_MAXCACHETIME="-1"
 ENV AZURE_APP_ID="*secret*"
 ENV AZURE_TENANTID="*secret*"
 ENV AZURE_APP_SECRET="*secret*"
+ENV LDAP_SYNC_TIME="30"
 
 RUN mkdir -p /app && chown -R node:node /app
 WORKDIR /app

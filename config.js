@@ -17,6 +17,7 @@ config.LDAP_USERSDN = (process.env.LDAP_USERSDN || "cn=users," + config.LDAP_BAS
 config.LDAP_USERSGROUPSBASEDN = (process.env.LDAP_USERSGROUPSBASEDN || "cn=users," + config.LDAP_GROUPSDN).toLowerCase().replace(/ /g, '');
 config.LDAP_USERRDN = (process.env.LDAP_USERRDN || "uid").toLowerCase().replace(/ /g, '');
 config.LDAP_DATAFILE = process.env.LDAP_DATAFILE || "./.cache/azure.json";
+config.LDAP_SYNC_TIME = process.env.LDAP_SYNC_TIME || 30; /* minutes */
 
 // set to true to remove the domain e.g. "alice@example.net" will just be "alice" for login
 config.LDAP_REMOVEDOMAIN = true;
