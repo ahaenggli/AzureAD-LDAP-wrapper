@@ -21,22 +21,26 @@ config.LDAP_SYNC_TIME = process.env.LDAP_SYNC_TIME || 30; /* minutes */
 
 // set to true to remove the domain e.g. "alice@example.net" will just be "alice" for login
 config.LDAP_REMOVEDOMAIN = true;
-if (process.env.LDAP_REMOVEDOMAIN) config.LDAP_REMOVEDOMAIN = (process.env.LDAP_REMOVEDOMAIN == "true");
+if (process.env.LDAP_REMOVEDOMAIN) config.LDAP_REMOVEDOMAIN = (process.env.LDAP_REMOVEDOMAIN == "true" || process.env.LDAP_REMOVEDOMAIN == "1");
 
 config.LDAP_PORT = parseInt(process.env.LDAP_PORT) || 389;
 config.LDAP_BINDUSER = process.env.LDAP_BINDUSER;
 
 config.LDAP_DEBUG = false;
-if (process.env.LDAP_DEBUG) config.LDAP_DEBUG = (process.env.LDAP_DEBUG == "true");
+if (process.env.LDAP_DEBUG) config.LDAP_DEBUG = (process.env.LDAP_DEBUG == "true" || process.env.LDAP_DEBUG == "1");
 
 config.LDAP_ALLOWCACHEDLOGINONFAILURE = true;
-if (process.env.LDAP_ALLOWCACHEDLOGINONFAILURE) config.LDAP_ALLOWCACHEDLOGINONFAILURE = (process.env.LDAP_ALLOWCACHEDLOGINONFAILURE == "true");
+if (process.env.LDAP_ALLOWCACHEDLOGINONFAILURE) config.LDAP_ALLOWCACHEDLOGINONFAILURE = (process.env.LDAP_ALLOWCACHEDLOGINONFAILURE == "true" || process.env.LDAP_ALLOWCACHEDLOGINONFAILURE == "1");
 
 config.LDAP_SAMBANTPWD_MAXCACHETIME = process.env.LDAP_SAMBANTPWD_MAXCACHETIME || -1;
 
 // LDAPS
 config.LDAPS_CERTIFICATE = process.env.LDAPS_CERTIFICATE;
 config.LDAPS_KEY = process.env.LDAPS_KEY;
+
+// DSM 7.0
+config.DSM7 = false;
+if (process.env.DSM7) config.DSM7 = (process.env.DSM7 == "true" || process.env.DSM7 == "1");
 
 // export
 module.exports = config;

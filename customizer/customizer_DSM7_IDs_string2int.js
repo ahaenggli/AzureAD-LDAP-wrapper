@@ -1,7 +1,17 @@
+'use strict';
+
 const config = require('../config');
 const helper = require('../helper');
 
 var customizer = {};
+
+// all possible funcitons
+// customizer.ModifyLDAPUser    = function (ldapuser, azureuser) { return ldapuser; };
+// customizer.ModifyLDAPGroup   = function (ldapgroup, azuregroup) { return ldapgroup; };
+// customizer.ModifyLDAPGlobal  = function (all) { return all; };
+// customizer.ModifyAzureUsers  = function (azureusers) { return azureusers; };
+// customizer.ModifyAzureGroups = function (azuregroups) { return azuregroups; };
+
 
 // convert gidNumber from string to int
 customizer.ModifyLDAPGroup = function (ldapgroup, azuregroup) {
@@ -36,29 +46,21 @@ customizer.ModifyLDAPUser = function (ldapuser, azureuser) {
 };
 
 customizer.ModifyLDAPGlobal = function (all) {
-
     for (var key of Object.keys(all)) {
         //console.log(`${key}: ${value}`);
-
         if(!all[key].hasOwnProperty("namingContexts")){
             //if(all[key].hasOwnProperty("hasSubordinates"))   delete all[key].hasSubordinates;
             //if(all[key].hasOwnProperty("subschemaSubentry")) delete all[key].subschemaSubentry;
         }
     }
 
-
     return all;
-
 };
-
-// customizer.ModifyLDAPUser = function (ldapuser, azureuser) { return ldapuser; };
-// customizer.ModifyAzureUsers  = function (azureusers) { return azureusers; };
-// customizer.ModifyAzureGroups = function (azuregroups) { return azuregroups; };
 
 // only users in my domain
 /*
-customizer.customizeUsers = function (users) {
-    return Object.values(users).filter(u => u.hasOwnProperty("givenName") && u.hasOwnProperty("userPrincipalName") && u.givenName != null && u.userPrincipalName.toString().endsWith(config.LDAP_DOMAIN));
+customizer.ModifyAzureUsers = function (azureusers) {
+    return Object.values(azureusers).filter(u => u.hasOwnProperty("givenName") && u.hasOwnProperty("userPrincipalName") && u.givenName != null && u.userPrincipalName.toString().endsWith(config.LDAP_DOMAIN));
 };
 */
 

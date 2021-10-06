@@ -5,6 +5,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased] (in 'dev')
+### Added
+- env var `LDAP_SYNC_TIME` to set the interval for fetching users/groups from azure database. Default is 30 minutes. (thx @oleksandr-mazur)
+- env var `DSM7` to activate the DSM 7.0 workaround. It handles gidNumber and uidNumber as integers instead of strings.
+- Handler to use custom JavaScript to modify your ldap attributes  
+This allows you e.g. to filter your azure user/groups or modify the ldap attributes. This method is also used in the DSM7 workaround.
+Look at [this](./customizer/customizer_DSM7_IDs_string2int.js) file for an example. Customize it as you need and map the file in your docker setup as `/app/customizer/ldap_customizer.js`. 
 
 ## [1.4.0] - 2021-07-25
 ### Added
@@ -106,6 +112,7 @@ if set to true and the login is failed, the login is retried against the sambaNT
 
 
 [Unreleased]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/projects/1
+[1.5.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.5.0
 [1.4.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.4.0
 [1.3.1]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.3.1
 [1.3.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.3.0

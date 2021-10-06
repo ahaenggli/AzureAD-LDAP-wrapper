@@ -33,6 +33,9 @@ ldapwrapper.do = async function () {
     }
 
     var customizer = {};
+    if (config.DSM7 && fs.existsSync('./customizer/customizer_DSM7_IDs_string2int.js')) {
+      customizer = require('./customizer/customizer_DSM7_IDs_string2int');
+    }
     if (fs.existsSync('./customizer/ldap_customizer.js')) {
       customizer = require('./customizer/ldap_customizer');
     }
