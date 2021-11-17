@@ -79,8 +79,9 @@ var schemaDB = {
             "objectClasses": ""
             };
 // source: https://www.iana.org/assignments/ldap-parameters/ldap-parameters.xhtml#ldap-parameters-8
-schemaDB["ldapSyntaxes"] = helper.ReadCSVfile('./schema/ldapSyntaxes.csv', function (row) { return '(' + row[0] + ' DESC ' + row[1] + ')'; });
+// schemaDB["ldapSyntaxes"] = helper.ReadCSVfile('./schema/ldapSyntaxes.csv', function (row) { return '(' + row[0] + ' DESC ' + row[1] + ')'; });
 // source: extraced via ./schema/ldap_seacher.ps1
+schemaDB["ldapSyntaxes"] = helper.ReadCSVfile('./schema/ldapSyntaxes2.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });
 schemaDB["matchingRules"] = helper.ReadCSVfile('./schema/matchingRules.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });
 schemaDB["matchingRuleUse"] = helper.ReadCSVfile('./schema/matchingRuleUse.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });
 schemaDB["attributeTypes"] = helper.ReadCSVfile('./schema/attributeTypes.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });

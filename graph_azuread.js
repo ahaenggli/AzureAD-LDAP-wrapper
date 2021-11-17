@@ -81,6 +81,7 @@ graph.callApi = async function callApi(endpoint, accessToken, opts = {}) {
     }
 };
 
+
 const msRestNodeauth = require("@azure/ms-rest-nodeauth");
 graph.loginWithUsernamePassword = function loginWithUsernamePassword(username, password, func = null) {
     return msRestNodeauth.loginWithUsernamePassword(username, password, { domain: config.AZURE_TENANTID }).then(() => {
@@ -100,31 +101,53 @@ graph.loginWithUsernamePassword = function loginWithUsernamePassword(username, p
     });
 };
 
-//"@azure/identity": "1.5.1",
+
+//"@azure/identity": "1.5.2",
 /*
 const aIdentity = require("@azure/identity");
-graph.loginWithUsernamePasswordAzureIdentity = function loginWithUsernamePassword(username, password, func = null) {
-    let credential = new UsernamePasswordCredential(
-        config.AZURE_TENANTID,
-        config.AZURE_APP_ID,
-        username,
-        password
-    );
+graph.loginWithUsernamePassword = async function loginWithUsernamePassword(username, password, func = null) {
 
     try {
-        let token = credential.getToken();
-        return 1;
-    } catch(error) {
-        helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
-        // 50126: wrong credentials
-        if (error && error.toString().indexOf('[50126]') > -1) return 0;
-        // 50057: account disabled
-        else if (error && error.toString().indexOf('[50057]') > -1) return 0;
-        // other errors (not wrong credentials)
-        else if (error) return 2;
+        
+        
+        let credential = new aIdentity.UsernamePasswordCredential(
+            config.AZURE_TENANTID,
+            config.AZURE_APP_ID,
+            username,
+            password
+        );
+                        
+        //return new Promise(function(resolve, reject) {resolve(0);reject(0);});
+        return  credential.getToken('User.Read.All').then(() => {
+            return 1;
+        }).catch((error) => {
+            // is it an error with ms typical attributes?
+            if(error.hasOwnProperty("errorResponse") && error.errorResponse.hasOwnProperty("errorDescription") && error.errorResponse.hasOwnProperty("errorCodes") )
+            {
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", error.errorResponse);
+                // 50126: wrong credentials
+                if(error.errorResponse.errorCodes.includes(50126)) {
+                    helper.error('graph_azuread.js', "loginWithUsernamePassword", {error: "wrong credentials", username: username});
+                    return 0;
+                }
+                // 50057: account disabled
+                if(error.errorResponse.errorCodes.includes(50057)){ 
+                    helper.error('graph_azuread.js', "loginWithUsernamePassword", {error: "account disabled", username: username});
+                    return 0;
+                }
+                // sure is sure... 
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", error.errorResponse);
+                return 0;          
+            }
 
-        // fallback...
-        return 0;
+            helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
+            // fallback: try it with cached passwords
+            return 2;
+        });
+
+    } catch (error) {
+        helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
+        return new Promise(function(resolve, reject) {resolve(2);reject(2);});
     }
 };
 */
