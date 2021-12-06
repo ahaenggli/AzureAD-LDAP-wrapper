@@ -72,23 +72,73 @@ setInterval(interval_func, interval);
 
 /* build schema */
 var schemaDB = {
-            "ldapSyntaxes": "",
-            "matchingRules": "",
-            "matchingRuleUse": "",
-            "attributeTypes": "",
-            "objectClasses": ""
-            };
+    "ldapSyntaxes": "",
+    "matchingRules": "",
+    "matchingRuleUse": "",
+    "attributeTypes": "",
+    "objectClasses": ""
+};
 // source: https://www.iana.org/assignments/ldap-parameters/ldap-parameters.xhtml#ldap-parameters-8
 // schemaDB["ldapSyntaxes"] = helper.ReadCSVfile('./schema/ldapSyntaxes.csv', function (row) { return '(' + row[0] + ' DESC ' + row[1] + ')'; });
 // source: extraced via ./schema/ldap_seacher.ps1
-schemaDB["ldapSyntaxes"] = helper.ReadCSVfile('./schema/ldapSyntaxes2.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });
-schemaDB["matchingRules"] = helper.ReadCSVfile('./schema/matchingRules.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });
-schemaDB["matchingRuleUse"] = helper.ReadCSVfile('./schema/matchingRuleUse.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });
-schemaDB["attributeTypes"] = helper.ReadCSVfile('./schema/attributeTypes.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });
-schemaDB["objectClasses"] = helper.ReadCSVfile('./schema/objectClasses.csv', function (row) { if(Array.isArray(row)) return  row.join(","); else return row; });
+schemaDB["ldapSyntaxes"] = helper.ReadCSVfile('./schema/ldapSyntaxes2.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
+schemaDB["matchingRules"] = helper.ReadCSVfile('./schema/matchingRules.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
+schemaDB["matchingRuleUse"] = helper.ReadCSVfile('./schema/matchingRuleUse.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
+schemaDB["attributeTypes"] = helper.ReadCSVfile('./schema/attributeTypes.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
+schemaDB["objectClasses"] = helper.ReadCSVfile('./schema/objectClasses.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
+
+
+///--- Shared handlers
+const SUFFIX = '';
+function authorize(req, res, next) {
+    /* Any user may search after bind, only cn=root has full power */
+    var bindi = req.connection.ldap.bindDN.toString().replace(/ /g, '');
+    var username = bindi.replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
+
+    const isSearch = (req instanceof ldap.SearchRequest);
+    const isAdmin = true;//(config.LDAP_BINDUSER && config.LDAP_BINDUSER.toString().split("||").indexOf(username + '|') > -1);
+
+    if (!isAdmin && !isSearch) {
+        helper.error("server.js", "authorize - denied for => ", username, bindi);
+        return next(new ldap.InsufficientAccessRightsError());
+    }
+
+    return next();
+}
+
+function removeSensitiveAttributes(binduser, dn, attributes) {
+
+    if (attributes && attributes.hasOwnProperty("sambaNTPassword")) {
+        var allowSensitiveAttributes = false;
+
+        if (binduser.equals(dn)) allowSensitiveAttributes = true;
+
+        if (config.LDAP_BINDUSER) {
+            for (var u of config.LDAP_BINDUSER.toString().split("||")) {
+                u = u.split("|")[0];
+                var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
+                if (u === username) allowSensitiveAttributes = true;
+            }
+        }
+
+        if (config.LDAP_SAMBANTPWD_MAXCACHETIME && attributes["sambaPwdLastSet"])
+            if (config.LDAP_SAMBANTPWD_MAXCACHETIME != -1)
+                if ((attributes["sambaPwdLastSet"] + config.LDAP_SAMBANTPWD_MAXCACHETIME * 60) < Math.floor(Date.now() / 1000))
+                    allowSensitiveAttributes = false;
+
+        if (!allowSensitiveAttributes) {
+            attributes["sambaNTPassword"] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+            attributes["sambaPwdLastSet"] = 0;
+        }
+
+    }
+
+    return attributes;
+}
+
 
 // Auth via azure for binding
-server.bind('', (req, res, next) => {
+server.bind(SUFFIX, (req, res, next) => {
     try {
         var dn = req.dn.toString().replace(/ /g, '');
 
@@ -165,38 +215,9 @@ server.bind('', (req, res, next) => {
     }
 });
 
-function removeSensitiveAttributes(binduser, dn, attributes) {
-
-    if (attributes && attributes.hasOwnProperty("sambaNTPassword")) {
-        var allowSensitiveAttributes = false;
-
-        if (binduser.equals(dn)) allowSensitiveAttributes = true;
-
-        if (config.LDAP_BINDUSER) {
-            for (var u of config.LDAP_BINDUSER.toString().split("||")) {
-                u = u.split("|")[0];
-                var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
-                if (u === username) allowSensitiveAttributes = true;
-            }
-        }
-
-        if (config.LDAP_SAMBANTPWD_MAXCACHETIME && attributes["sambaPwdLastSet"])
-            if (config.LDAP_SAMBANTPWD_MAXCACHETIME != -1)
-                if ((attributes["sambaPwdLastSet"] + config.LDAP_SAMBANTPWD_MAXCACHETIME * 60) < Math.floor(Date.now() / 1000))
-                    allowSensitiveAttributes = false;
-
-        if (!allowSensitiveAttributes) {
-            attributes["sambaNTPassword"] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-            attributes["sambaPwdLastSet"] = 0;
-        }
-
-    }
-
-    return attributes;
-}
 
 // search
-server.search('', (req, res, next) => {
+server.search(SUFFIX, authorize, (req, res, next) => {
     try {
         var dn = req.dn.toString().toLowerCase().replace(/ /g, '');
         if (!dn) dn = config.LDAP_BASEDN;
@@ -270,6 +291,152 @@ server.search('', (req, res, next) => {
         helper.error("server.js", "server.search", error);
     }
 });
+
+
+/* ldapjs modify entries: START */
+
+// compare entries  
+server.compare(SUFFIX, authorize, (req, res, next) => {
+    const dn = req.dn.toString();
+    if (!db[dn])
+        return next(new ldap.NoSuchObjectError(dn));
+
+    if (!db[dn][req.attribute])
+        return next(new ldap.NoSuchAttributeError(req.attribute));
+
+    const matches = false;
+    const vals = db[dn][req.attribute];
+    for (const value of vals) {
+        if (value === req.value) {
+            matches = true;
+            break;
+        }
+    }
+
+    res.end(matches);
+    return next();
+});
+
+// add entries  
+server.add(SUFFIX, authorize, (req, res, next) => {
+    const dn = req.dn.toString().toLowerCase().replace(/  /g, ' ').replace(/, /g, ',');
+
+    if (db[dn]) {
+        helper.error("server.js", "add", "EntryAlreadyExistsError", dn);
+        return next(new ldap.EntryAlreadyExistsError(dn));
+    }
+
+    db[dn] = Object.assign({}, req.toObject().attributes);
+    for (var key in db[dn]) {
+        if (['objectclass', 'memberuid', 'member', 'memberof'].indexOf(key.toLowerCase()) === -1 && db[dn][key].length == 1) {
+            db[dn][key] = db[dn][key][0];
+        }
+    }
+
+    helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);
+    res.end();
+    return next();
+});
+
+
+// delete entries
+server.del(SUFFIX, authorize, (req, res, next) => {
+    const dn = req.dn.toString().toLowerCase().replace(/  /g, ' ').replace(/, /g, ',');
+
+    if (!db[dn]) {
+        helper.error("server.js", "del", "NoSuchObjectError", dn);
+        return next(new ldap.NoSuchObjectError(dn));
+    }
+
+    delete db[dn];
+
+    helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);
+    res.end();
+    return next();
+});
+
+// edit entries
+server.modify(SUFFIX, authorize, (req, res, next) => {
+    const dn = req.dn.toString().toLowerCase().replace(/  /g, ' ').replace(/, /g, ',');
+
+    if (!req.changes.length) {
+        helper.error("server.js", "modify", "ProtocolError", req.changes);
+        return next(new ldap.ProtocolError('changes required'));
+    }
+
+    if (!db[dn]) {
+        helper.error("server.js", "modify", "NoSuchObjectError", dn);
+        return next(new ldap.NoSuchObjectError(dn));
+    }
+
+    const entry = db[dn];
+
+    helper.log("server.js", "modify", "dn", dn);
+    helper.log("server.js", "modify", "req.changes", req.changes);
+
+    for (const change of req.changes) {
+
+        var mod = change.modification;
+
+        // change search attribute(s) to make it "case in-sensitive"
+        var modType = Object.keys(entry).find(key => key.toLowerCase() === mod.type.toLowerCase()) || mod.type;
+        var modVals = mod.vals;
+
+        // modifiy array to single entry
+        if (['objectclass', 'memberuid', 'member', 'memberof'].indexOf(modType.toLowerCase()) === -1 && modVals.length == 1) {
+            modVals = modVals[0];
+        }
+
+        //helper.error("server.js", "modify", "modVals2", modVals);
+        switch (change.operation) {
+            case 'replace':
+                if (!entry[modType]) {
+                    helper.error("server.js", "modify", "NoSuchAttributeError", modType);
+                    return next(new ldap.NoSuchAttributeError(modType));
+                }
+                //helper.error("server.js", "modify", "Info", modType);
+                //helper.error("server.js", "modify", "Info", modVals);
+
+
+                if (!modVals || !modVals.length) {
+                    delete entry[modType];
+                } else {
+                    entry[modType] = modVals;
+                }
+
+                break;
+
+            case 'add':
+                if (!entry[modType]) {
+                    entry[modType] = modVals;
+                } else {
+                    for (const v of modVals) {
+                        if (entry[modType].indexOf(v) === -1)
+                            entry[modType].push(v);
+                    }
+                }
+
+                break;
+
+            case 'delete':
+                if (!entry[modType]) {
+                    helper.error("server.js", "modify", "NoSuchAttributeError", modType);
+                    return next(new ldap.NoSuchAttributeError(modType));
+                }else{
+                    delete entry[modType];
+                }
+                break;
+        }
+    }
+
+    db[dn] = entry;
+
+    helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);
+    res.end();
+    return next();
+});
+
+/* ldapjs modify entries: ENDE */
 
 server.on("uncaughtException", (error) => {
     helper.error("server.js", "!!! uncaughtException !!!", error);

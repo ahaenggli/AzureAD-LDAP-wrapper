@@ -39,11 +39,11 @@ ldapwrapper.do = async function () {
     if (fs.existsSync('./customizer/ldap_customizer.js')) {
       customizer = require('./customizer/ldap_customizer');
     }
-    if (typeof customizer.ModifyLDAPUser   === "undefined") customizer.ModifyLDAPUser = function (ldapuser, azureuser) { return ldapuser; };
-    if (typeof customizer.ModifyLDAPGroup  === "undefined") customizer.ModifyLDAPGroup = function (ldapgroup, azuregroup) { return ldapgroup; };
+    if (typeof customizer.ModifyLDAPUser === "undefined") customizer.ModifyLDAPUser = function (ldapuser, azureuser) { return ldapuser; };
+    if (typeof customizer.ModifyLDAPGroup === "undefined") customizer.ModifyLDAPGroup = function (ldapgroup, azuregroup) { return ldapgroup; };
     if (typeof customizer.ModifyLDAPGlobal === "undefined") customizer.ModifyLDAPGlobal = function (all) { return all; };
-    if (typeof customizer.ModifyAzureUsers   === "undefined") customizer.ModifyAzureUsers  = function (azureusers) { return azureusers; };
-    if (typeof customizer.ModifyAzureGroups  === "undefined") customizer.ModifyAzureGroups = function (azuregroups) { return azuregroups; };
+    if (typeof customizer.ModifyAzureUsers === "undefined") customizer.ModifyAzureUsers = function (azureusers) { return azureusers; };
+    if (typeof customizer.ModifyAzureGroups === "undefined") customizer.ModifyAzureGroups = function (azuregroups) { return azuregroups; };
 
     const graph_azureResponse = await graph_azure.getToken(graph_azure.tokenRequest);
     if (!graph_azureResponse) helper.error("ldapwrapper.js", "graph_azureResponse missing");
@@ -57,19 +57,29 @@ ldapwrapper.do = async function () {
       delete db[db[config.LDAP_BASEDN].entryDN];
     }
 
-    db[config.LDAP_BASEDN] = {
-      "objectClass": "domain",
-      "dc": config.LDAP_BASEDN.replace('dc=', '').split(",")[0],
-      "entryDN": config.LDAP_BASEDN,
-      "entryUUID": "e927be8d-aab8-42f2-80c3-b2762415aed1",
-      "namingContexts": config.LDAP_BASEDN,
-      "structuralObjectClass": "domain",
-      "hasSubordinates": "TRUE",
-      "subschemaSubentry": "cn=Subschema"
-    };
+    db[config.LDAP_BASEDN] = Object.assign({},
+      // default values
+      {
+        "objectClass": "domain",
+        "dc": config.LDAP_BASEDN.replace('dc=', '').split(",")[0],
+        "entryDN": config.LDAP_BASEDN,
+        "entryUUID": "e927be8d-aab8-42f2-80c3-b2762415aed1",
+        "namingContexts": config.LDAP_BASEDN,
+        "structuralObjectClass": "domain",
+        "hasSubordinates": "TRUE",
+        "subschemaSubentry": "cn=Subschema",
+      },
+      // merge existing values
+      db[config.LDAP_BASEDN],
+      // overwrite values from before
+      {
+        "dc": config.LDAP_BASEDN.replace('dc=', '').split(",")[0],
+        "entryDN": config.LDAP_BASEDN,
+        "namingContexts": config.LDAP_BASEDN,
+      });
 
     var sambaDomainName = config.LDAP_BASEDN.split(",")[0].replace("dc=", "");
-    var LDAP_SAMBA = "sambaDomainName="+sambaDomainName+"," + config.LDAP_BASEDN;
+    var LDAP_SAMBA = "sambaDomainName=" + sambaDomainName + "," + config.LDAP_BASEDN;
     LDAP_SAMBA = LDAP_SAMBA.toLowerCase();
 
     let mergeSambaDN = Object.values(db).filter(g => g.entryUUID == '1af6e064-8a89-4ea0-853b-c5476a50877f' && g.entryDN != LDAP_SAMBA);
@@ -78,24 +88,34 @@ ldapwrapper.do = async function () {
       delete db[db[LDAP_SAMBA].entryDN];
     }
 
-    db[LDAP_SAMBA] = {
-       "sambaDomainName": sambaDomainName.toUpperCase() /* must be uppercase */
-      ,"sambaLogonToChgPwd": 0
-      ,"sambaLockoutObservationWindow": 30
-      ,"sambaMaxPwdAge": -1
-      ,"sambaRefuseMachinePwdChange": 0
-      ,"sambaLockoutThreshold": 0
-      ,"sambaMinPwdAge": 0
-      ,"sambaForceLogoff": -1
-      ,"sambaLockoutDuration": 30
-      ,"sambaSID": "S-1-5-21-2475342291-1480345137-508597502"
-      ,"sambaPwdHistoryLength": 0
-      ,"sambaMinPwdLength": 1
-      ,"objectClass": "sambaDomain"
-      ,"structuralObjectClass": "sambaDomain"
-      ,"entryUUID": "1af6e064-8a89-4ea0-853b-c5476a50877f"
-      ,"entryDN": LDAP_SAMBA
-    };
+    db[LDAP_SAMBA] = Object.assign({},
+      // default values
+      {
+        "sambaDomainName": sambaDomainName.toUpperCase(), /* must be uppercase */
+        "sambaLogonToChgPwd": 0,
+        "sambaLockoutObservationWindow": 30,
+        "sambaMaxPwdAge": -1,
+        "sambaRefuseMachinePwdChange": 0,
+        "sambaLockoutThreshold": 0,
+        "sambaMinPwdAge": 0,
+        "sambaForceLogoff": -1,
+        "sambaLockoutDuration": 30,
+        "sambaSID": "S-1-5-21-2475342291-1480345137-508597502",
+        "sambaPwdHistoryLength": 0,
+        "sambaMinPwdLength": 1,
+        "objectClass": "sambaDomain",
+        "structuralObjectClass": "sambaDomain",
+        "entryUUID": "1af6e064-8a89-4ea0-853b-c5476a50877f",
+        "entryDN": LDAP_SAMBA,
+      },
+      // merge existing values
+      db[LDAP_SAMBA],
+      // overwrite values from before
+      {
+        "sambaDomainName": sambaDomainName.toUpperCase(), /* must be uppercase */
+        "entryDN": LDAP_SAMBA,
+      }
+    );
 
     let mergeUSERSDN = Object.values(db).filter(g => g.entryUUID == '3e01f47d-96a1-4cb4-803f-7dd17991c6bd' && g.entryDN != config.LDAP_USERSDN);
     if (mergeUSERSDN.length == 1) {
@@ -103,15 +123,24 @@ ldapwrapper.do = async function () {
       delete db[db[config.LDAP_USERSDN].entryDN];
     }
 
-    db[config.LDAP_USERSDN] = {
-      "objectClass": "organizationalRole",
-      "cn": config.LDAP_USERSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
-      "entryDN": config.LDAP_USERSDN,
-      "entryUUID": "3e01f47d-96a1-4cb4-803f-7dd17991c6bd",
-      "structuralObjectClass": "organizationalRole",
-      "hasSubordinates": "TRUE",
-      "subschemaSubentry": "cn=Subschema"
-    };
+    db[config.LDAP_USERSDN] = Object.assign({},
+      // default values
+      {
+        "objectClass": "organizationalRole",
+        "cn": config.LDAP_USERSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
+        "entryDN": config.LDAP_USERSDN,
+        "entryUUID": "3e01f47d-96a1-4cb4-803f-7dd17991c6bd",
+        "structuralObjectClass": "organizationalRole",
+        "hasSubordinates": "TRUE",
+        "subschemaSubentry": "cn=Subschema",
+      },
+      // merge existing values
+      db[config.LDAP_USERSDN],
+      // overwrite values from before
+      {
+        "cn": config.LDAP_USERSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
+        "entryDN": config.LDAP_USERSDN,
+      });
 
     let mergeGROUPSDN = Object.values(db).filter(g => g.entryUUID == '39af84ac-8e5a-483e-9621-e657385b07b5' && g.entryDN != config.LDAP_GROUPSDN);
     if (mergeGROUPSDN.length == 1) {
@@ -119,15 +148,24 @@ ldapwrapper.do = async function () {
       delete db[db[config.LDAP_GROUPSDN].entryDN];
     }
 
-    db[config.LDAP_GROUPSDN] = {
-      "objectClass": "organizationalRole",
-      "cn": config.LDAP_GROUPSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
-      "entryDN": config.LDAP_GROUPSDN,
-      "entryUUID": "39af84ac-8e5a-483e-9621-e657385b07b5",
-      "structuralObjectClass": "organizationalRole",
-      "hasSubordinates": "TRUE",
-      "subschemaSubentry": "cn=Subschema"
-    };
+    db[config.LDAP_GROUPSDN] = Object.assign({},
+      // default values
+      {
+        "cn": config.LDAP_GROUPSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
+        "entryDN": config.LDAP_GROUPSDN,
+        "objectClass": "organizationalRole",
+        "entryUUID": "39af84ac-8e5a-483e-9621-e657385b07b5",
+        "structuralObjectClass": "organizationalRole",
+        "hasSubordinates": "TRUE",
+        "subschemaSubentry": "cn=Subschema",
+      },
+      // merge existing values
+      db[config.LDAP_GROUPSDN],
+      // overwrite values from before
+      {
+        "cn": config.LDAP_GROUPSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
+        "entryDN": config.LDAP_GROUPSDN,
+      });
 
     var usersGroupDn_hash = Math.abs(encode().value(config.LDAP_USERSGROUPSBASEDN)).toString();
 
@@ -139,30 +177,42 @@ ldapwrapper.do = async function () {
 
     if (db[config.LDAP_USERSGROUPSBASEDN] && db[config.LDAP_USERSGROUPSBASEDN].hasOwnProperty('gidNumber')) usersGroupDn_hash = (db[config.LDAP_USERSGROUPSBASEDN].gidNumber.toString());
 
-    db[config.LDAP_USERSGROUPSBASEDN] = {
-      "objectClass": [
-        "top",
-        "posixGroup",
-        "extensibleObject",
-        "apple-group",
-        "sambaGroupMapping",
-        "sambaIdmapEntry"
-      ],
-      "cn": config.LDAP_USERSGROUPSBASEDN.replace("," + config.LDAP_GROUPSDN, '').replace('cn=', ""),
-      "description": "Users default group",
-      "displayName": config.LDAP_USERSGROUPSBASEDN.replace("," + config.LDAP_GROUPSDN, '').replace('cn=', ""),
-      "entryDN": config.LDAP_USERSGROUPSBASEDN,
-      "entryUUID": "938f7407-8e5a-48e9-a852-d862fa3bb1bc",
-      "apple-generateduid": "938f7407-8e5a-48e9-a852-d862fa3bb1bc",
-      "gidNumber": usersGroupDn_hash,
-      "member": [],
-      "memberUid": [],
-      "sambaGroupType": 2,
-      "sambaSID": "S-1-5-21-" + usersGroupDn_hash + "-" + usersGroupDn_hash + "-" + usersGroupDn_hash,
-      "structuralObjectClass": "posixGroup",
-      "hasSubordinates": "FALSE",
-      "subschemaSubentry": "cn=Subschema"
-    };
+    db[config.LDAP_USERSGROUPSBASEDN] = Object.assign({},
+      // default values
+      {
+        "objectClass": [
+          "top",
+          "posixGroup",
+          "extensibleObject",
+          "apple-group",
+          "sambaGroupMapping",
+          "sambaIdmapEntry"
+        ],
+        "cn": config.LDAP_USERSGROUPSBASEDN.replace("," + config.LDAP_GROUPSDN, '').replace('cn=', ""),
+        "description": "Users default group",
+        "displayName": config.LDAP_USERSGROUPSBASEDN.replace("," + config.LDAP_GROUPSDN, '').replace('cn=', ""),
+        "entryDN": config.LDAP_USERSGROUPSBASEDN,
+        "entryUUID": "938f7407-8e5a-48e9-a852-d862fa3bb1bc",
+        "apple-generateduid": "938f7407-8e5a-48e9-a852-d862fa3bb1bc",
+        "gidNumber": usersGroupDn_hash,
+        "member": [],
+        "memberUid": [],
+        "sambaGroupType": 2,
+        "sambaSID": "S-1-5-21-" + usersGroupDn_hash + "-" + usersGroupDn_hash + "-" + usersGroupDn_hash,
+        "structuralObjectClass": "posixGroup",
+        "hasSubordinates": "FALSE",
+        "subschemaSubentry": "cn=Subschema"
+      },
+      // merge existing values
+      db[config.LDAP_USERSGROUPSBASEDN],
+      // overwrite values from before
+      {
+        "cn": config.LDAP_USERSGROUPSBASEDN.replace("," + config.LDAP_GROUPSDN, '').replace('cn=', ""),
+        "entryDN": config.LDAP_USERSGROUPSBASEDN,
+        "displayName": config.LDAP_USERSGROUPSBASEDN.replace("," + config.LDAP_GROUPSDN, '').replace('cn=', ""),
+        "member": [],
+        "memberUid": [],
+      });
 
     db[config.LDAP_USERSGROUPSBASEDN] = customizer.ModifyLDAPGroup(db[config.LDAP_USERSGROUPSBASEDN], {});
 
@@ -203,30 +253,40 @@ ldapwrapper.do = async function () {
       let group_hash = Math.abs(encode().value(group.id)).toString();
       if (db[gpName] && db[gpName].hasOwnProperty('gidNumber')) group_hash = (db[gpName].gidNumber.toString());
 
-      db[gpName] = {
-        "objectClass": [
-          "top",
-          "posixGroup",
-          "extensibleObject",
-          "apple-group",
-          "sambaGroupMapping",
-          "sambaIdmapEntry"
-        ],
-        "cn": groupDisplayName.toLowerCase(),
-        "description": (group.description || ""),
-        "displayName": groupDisplayName,
-        "entryDN": gpName,
-        "entryUUID": group.id,
-        "apple-generateduid": group.id,
-        "gidNumber": group_hash,
-        "member": [],
-        "memberUid": [],
-        "sambaGroupType": 2,
-        "sambaSID": group.securityIdentifier,
-        "structuralObjectClass": "posixGroup",
-        "hasSubordinates": "FALSE",
-        "subschemaSubentry": "cn=Subschema"
-      };
+      db[gpName] = Object.assign({},
+        // default values
+        {
+          "objectClass": [
+            "top",
+            "posixGroup",
+            "extensibleObject",
+            "apple-group",
+            "sambaGroupMapping",
+            "sambaIdmapEntry"
+          ],
+          "cn": groupDisplayName.toLowerCase(),
+          "description": (group.description || ""),
+          "displayName": groupDisplayName,
+          "entryDN": gpName,
+          "entryUUID": group.id,
+          "apple-generateduid": group.id,
+          "gidNumber": group_hash,
+          "member": [],
+          "memberUid": [],
+          "sambaGroupType": 2,
+          "sambaSID": group.securityIdentifier,
+          "structuralObjectClass": "posixGroup",
+          "hasSubordinates": "FALSE",
+          "subschemaSubentry": "cn=Subschema"
+        },
+        // merge existing values
+        db[gpName],
+        // overwrite values from before
+        {
+          "cn": groupDisplayName.toLowerCase(),
+          "entryDN": gpName,
+          "description": (group.description || ""),
+        });
 
       db[gpName] = customizer.ModifyLDAPGroup(db[gpName], group);
 
@@ -327,52 +387,71 @@ ldapwrapper.do = async function () {
           if (db[g].memberUid.indexOf(userPrincipalName) < 0) { db[g].memberUid.push(userPrincipalName); }
         }
 
-        db[upName] = {
-          "objectClass": [
-            "top",
-            "posixAccount",
-            "shadowAccount",
-            "person",
-            "organizationalPerson",
-            "inetOrgPerson",
-            "apple-user",
-            "sambaSamAccount",
-            "sambaIdmapEntry",
-            "extensibleObject"
-          ],
-          "apple-generateduid": user.id,
-          "authAuthority": ";basic;",
-          "cn": userPrincipalName.toLowerCase(),
-          "displayName": user.displayName,
-          "entryDN": upName,
-          "entryUUID": user.id,
-          "gidNumber": db[config.LDAP_USERSGROUPSBASEDN].gidNumber,
-          "givenName": user.givenName,
-          "homeDirectory": "/home/" + userPrincipalName,
-          "loginShell": "/bin/sh",
-          "mail": user.mail,
-          "memberOf": user_to_groups[user.id],
-          "sambaAcctFlags": "[U          ]",
-          "sambaLMPassword": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-          "sambaNTPassword": sambaNTPassword,
-          "sambaPasswordHistory": "0000000000000000000000000000000000000000000000000000000000000000",
-          "sambaPwdLastSet": sambaPwdLastSet,
-          "sambaSID": "S-1-5-21-" + user_hash + "-" + user_hash + "-" + user_hash,
-          "sAMAccountName": userPrincipalName,
-          "shadowExpire": -1,
-          "shadowFlag": 0,
-          "shadowInactive": 0,
-          "shadowLastChange": 17399,
-          "shadowMax": 99999,
-          "shadowMin": 0,
-          "shadowWarning": 7,
-          "sn": user.surname,
-          "uid": userPrincipalName,
-          "uidNumber": user_hash,
-          "structuralObjectClass": "inetOrgPerson",
-          "hasSubordinates": "FALSE",
-          "subschemaSubentry": "cn=Subschema"
-        };
+        db[upName] = Object.assign({},
+          // default values
+          {
+            "objectClass": [
+              "top",
+              "posixAccount",
+              "shadowAccount",
+              "person",
+              "organizationalPerson",
+              "inetOrgPerson",
+              "apple-user",
+              "sambaSamAccount",
+              "sambaIdmapEntry",
+              "extensibleObject"
+            ],
+            "apple-generateduid": user.id,
+            "authAuthority": ";basic;",
+            "cn": userPrincipalName.toLowerCase(),
+            "displayName": user.displayName,
+            "entryDN": upName,
+            "entryUUID": user.id,
+            "gidNumber": db[config.LDAP_USERSGROUPSBASEDN].gidNumber,
+            "givenName": user.givenName,
+            "homeDirectory": "/home/" + userPrincipalName,
+            "loginShell": "/bin/sh",
+            "mail": user.mail,
+            "memberOf": user_to_groups[user.id],
+            "sambaAcctFlags": "[U          ]",
+            "sambaLMPassword": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+            "sambaNTPassword": sambaNTPassword,
+            "sambaPasswordHistory": "0000000000000000000000000000000000000000000000000000000000000000",
+            "sambaPwdLastSet": sambaPwdLastSet,
+            "sambaSID": "S-1-5-21-" + user_hash + "-" + user_hash + "-" + user_hash,
+            "sAMAccountName": userPrincipalName,
+            "shadowExpire": -1,
+            "shadowFlag": 0,
+            "shadowInactive": 0,
+            "shadowLastChange": 17399,
+            "shadowMax": 99999,
+            "shadowMin": 0,
+            "shadowWarning": 7,
+            "sn": user.surname,
+            "uid": userPrincipalName,
+            "uidNumber": user_hash,
+            "structuralObjectClass": "inetOrgPerson",
+            "hasSubordinates": "FALSE",
+            "subschemaSubentry": "cn=Subschema"
+          },
+          // merge existing values
+          db[upName],
+          // overwrite values from before
+          {
+            "cn": userPrincipalName.toLowerCase(),
+            "entryDN": upName,
+            "uid": userPrincipalName,
+            "displayName": user.displayName,
+            "sAMAccountName": userPrincipalName,
+            "givenName": user.givenName,
+            "sn": user.surname,
+            "homeDirectory": "/home/" + userPrincipalName,
+            "mail": user.mail,
+            "memberOf": user_to_groups[user.id],
+            "gidNumber": db[config.LDAP_USERSGROUPSBASEDN].gidNumber,
+
+          });
 
         db[upName] = customizer.ModifyLDAPUser(db[upName], user);
 
