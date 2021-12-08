@@ -96,7 +96,7 @@ function authorize(req, res, next) {
     var username = bindi.replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
 
     const isSearch = (req instanceof ldap.SearchRequest);
-    const isAdmin = true;//(config.LDAP_BINDUSER && config.LDAP_BINDUSER.toString().split("||").indexOf(username + '|') > -1);
+    const isAdmin = (config.LDAP_BINDUSER && config.LDAP_BINDUSER.toString().split("||").indexOf(username + '|') > -1);
 
     if (!isAdmin && !isSearch) {
         helper.error("server.js", "authorize - denied for => ", username, bindi);
@@ -297,9 +297,13 @@ server.search(SUFFIX, authorize, (req, res, next) => {
 
 // compare entries  
 server.compare(SUFFIX, authorize, (req, res, next) => {
-    const dn = req.dn.toString();
+    const dn = req.dn.toString().toLowerCase().replace(/  /g, ' ').replace(/, /g, ',');
+    
     if (!db[dn])
         return next(new ldap.NoSuchObjectError(dn));
+
+    // case in-sensitive
+    req.attribute = Object.keys(db[dn]).find(key => key.toLowerCase() === req.attribute.toLowerCase()) || req.attribute;
 
     if (!db[dn][req.attribute])
         return next(new ldap.NoSuchAttributeError(req.attribute));

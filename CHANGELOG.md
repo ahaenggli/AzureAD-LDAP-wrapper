@@ -6,14 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
-## [1.6.0] - 2021-12-06
+## [1.6.0] - 2021-12-08
 ### Changed
 - Switched from @azure/ms-rest-nodeauth to @azure/Identity (ADAL to MSAL)
 [Treat application as a public client](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Username-Password-Authentication#application-registration) may be set to `true` in your Azure Portal or you can't login anymore.
 ### Added
 - handler to add new ldap entries
 - handler to remove/delete new ldap entries
-
+- handler to modify/edit ldap entires
 
 ## [1.5.0] - 2021-10-07
 ### Added
