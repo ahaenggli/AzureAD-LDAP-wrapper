@@ -6,9 +6,10 @@ RUN mkdir -p /app && chown -R node:node /app
 WORKDIR /app
 COPY . .
 
-USER node
+USER root
 RUN npm install --production && npm prune --production
 
+USER node
 FROM node:lts-alpine as final
 RUN apk add --no-cache tini
 

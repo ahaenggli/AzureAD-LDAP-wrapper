@@ -15,3 +15,4 @@ data/*.json
 .env
 customizer/ldap_customizer.js
 synology-openldap-export
+*.ps1

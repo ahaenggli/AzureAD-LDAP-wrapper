@@ -1,6 +1,6 @@
 ﻿$ldap_server = "127.0.0.1";
-$ldap_bind   = "uid=ldapsearch,cn=users,dc=han,dc=net";
-$ldap_pass   = "ldapsearch123";
+$ldap_bind   = "uid=root,cn=users,dc=han,dc=net";
+$ldap_pass   = "abc123";
 
 Install-Module -Name S.DS.P
 Add-Type -AssemblyName System.DirectoryServices.Protocols
@@ -11,14 +11,7 @@ $cred = new-object PSCredential($ldap_bind, $pwd)
 $Ldap = Get-LdapConnection -LdapServer $ldap_server -Credential $cred -AuthType Basic
 
 $searcher = @('*');
-$SearchResults = Find-LdapObject -LdapConnection $Ldap -SearchBase "dc=han,dc=net" -SearchFilter '(objectclass=*)' 
-
-$SearchResults = Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(&(cn=adriano)(objectClass=*))" -SearchBase:"cn=users,dc=han,dc=net" -PropertiesToLoad:@("sAMAccountName","objectSid") -BinaryProperties:@("objectSid") 
-
-Write-Output $SearchResults;
 $SearchResults= "";
-
-exit;
 
 #$SearchResults = Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(objectclass=*)" -SearchBase:"cn=subschema" -PropertiesToLoad 'objectclasses'
 $searcher = "objectClasses";

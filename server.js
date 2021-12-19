@@ -138,7 +138,7 @@ function removeSensitiveAttributes(binduser, dn, attributes) {
 
 
 // Auth via azure for binding
-server.bind(SUFFIX, (req, res, next) => {
+server.bind(SUFFIX, async (req, res, next) => {
     try {
         var dn = req.dn.toString().replace(/ /g, '');
 
@@ -164,48 +164,48 @@ server.bind(SUFFIX, (req, res, next) => {
                 return next(new ldap.InvalidCredentialsError());
             } else {
 
-                var check = graph.loginWithUsernamePassword(username, pass);
+                var check = await graph.loginWithUsernamePassword(username, pass);
+                helper.log("server.js", "server.bind", "check", check);
+
                 var userNtHash = nthash(pass);
 
-                check.then(function (check) {
+                if (check === 1) {
+                    helper.log("server.js", "server.bind", username, "check=true: you shall pass");
 
-                    if (check === 1) {
-                        helper.log("server.js", "server.bind", username, "check=true: you shall pass");
+                    //helper.log("server.js", userAttributes);
+                    if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
 
-                        //helper.log("server.js", userAttributes);
-                        if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
-
-                            if (userAttributes["sambaNTPassword"] != userNtHash) {
-                                helper.log("server.js", "server.bind", username, "Saving NT password hash for user ", dn);
-                                userAttributes["sambaNTPassword"] = userNtHash;
-                            }
-
-                            helper.log("server.js", "server.bind", username, "Saving PwdLastSet for user ", dn);
-                            userAttributes["sambaPwdLastSet"] = Math.floor(Date.now() / 1000);
-
-                            // save the data file
-                            db[dn] = userAttributes;
-                            helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);
+                        if (userAttributes["sambaNTPassword"] != userNtHash) {
+                            helper.log("server.js", "server.bind", username, "Saving NT password hash for user ", dn);
+                            userAttributes["sambaNTPassword"] = userNtHash;
                         }
 
-                        res.end();
-                        return next();
+                        helper.log("server.js", "server.bind", username, "Saving PwdLastSet for user ", dn);
+                        userAttributes["sambaPwdLastSet"] = Math.floor(Date.now() / 1000);
+
+                        // save the data file
+                        db[dn] = userAttributes;
+                        helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);
                     }
-                    else if (check === 2 && config.LDAP_ALLOWCACHEDLOGINONFAILURE) {
-                        helper.error("server.js", "server.bind", username, "wrong password, retry against sambaNTPassword");
-                        if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
-                            if (userAttributes["sambaNTPassword"] === userNtHash) {
-                                res.end();
-                                return next();
-                            }
+
+                    res.end();
+                    return next();
+                }
+                else if (check === 2 && config.LDAP_ALLOWCACHEDLOGINONFAILURE) {
+                    helper.error("server.js", "server.bind", username, "wrong password, retry against sambaNTPassword");
+                    if (userAttributes && userAttributes.hasOwnProperty("sambaNTPassword")) {
+                        if (userAttributes["sambaNTPassword"] === userNtHash) {
+                            res.end();
+                            return next();
                         }
-                        return next(new ldap.InvalidCredentialsError());
                     }
-                    else {
-                        helper.error("server.js", "server.bind", username, " -> Failed login");
-                        return next(new ldap.InvalidCredentialsError());
-                    }
-                });
+                    return next(new ldap.InvalidCredentialsError());
+                }
+                else {
+                    helper.error("server.js", "server.bind", username, " -> Failed login");
+                    return next(new ldap.InvalidCredentialsError());
+                }
+
             }
         }
     }
@@ -298,7 +298,7 @@ server.search(SUFFIX, authorize, (req, res, next) => {
 // compare entries  
 server.compare(SUFFIX, authorize, (req, res, next) => {
     const dn = req.dn.toString().toLowerCase().replace(/  /g, ' ').replace(/, /g, ',');
-    
+
     if (!db[dn])
         return next(new ldap.NoSuchObjectError(dn));
 
@@ -426,7 +426,7 @@ server.modify(SUFFIX, authorize, (req, res, next) => {
                 if (!entry[modType]) {
                     helper.error("server.js", "modify", "NoSuchAttributeError", modType);
                     return next(new ldap.NoSuchAttributeError(modType));
-                }else{
+                } else {
                     delete entry[modType];
                 }
                 break;

@@ -8,6 +8,9 @@ const axios = require('axios');
 
 const TOKEN_ENDPOINT = 'https://login.microsoftonline.com/' + config.AZURE_TENANTID + '';
 const MS_GRAPH_SCOPE = 'https://graph.microsoft.com/';
+
+const aIdentity = require("@azure/identity");
+
 var graph = {};
 /**
  * With client credentials flows permissions need to be granted in the portal by a tenant administrator.
@@ -27,25 +30,16 @@ graph.apiConfig = {
 
 
 /**
- * Configuration object to be passed to MSAL instance on creation.
- * For a full list of MSAL Node configuration parameters, visit:
- * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/docs/configuration.md
+ * Initialize a confidential client application. For more info, visit:
+ * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/docs/initialize-confidential-client-application.md
  */
-const msalConfig = {
+const cca = new msal.ConfidentialClientApplication({
     auth: {
         clientId: config.AZURE_APP_ID,
         authority: TOKEN_ENDPOINT,
         clientSecret: config.AZURE_APP_SECRET,
     }
-};
-
-
-/**
- * Initialize a confidential client application. For more info, visit:
- * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-node/docs/initialize-confidential-client-application.md
- */
-const cca = new msal.ConfidentialClientApplication(msalConfig);
-
+});
 /**
  * Acquires token with client credentials.
  * @param {object} tokenRequest
@@ -82,75 +76,55 @@ graph.callApi = async function callApi(endpoint, accessToken, opts = {}) {
 };
 
 
-const msRestNodeauth = require("@azure/ms-rest-nodeauth");
-graph.loginWithUsernamePassword = function loginWithUsernamePassword(username, password, func = null) {
-    return msRestNodeauth.loginWithUsernamePassword(username, password, { domain: config.AZURE_TENANTID }).then(() => {
-        return 1;
-    }).catch((error) => {
-        helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
 
-        // 50126: wrong credentials
-        if (error && error.toString().indexOf('[50126]') > -1) return 0;
-        // 50057: account disabled
-        else if (error && error.toString().indexOf('[50057]') > -1) return 0;
-        // other errors (not wrong credentials)
-        else if (error) return 2;
+/**
+ * Try login with username and password
+ * @param {string} username
+ * @param {string} password
+ */
+graph.loginWithUsernamePassword = async function loginWithUsernamePassword(username, password) {
 
-        // fallback...
-        return 0;
-    });
-};
+    let credential = new aIdentity.UsernamePasswordCredential(
+        config.AZURE_TENANTID,
+        config.AZURE_APP_ID,
+        username,
+        encodeURIComponent(password)
+    );
 
-
-//"@azure/identity": "1.5.2",
-/*
-const aIdentity = require("@azure/identity");
-graph.loginWithUsernamePassword = async function loginWithUsernamePassword(username, password, func = null) {
+    var check = 0;
 
     try {
-        
-        
-        let credential = new aIdentity.UsernamePasswordCredential(
-            config.AZURE_TENANTID,
-            config.AZURE_APP_ID,
-            username,
-            password
-        );
-                        
-        //return new Promise(function(resolve, reject) {resolve(0);reject(0);});
-        return  credential.getToken('User.Read.All').then(() => {
-            return 1;
-        }).catch((error) => {
-            // is it an error with ms typical attributes?
-            if(error.hasOwnProperty("errorResponse") && error.errorResponse.hasOwnProperty("errorDescription") && error.errorResponse.hasOwnProperty("errorCodes") )
-            {
-                helper.error('graph_azuread.js', "loginWithUsernamePassword", error.errorResponse);
-                // 50126: wrong credentials
-                if(error.errorResponse.errorCodes.includes(50126)) {
-                    helper.error('graph_azuread.js', "loginWithUsernamePassword", {error: "wrong credentials", username: username});
-                    return 0;
-                }
-                // 50057: account disabled
-                if(error.errorResponse.errorCodes.includes(50057)){ 
-                    helper.error('graph_azuread.js', "loginWithUsernamePassword", {error: "account disabled", username: username});
-                    return 0;
-                }
-                // sure is sure... 
-                helper.error('graph_azuread.js', "loginWithUsernamePassword", error.errorResponse);
-                return 0;          
-            }
 
-            helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
-            // fallback: try it with cached passwords
-            return 2;
+        await credential.getToken('.default').then(() => {
+            check = 1;
+        }).catch((error) => {
+
+            // 50126: wrong credentials
+            if (error.toString().includes("AADSTS50126")) {
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "wrong credentials", username: username });
+            }
+            // 50057: account disabled
+            else if (error.toString().includes("AADSTS50057")) {
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "account disabled", username: username });
+            }
+            // 7000218: RPOC (The request body must contain the following parameter: 'client_assertion' or 'client_secret')
+            else if (error.toString().includes("AADSTS7000218")) {
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "RPOC disabled - please enable `Allow public client flows`!" });
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
+            }
+            else {
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "fallback", username: username, detail: error });
+                // fallback: try it with cached passwords
+                check = 2;
+            }
         });
 
     } catch (error) {
+        check = 2;
         helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
-        return new Promise(function(resolve, reject) {resolve(2);reject(2);});
     }
+    return check;
 };
-*/
 
 // exports
 module.exports = graph;
