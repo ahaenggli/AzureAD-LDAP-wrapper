@@ -87,19 +87,26 @@ schemaDB["matchingRuleUse"] = helper.ReadCSVfile('./schema/matchingRuleUse.csv',
 schemaDB["attributeTypes"] = helper.ReadCSVfile('./schema/attributeTypes.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
 schemaDB["objectClasses"] = helper.ReadCSVfile('./schema/objectClasses.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
 
-
 ///--- Shared handlers
 const SUFFIX = '';
 function authorize(req, res, next) {
     /* Any user may search after bind, only cn=root has full power */
     var bindi = req.connection.ldap.bindDN.toString().replace(/ /g, '');
-    var username = bindi.replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
+    var username = bindi.toLowerCase().replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
 
     const isSearch = (req instanceof ldap.SearchRequest);
-    const isAdmin = (config.LDAP_BINDUSER && config.LDAP_BINDUSER.toString().split("||").indexOf(username + '|') > -1);
+    var isAdmin = false;
+   
+    if (config.LDAP_BINDUSER) {
+        for (var u of config.LDAP_BINDUSER.toString().split("||")) {
+            u = u.split("|")[0];            
+            if (u === username) isAdmin = true;
+        }
+    }
 
     if (!isAdmin && !isSearch) {
         helper.error("server.js", "authorize - denied for => ", username, bindi);
+               
         return next(new ldap.InsufficientAccessRightsError());
     }
 

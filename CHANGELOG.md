@@ -10,7 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Switched from @azure/ms-rest-nodeauth to @azure/Identity (ADAL to MSAL)
 ~~[Treat application as a public client](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Username-Password-Authentication#application-registration) may be set to `true`~~  
-Set [Allow public client flows](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Username-Password-Authentication#application-registration) to `Yes` in your Azure Portal or you can't login anymore. ![Azure ROPC](.github/media/azure_ROPC.png)
+Set [Allow public client flows](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Username-Password-Authentication#application-registration) to `Yes` and add the permission `User.Read` for `Delegated`  in your Azure Portal or you can't login anymore. The settings are described with some images in the [README](README.md#how-to-use-it).  
+Those changes were nesessary to use MSAL instead of ADAL.
 ### Added
 - handler to add new ldap entries
 - handler to remove/delete new ldap entries

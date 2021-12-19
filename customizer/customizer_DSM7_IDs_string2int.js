@@ -16,7 +16,7 @@ var customizer = {};
 // convert gidNumber from string to int
 customizer.ModifyLDAPGroup = function (ldapgroup, azuregroup) {
     helper.log("customizer", "ModifyLDAPGroup", "called");
-    if(ldapgroup.hasOwnProperty("gidNumber")){
+    if (ldapgroup.hasOwnProperty("gidNumber")) {
         let parsed = parseInt(ldapgroup.gidNumber);
         if (isNaN(parsed)) parsed = ldapgroup.gidNumber;
         ldapgroup.gidNumber = parsed;
@@ -30,12 +30,12 @@ customizer.ModifyLDAPGroup = function (ldapgroup, azuregroup) {
 // convert gidNumber from string to int
 customizer.ModifyLDAPUser = function (ldapuser, azureuser) {
     helper.log("customizer", "ModifyLDAPUser", "called");
-    if(ldapuser.hasOwnProperty("gidNumber")){
+    if (ldapuser.hasOwnProperty("gidNumber")) {
         let parsed = parseInt(ldapuser.gidNumber);
         if (isNaN(parsed)) parsed = ldapuser.gidNumber;
         ldapuser.gidNumber = parsed;
     }
-    if(ldapuser.hasOwnProperty("uidNumber")){
+    if (ldapuser.hasOwnProperty("uidNumber")) {
         let parsed = parseInt(ldapuser.uidNumber);
         if (isNaN(parsed)) parsed = ldapuser.uidNumber;
         ldapuser.uidNumber = parsed;
@@ -46,6 +46,7 @@ customizer.ModifyLDAPUser = function (ldapuser, azureuser) {
 };
 
 customizer.ModifyLDAPGlobal = function (all) {
+    /*
     let tmpKey = "cn=synoconf,"+config.LDAP_BASEDN;
     tmpKey=tmpKey.toLowerCase(); all[tmpKey] = {}; all[tmpKey].entryDN=tmpKey;
     all[tmpKey].dn = tmpKey;
@@ -209,9 +210,7 @@ customizer.ModifyLDAPGlobal = function (all) {
     all[tmpKey].sambaGroupType= 2;
     all[tmpKey].structuralObjectClass= "posixGroup";
     all[tmpKey].entryUUID= "a15792d3-639f-4492-bbf3-13d07f43a220";
-    all[tmpKey].member= ["uid=admin,cn=users,dc=trait,dc=ch"];
-    all[tmpKey].memberUid= ["admin"];
-
+    
     tmpKey = "cn=Directory Clients,cn=groups,"+config.LDAP_BASEDN;
     tmpKey=tmpKey.toLowerCase(); all[tmpKey] = {}; all[tmpKey].entryDN=tmpKey;
     all[tmpKey].objectClass= ["top", "posixGroup", "extensibleObject","apple-group","sambaGroupMapping", "sambaIdmapEntry"];
@@ -237,8 +236,8 @@ customizer.ModifyLDAPGlobal = function (all) {
     all[tmpKey].sambaGroupType= 2;
     all[tmpKey].structuralObjectClass= "posixGroup";
     all[tmpKey].entryUUID= "dc88181e-fc2b-4c4e-b12e-f66ca2d29deb";
-
-    let root = "uid=root,"+config.LDAP_USERSDN;
+*/
+    let root = "uid=root," + config.LDAP_USERSDN;
     for (var key of Object.keys(all)) {
         //console.log(`${key}= ${value}`);
         all[key].creatorsName = root;
@@ -246,19 +245,18 @@ customizer.ModifyLDAPGlobal = function (all) {
         all[key].entryCSN = "20211018151157.389265Z#000000#000#000000";
         all[key].modifiersName = root;
         all[key].modifyTimestamp = "20211018151129Z";
-        
 
-        if(!all[key].hasOwnProperty("namingContexts")){
-            if(all[key].hasOwnProperty("hasSubordinates"))   delete all[key].hasSubordinates;
-            if(all[key].hasOwnProperty("subschemaSubentry")) delete all[key].subschemaSubentry;
+        if (!all[key].hasOwnProperty("namingContexts")) {
+            if (all[key].hasOwnProperty("hasSubordinates")) delete all[key].hasSubordinates;
+            if (all[key].hasOwnProperty("subschemaSubentry")) delete all[key].subschemaSubentry;
         } else {
             all[key].contextCSN = "20211018151157.389265Z#000000#000#000000";
         }
 
-        if(all[key].hasOwnProperty("sambaDomainName")){
+        if (all[key].hasOwnProperty("sambaDomainName")) {
             all[key].sambaDomainName = all[key].sambaDomainName.toLowerCase();
         }
-        
+
 
     }
 

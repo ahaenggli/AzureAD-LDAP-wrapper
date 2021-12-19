@@ -16,7 +16,8 @@ This is especially useful when you don't want to maintain an on-premise AD contr
 
 1. Register a new App in your [aad-portal](https://aad.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps) as described [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal)
 2. Set the following Graph-API Application permissions:  
-`User.Read.All` and `Group.Read.All`
+`User.Read.All` and `Group.Read.All` for `Application`  
+`User.Read` for `Delegated`  
 ![Azure Permissions](.github/media/azure_permissions.png)
 3. Set [Allow public client flows](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Username-Password-Authentication#application-registration) to `Yes` ![Azure ROPC](.github/media/azure_ROPC.png)
 4. Use a [docker container](https://hub.docker.com/r/ahaen/azuread-ldap-wrapper) and start it with the right environment variables.
