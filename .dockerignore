@@ -14,5 +14,5 @@ data/*.json
 .cache/*
 .env
 customizer/ldap_customizer.js
-synology-openldap-export
-*.ps1
+schema/synology-openldap-export
+schema/*.ps1

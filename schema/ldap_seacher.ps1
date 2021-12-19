@@ -36,5 +36,5 @@ $SearchResults= "";
 
 $searcher = "ldapSyntaxes";
 $SearchResults = Find-LdapObject -LdapConnection $Ldap  -SearchBase "cn=subschema" -searchScope Base -SearchFilter '(objectclass=*)' -PropertiesToLoad $searcher | Select-Object -ExpandProperty $searcher
-$SearchResults  | Out-File -FilePath ($PSScriptRoot + ".\"+$searcher+"2.csv")
+$SearchResults  | Out-File -FilePath ($PSScriptRoot + ".\"+$searcher+".csv")
 $SearchResults= "";
