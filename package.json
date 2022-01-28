@@ -12,11 +12,11 @@
     "type": "git",
     "url": "https://github.com/ahaenggli/AzureAD-LDAP-wrapper"
   },
-  "dependencies": {        
-    "@azure/identity": "2.0.1",   
-    "@azure/msal-node": "1.4.0",
+  "dependencies": {
+    "@azure/identity": "2.0.1",
+    "@azure/msal-node": "1.5.0",
     "diacritic": "0.0.2",
-    "dotenv": "10.0.0",
+    "dotenv": "14.3.2",
     "fs": "0.0.1-security",
     "hashcode": "1.0.3",
     "ldapjs": "2.3.1",
