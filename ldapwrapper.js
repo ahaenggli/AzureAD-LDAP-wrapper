@@ -5,6 +5,9 @@ const graph_azure = require('./graph_azuread');
 const config = require('./config');
 const helper = require('./helper');
 const fs = require('fs');
+
+const smbaSIDbase = "S-1-5-21-2475342291-1480345137-508597502";
+
 var diacritic = require('diacritic');
 
 var encode = require('hashcode').hashCode;
@@ -77,8 +80,8 @@ ldapwrapper.do = async function () {
         "entryDN": config.LDAP_BASEDN,
         "namingContexts": config.LDAP_BASEDN,
       });
-
-    var sambaDomainName = config.LDAP_BASEDN.split(",")[0].replace("dc=", "");
+    
+    var sambaDomainName = config.LDAP_SAMBADOMAINNAME;
     var LDAP_SAMBA = "sambaDomainName=" + sambaDomainName + "," + config.LDAP_BASEDN;
     LDAP_SAMBA = LDAP_SAMBA.toLowerCase();
 
@@ -91,6 +94,7 @@ ldapwrapper.do = async function () {
     db[LDAP_SAMBA] = Object.assign({},
       // default values
       {
+        "objectclass": "sambaDomain",        
         "sambaDomainName": sambaDomainName.toUpperCase(), /* must be uppercase */
         "sambaLogonToChgPwd": 0,
         "sambaLockoutObservationWindow": 30,
@@ -100,10 +104,9 @@ ldapwrapper.do = async function () {
         "sambaMinPwdAge": 0,
         "sambaForceLogoff": -1,
         "sambaLockoutDuration": 30,
-        "sambaSID": "S-1-5-21-2475342291-1480345137-508597502",
+        "sambaSID": smbaSIDbase,
         "sambaPwdHistoryLength": 0,
         "sambaMinPwdLength": 1,
-        "objectClass": "sambaDomain",
         "structuralObjectClass": "sambaDomain",
         "entryUUID": "1af6e064-8a89-4ea0-853b-c5476a50877f",
         "entryDN": LDAP_SAMBA,
@@ -114,6 +117,7 @@ ldapwrapper.do = async function () {
       {
         "sambaDomainName": sambaDomainName.toUpperCase(), /* must be uppercase */
         "entryDN": LDAP_SAMBA,
+        "sambaSID": smbaSIDbase,
       }
     );
 
@@ -198,7 +202,8 @@ ldapwrapper.do = async function () {
         "member": [],
         "memberUid": [],
         "sambaGroupType": 2,
-        "sambaSID": "S-1-5-21-" + usersGroupDn_hash + "-" + usersGroupDn_hash + "-" + usersGroupDn_hash,
+        //"sambaSID": "S-1-5-21-" + usersGroupDn_hash + "-" + usersGroupDn_hash + "-" + usersGroupDn_hash,
+        "sambaSID": smbaSIDbase + "-" + (usersGroupDn_hash*2+1001),
         "structuralObjectClass": "posixGroup",
         "hasSubordinates": "FALSE",
         "subschemaSubentry": "cn=Subschema"
@@ -212,6 +217,7 @@ ldapwrapper.do = async function () {
         "displayName": config.LDAP_USERSGROUPSBASEDN.replace("," + config.LDAP_GROUPSDN, '').replace('cn=', ""),
         "member": [],
         "memberUid": [],
+        "sambaSID": smbaSIDbase + "-" + (usersGroupDn_hash*2+1001),
       });
 
     db[config.LDAP_USERSGROUPSBASEDN] = customizer.ModifyLDAPGroup(db[config.LDAP_USERSGROUPSBASEDN], {});
@@ -274,7 +280,8 @@ ldapwrapper.do = async function () {
           "member": [],
           "memberUid": [],
           "sambaGroupType": 2,
-          "sambaSID": group.securityIdentifier,
+          // "sambaSID": group.securityIdentifier,
+          "sambaSID": smbaSIDbase + "-" + (group_hash*2+1001),
           "structuralObjectClass": "posixGroup",
           "hasSubordinates": "FALSE",
           "subschemaSubentry": "cn=Subschema"
@@ -286,6 +293,7 @@ ldapwrapper.do = async function () {
           "cn": groupDisplayName.toLowerCase(),
           "entryDN": gpName,
           "description": (group.description || ""),
+          "sambaSID": smbaSIDbase + "-" + (group_hash*2+1001),
         });
 
       db[gpName] = customizer.ModifyLDAPGroup(db[gpName], group);
@@ -347,6 +355,10 @@ ldapwrapper.do = async function () {
 
         if (userPrincipalName.indexOf("@") > -1 && userPrincipalName.indexOf("@" + config.LDAP_DOMAIN) === -1) {
           helper.warn("ldapwrapper.js", 'userPrincipalName', userPrincipalName, 'does not contain your `LDAP_DOMAIN`', config.LDAP_DOMAIN, '. This can cause some unexpected problems.');
+          let tmpDomain = userPrincipalName;
+          userPrincipalName = userPrincipalName.substring(0,userPrincipalName.indexOf("@"));
+          tmpDomain = tmpDomain.replace(userPrincipalName, '').replace('@', '');
+          helper.warn("ldapwrapper.js", 'userPrincipalName', '... now using ', config.LDAP_DOMAIN, ' instead of ', tmpDomain, ' for this user.');
         } else if (userPrincipalName !== userPrincipalNameClean) {
           helper.warn("ldapwrapper.js", 'userPrincipalNames may not contain any special chars. In a future version we are maybe using ', userPrincipalNameClean, 'instead of', userPrincipalName);
           // userPrincipalName = userPrincipalNameClean;
@@ -405,6 +417,7 @@ ldapwrapper.do = async function () {
             "apple-generateduid": user.id,
             "authAuthority": ";basic;",
             "cn": userPrincipalName.toLowerCase(),
+            "AzureADuserPrincipalName": user.userPrincipalName,
             "displayName": user.displayName,
             "entryDN": upName,
             "entryUUID": user.id,
@@ -419,7 +432,9 @@ ldapwrapper.do = async function () {
             "sambaNTPassword": sambaNTPassword,
             "sambaPasswordHistory": "0000000000000000000000000000000000000000000000000000000000000000",
             "sambaPwdLastSet": sambaPwdLastSet,
-            "sambaSID": "S-1-5-21-" + user_hash + "-" + user_hash + "-" + user_hash,
+            //"sambaSID": "S-1-5-21-" + user_hash + "-" + user_hash + "-" + user_hash,
+            "sambaSID": smbaSIDbase + "-" + (user_hash*2+1000),
+            "sambaPrimaryGroupSID": db[config.LDAP_USERSGROUPSBASEDN].sambaSID,
             "sAMAccountName": userPrincipalName,
             "shadowExpire": -1,
             "shadowFlag": 0,
@@ -440,9 +455,11 @@ ldapwrapper.do = async function () {
           // overwrite values from before
           {
             "cn": userPrincipalName.toLowerCase(),
+            "AzureADuserPrincipalName": user.userPrincipalName,
             "entryDN": upName,
             "uid": userPrincipalName,
             "displayName": user.displayName,
+            "sambaSID": smbaSIDbase + "-" + (user_hash*2+1000),
             "sAMAccountName": userPrincipalName,
             "givenName": user.givenName,
             "sn": user.surname,
@@ -450,7 +467,7 @@ ldapwrapper.do = async function () {
             "mail": user.mail,
             "memberOf": user_to_groups[user.id],
             "gidNumber": db[config.LDAP_USERSGROUPSBASEDN].gidNumber,
-
+            "sambaPrimaryGroupSID": db[config.LDAP_USERSGROUPSBASEDN].sambaSID,
           });
 
         db[upName] = customizer.ModifyLDAPUser(db[upName], user);

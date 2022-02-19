@@ -5,6 +5,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased] (in 'dev')
+### Changed
+- allow domain mismatch for AD-Domain and LDAP-Domain
+- sambaDomainName also in uppercase for DSM7
+- SID calculation for users is now `sambaSID: fixedBase + "-" + (uidNumber * 2 + 1000)`
+- SID calculation for groups is now `sambaSID: fixedBase + "-" + (gidNumber * 2 + 1001)`
+### Added
+- add ldap attribute `AzureADuserPrincipalName` with the original AAD-User (for login/password check in the AAD)
+- add ldap attribute `sambaPrimaryGroupSID` for users
+- env var `LDAP_SAMBADOMAINNAME` to manually set the sambaDomainName attribute in the LDAP
+### Fixed
+- documentation for join a device with a non AAD user
 
 ## [1.6.0] - 2021-12-19
 ### Changed

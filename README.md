@@ -29,7 +29,11 @@ This is especially useful when you don't want to maintain an on-premise AD contr
 
 2. enable ldap-client and connect it to your docker container
 ![grafik](.github/media/syno_ldap_enable.png)
-3. give your synced groups the permissions you want and login with your azuread-users :)
+
+3. Users that exist in the AAD cannot see or change other users' passwords. So, if you'd like to use samba, please join/bind with a user from the env var `LDAP_BINDUSER`: ![grafik](https://user-images.githubusercontent.com/23347180/154803977-e018cf55-7c32-42c5-b47d-d9c6a55b246d.png)
+ 
+
+4. give your synced groups the permissions you want and login with your azuread-users :)
 
 ### Update a container on Synology-NAS
 

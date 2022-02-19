@@ -113,21 +113,26 @@ function authorize(req, res, next) {
     return next();
 }
 
+function isUserENVBindUser(binduser){
+    var allowSensitiveAttributes = false;
+    if (config.LDAP_BINDUSER) {
+        for (var u of config.LDAP_BINDUSER.toString().split("||")) {
+            u = u.split("|")[0];
+            var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
+            if (u === username) allowSensitiveAttributes = true;
+        }
+    }
+    return allowSensitiveAttributes;
+}
+
 function removeSensitiveAttributes(binduser, dn, attributes) {
 
     if (attributes && attributes.hasOwnProperty("sambaNTPassword")) {
         var allowSensitiveAttributes = false;
 
         if (binduser.equals(dn)) allowSensitiveAttributes = true;
-
-        if (config.LDAP_BINDUSER) {
-            for (var u of config.LDAP_BINDUSER.toString().split("||")) {
-                u = u.split("|")[0];
-                var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
-                if (u === username) allowSensitiveAttributes = true;
-            }
-        }
-
+        if (isUserENVBindUser(binduser)) allowSensitiveAttributes = true;
+ 
         if (config.LDAP_SAMBANTPWD_MAXCACHETIME && attributes["sambaPwdLastSet"])
             if (config.LDAP_SAMBANTPWD_MAXCACHETIME != -1)
                 if ((attributes["sambaPwdLastSet"] + config.LDAP_SAMBANTPWD_MAXCACHETIME * 60) < Math.floor(Date.now() / 1000))
@@ -166,12 +171,12 @@ server.bind(SUFFIX, async (req, res, next) => {
 
             var userAttributes = removeSensitiveAttributes(req.dn, dn, db[dn]);// db[dn];
 
-            if (!userAttributes || !userAttributes.hasOwnProperty("sambaNTPassword")) {
+            if (!userAttributes || !userAttributes.hasOwnProperty("sambaNTPassword") || !userAttributes.hasOwnProperty("AzureADuserPrincipalName")) {
                 helper.log("server.js", "server.bind", username, "Failed login -> mybe not synced yet?");
                 return next(new ldap.InvalidCredentialsError());
             } else {
 
-                var check = await graph.loginWithUsernamePassword(username, pass);
+                var check = await graph.loginWithUsernamePassword(userAttributes["AzureADuserPrincipalName"], pass);
                 helper.log("server.js", "server.bind", "check", check);
 
                 var userNtHash = nthash(pass);

@@ -12,6 +12,7 @@ config.AZURE_TENANTID = process.env.AZURE_TENANTID;
 // LDAP
 config.LDAP_DOMAIN = (process.env.LDAP_DOMAIN || "example.net").toLowerCase().replace(/ /g, '');
 config.LDAP_BASEDN = (process.env.LDAP_BASEDN || "dc=example,dc=net").toLowerCase().replace(/ /g, '');
+config.LDAP_SAMBADOMAINNAME = (process.env.LDAP_SAMBADOMAINNAME || config.LDAP_BASEDN.split(",")[0].replace("dc=", ""));
 config.LDAP_GROUPSDN = (process.env.LDAP_GROUPSDN || "cn=groups," + config.LDAP_BASEDN).toLowerCase().replace(/ /g, '');
 config.LDAP_USERSDN = (process.env.LDAP_USERSDN || "cn=users," + config.LDAP_BASEDN).toLowerCase().replace(/ /g, '');
 config.LDAP_USERSGROUPSBASEDN = (process.env.LDAP_USERSGROUPSBASEDN || "cn=users," + config.LDAP_GROUPSDN).toLowerCase().replace(/ /g, '');
