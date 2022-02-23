@@ -1,8 +1,8 @@
 ﻿$ldap_server = "127.0.0.1";
-$ldap_bind   = "uid=root,cn=users,dc=han,dc=net";
+$ldap_bind   = "uid=root,cn=users,dc=domain,dc=tld";
 $ldap_pass   = "abc123";
 
-Install-Module -Name S.DS.P
+#Install-Module -Name S.DS.P
 Add-Type -AssemblyName System.DirectoryServices.Protocols
 
 #get password as secure string 
@@ -10,9 +10,15 @@ $pwd = ConvertTo-SecureString -String $ldap_pass  -AsPlainText -Force
 $cred = new-object PSCredential($ldap_bind, $pwd)
 $Ldap = Get-LdapConnection -LdapServer $ldap_server -Credential $cred -AuthType Basic
 
-$searcher = @('*');
 
-$SearchResults = Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(&(uid=a*)(objectClass=*))" -SearchBase:"cn=users,dc=han,dc=net" -PropertiesToLoad *
+$SearchResults = Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(&(uid=*)(objectClass=*))" -SearchBase:"dc=domain,dc=tld" -PropertiesToLoad('dn') | measure-object
+Write-Output $SearchResults
+
+exit;
+
+
+$searcher = @('*');
+$SearchResults = Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(&(uid=a*)(objectClass=*))" -SearchBase:"cn=users,dc=domain,dc=tld" -PropertiesToLoad *
 Write-Output $SearchResults;
 
 $SearchResults= "";
@@ -46,7 +52,7 @@ Function Perform-Modification
 ## Write-Output $Dse
 ## exit;
 
-Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(&(uid=root)(objectClass=*))" -SearchBase:"cn=users,dc=han,dc=net" -PropertiesToLoad:@('HalloWelt', 'myCustomNumber') | Perform-Modification | Edit-LdapObject -LdapConnection $Ldap -Mode Add       #-IncludedProps ['HalloWelt','myCustomNumber']
+Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(&(uid=root)(objectClass=*))" -SearchBase:"cn=users,dc=domain,dc=tld" -PropertiesToLoad:@('HalloWelt', 'myCustomNumber') | Perform-Modification | Edit-LdapObject -LdapConnection $Ldap -Mode Add       #-IncludedProps ['HalloWelt','myCustomNumber']
 
 
 exit;

@@ -65,8 +65,19 @@ graph.callApi = async function callApi(endpoint, accessToken, opts = {}) {
         endpoint = endpoint.replace('{id}', opts.id);
 
     try {
-        const response = await axios.default.get(endpoint, options);
-        return response.data.value;
+        let data = [];
+        let response = await axios.default.get(endpoint, options);
+        data = [...data, ...response.data.value];
+
+        // call nextLink as long as it exists, so all data should be fetched
+        while(response.data.hasOwnProperty('@odata.nextLink')){
+            helper.log('graph_azuread.js', "callApi", { endpoint: endpoint, '@odata.nextLink': response.data['@odata.nextLink'] });
+            response = await axios.default.get(response.data['@odata.nextLink'], options);
+            // concat previous (nextLink-)data with current nextLink-data
+            data = [...data, ...response.data.value];
+        }
+        
+        return data;
     } catch (error) {
         helper.error('graph_azuread.js', 'callApi-error', error);
         helper.error('graph_azuread.js', 'callApi-endpoint', endpoint);
