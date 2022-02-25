@@ -28,6 +28,7 @@ helper.warn = function () {
 };
 
 helper.SaveJSONtoFile = function (content, file, encoding = 'utf8') {
+    delete content["cn=subschema"];
     content = JSON.stringify(content, null, 2);
     fs.writeFile(file, content, encoding, function (err) {
         if (err) {
@@ -49,11 +50,9 @@ helper.ReadJSONfile = function (file, encoding = 'utf8') {
 };
 
 helper.ReadCSVfile = function (file, func = null, encoding = 'utf8', ignorelines = 0) {
-    var fileContents = fs.readFileSync(file, encoding);
+    var fileContents = fs.readFileSync(file, encoding);   
     var result = [];
-
-    var lines = fileContents.toString().split('\n');
-
+    var lines = fileContents.split(/\r?\n/);
     for (var i = 0; i < lines.length; i++) {
         if (i > ignorelines && lines[i].toString() != '') {
             let row = lines[i].toString().split(',');

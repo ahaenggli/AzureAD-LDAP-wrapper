@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 - documentation for join a device with a non AAD user
 - handle for @odata.nextLink in graph responses (should fix parts of #14) 
+- converted schema csv files from utf-16 to utf-8
+- handle cn=subschema like any other ldap entries instead of fixes search attributes
 
 ## [1.6.0] - 2021-12-19
 ### Changed

@@ -36,7 +36,30 @@ const graph = require('./graph_azuread');
 
 var nthash = require('smbhash').nthash;
 
+
+/* build schema */
+var schemaDB = {
+    "entryDN": "cn=subschema",
+    "cn": "subschema",
+    "objectClass": ["top", "subSchema"],
+    "ldapSyntaxes": "",
+    "matchingRules": "",
+    "matchingRuleUse": "",
+    "attributeTypes": "",
+    "objectClasses": ""
+};
+// source: https://www.iana.org/assignments/ldap-parameters/ldap-parameters.xhtml#ldap-parameters-8
+// schemaDB["ldapSyntaxes"] = helper.ReadCSVfile('./schema/ldapSyntaxes.csv', function (row) { return '(' + row[0] + ' DESC ' + row[1] + ')'; });
+// source: extraced via ./schema/ldap_seacher.ps1
+schemaDB["ldapSyntaxes"] = helper.ReadCSVfile('./schema/ldapSyntaxes.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
+schemaDB["matchingRules"] = helper.ReadCSVfile('./schema/matchingRules.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
+schemaDB["matchingRuleUse"] = helper.ReadCSVfile('./schema/matchingRuleUse.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
+schemaDB["attributeTypes"] = helper.ReadCSVfile('./schema/attributeTypes.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
+schemaDB["objectClasses"] = helper.ReadCSVfile('./schema/objectClasses.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
+
 var db = helper.ReadJSONfile(config.LDAP_DATAFILE);
+db["cn=subschema"] = schemaDB;
+
 var lastRefresh = 0;
 var tlsOptions = {};
 //if(config.LDAPS_CERTIFICATE && config.LDAPS_KEY)
@@ -49,9 +72,13 @@ async function refreshDB() {
     helper.log("server.js", "refreshDB()", "func called");
     if (Date.now() > lastRefresh + interval) {
         db = await ldapwrapper.do();
+        db["cn=subschema"] = schemaDB;
         lastRefresh = Date.now();
     }
-    if (!db) db = helper.ReadJSONfile(config.LDAP_DATAFILE);
+    if (!db){
+         db = helper.ReadJSONfile(config.LDAP_DATAFILE);
+         db["cn=subschema"] = schemaDB;
+    }
 }
 
 
@@ -70,22 +97,6 @@ const interval_func = function () {
 };
 setInterval(interval_func, interval);
 
-/* build schema */
-var schemaDB = {
-    "ldapSyntaxes": "",
-    "matchingRules": "",
-    "matchingRuleUse": "",
-    "attributeTypes": "",
-    "objectClasses": ""
-};
-// source: https://www.iana.org/assignments/ldap-parameters/ldap-parameters.xhtml#ldap-parameters-8
-// schemaDB["ldapSyntaxes"] = helper.ReadCSVfile('./schema/ldapSyntaxes.csv', function (row) { return '(' + row[0] + ' DESC ' + row[1] + ')'; });
-// source: extraced via ./schema/ldap_seacher.ps1
-schemaDB["ldapSyntaxes"] = helper.ReadCSVfile('./schema/ldapSyntaxes.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
-schemaDB["matchingRules"] = helper.ReadCSVfile('./schema/matchingRules.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
-schemaDB["matchingRuleUse"] = helper.ReadCSVfile('./schema/matchingRuleUse.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
-schemaDB["attributeTypes"] = helper.ReadCSVfile('./schema/attributeTypes.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
-schemaDB["objectClasses"] = helper.ReadCSVfile('./schema/objectClasses.csv', function (row) { if (Array.isArray(row)) return row.join(","); else return row; });
 
 ///--- Shared handlers
 const SUFFIX = '';
@@ -241,15 +252,6 @@ server.search(SUFFIX, authorize, (req, res, next) => {
         if (!dn) dn = config.LDAP_BASEDN;
 
         helper.log("server.js", "server.search", 'Search for => DB: ' + dn + '; Scope: ' + req.scope + '; Filter: ' + req.filter + '; Attributes: ' + req.attributes + ';');
-
-        if (['cn=SubSchema', 'cn=schema,cn=config', 'cn=schema,cn=configuration'].map(v => v.toLowerCase()).indexOf(dn.toLowerCase()) > -1) {
-            res.send({
-                dn: dn,
-                attributes: schemaDB
-            });
-            res.end();
-            return next();
-        }
 
         if (!db[dn])
             return next(new ldap.NoSuchObjectError(dn));
@@ -459,6 +461,10 @@ server.modify(SUFFIX, authorize, (req, res, next) => {
 });
 
 /* ldapjs modify entries: ENDE */
+
+server.on("error", (error) => {
+    helper.error("server.js", "!!! error !!!", error);
+})
 
 server.on("uncaughtException", (error) => {
     helper.error("server.js", "!!! uncaughtException !!!", error);
