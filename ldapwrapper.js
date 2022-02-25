@@ -6,7 +6,7 @@ const config = require('./config');
 const helper = require('./helper');
 const fs = require('fs');
 
-const smbaSIDbase = "S-1-5-21-2475342291-1480345137-508597502";
+const smbaSIDbase = config.LDAP_SAMBASIDBASE;
 
 var diacritic = require('diacritic');
 
@@ -343,14 +343,21 @@ ldapwrapper.do = async function () {
     for (let i = 0, len = users.length; i < len; i++) {
       let user = users[i];
       let userPrincipalName = user.userPrincipalName;
-      if (config.LDAP_REMOVEDOMAIN) userPrincipalName = userPrincipalName.replace("@" + config.LDAP_DOMAIN, '');
-
+      let AzureADuserExternal = 0;
       // ignore external users
-      if (userPrincipalName.indexOf("#EXT#") > -1) {
+      if (userPrincipalName.indexOf("#EXT#") > -1 && user.hasOwnProperty('mail')) {
         helper.warn("ldapwrapper.js", '#EXT#-user ignored:', userPrincipalName);
         helper.log("ldapwrapper.js", '#EXT#-users may be included in a future version');
+        user.userPrincipalName = user.mail;
+        userPrincipalName = userPrincipalName.substring(0, userPrincipalName.indexOf("#EXT#"));
+        AzureADuserExternal = 1;
       }
-      else {
+
+      if (config.LDAP_REMOVEDOMAIN) userPrincipalName = userPrincipalName.replace("@" + config.LDAP_DOMAIN, '');
+
+   
+      if(true)//else 
+      {
         let userPrincipalNameClean = removeSpecialChars(userPrincipalName);
 
         if (userPrincipalName.indexOf("@") > -1 && userPrincipalName.indexOf("@" + config.LDAP_DOMAIN) === -1) {
@@ -418,6 +425,7 @@ ldapwrapper.do = async function () {
             "authAuthority": ";basic;",
             "cn": userPrincipalName.toLowerCase(),
             "AzureADuserPrincipalName": user.userPrincipalName,
+            "AzureADuserExternal": AzureADuserExternal,
             "displayName": user.displayName,
             "entryDN": upName,
             "entryUUID": user.id,
@@ -456,6 +464,7 @@ ldapwrapper.do = async function () {
           {
             "cn": userPrincipalName.toLowerCase(),
             "AzureADuserPrincipalName": user.userPrincipalName,
+            "AzureADuserExternal": AzureADuserExternal,
             "entryDN": upName,
             "uid": userPrincipalName,
             "displayName": user.displayName,

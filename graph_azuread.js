@@ -23,8 +23,8 @@ graph.tokenRequest = {
 
 graph.apiConfig = {
     //dri: MS_GRAPH_SCOPE + 'v1.0/domains',
-    uri: MS_GRAPH_SCOPE + 'v1.0/users',
-    gri: MS_GRAPH_SCOPE + 'v1.0/groups',
+    uri: MS_GRAPH_SCOPE + 'v1.0/users?$select=businessPhones,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState'+config.GRAPH_FILTER_USERS,
+    gri: MS_GRAPH_SCOPE + 'v1.0/groups?'+config.GRAPH_FILTER_GROUPS,
     mri: MS_GRAPH_SCOPE + 'v1.0/groups/{id}/members',
 };
 

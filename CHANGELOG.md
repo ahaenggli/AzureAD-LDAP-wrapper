@@ -7,15 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] (in 'dev')
 ### Changed
 - allow domain mismatch for AD-Domain and LDAP-Domain
-- sambaDomainName also in uppercase for DSM7
 - SID calculation for users is now `sambaSID: fixedBase + "-" + (uidNumber * 2 + 1000)`
 - SID calculation for groups is now `sambaSID: fixedBase + "-" + (gidNumber * 2 + 1001)`
 ### Added
 - add ldap attribute `AzureADuserPrincipalName` with the original AAD-User (for login/password check in the AAD)
 - add ldap attribute `sambaPrimaryGroupSID` for users
-- env var `LDAP_SAMBADOMAINNAME` to manually set the sambaDomainName attribute in the LDAP
+- optional env var `LDAP_SAMBADOMAINNAME` to manually set the sambaDomainName attribute in the LDAP
+- optional env var `SAMBA_BASESID` to overwrite the fixed base SID
+- optional env var `GRAPH_FILTER_USERS` to filter user entries in graph
+  (e.g. set it to `userType eq 'Member'` so external users (guests) will not be synced)
+- optional env var `GRAPH_FILTER_GROUPS` to filter group entries in graph 
+  (e.g. set it to `securityEnabled eq true` so only security groups will be sync and not every teams-group)
 ### Fixed
 - documentation for join a device with a non AAD user
+- handle for @odata.nextLink in graph responses (should fix parts of #14) 
 
 ## [1.6.0] - 2021-12-19
 ### Changed

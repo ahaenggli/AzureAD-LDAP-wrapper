@@ -169,7 +169,13 @@ server.bind(SUFFIX, async (req, res, next) => {
             if (config.LDAP_REMOVEDOMAIN == true && username.indexOf("@") == -1)
                 username = username + "@" + config.LDAP_DOMAIN;
 
-            var userAttributes = removeSensitiveAttributes(req.dn, dn, db[dn]);// db[dn];
+            if(!db.hasOwnProperty(dn)){
+                // helper.warn("server.js", "server.bind", "hmpf", dn);
+                let searchDN = Object.values(db).filter(g => (g.hasOwnProperty("AzureADuserPrincipalName"))).filter( g=> g.AzureADuserPrincipalName == username);
+                if (searchDN.length == 1) dn = searchDN[0]["entryDN"];     
+            }
+            
+            var userAttributes =  db[dn]; // removeSensitiveAttributes(req.dn, dn, db[dn]);//
 
             if (!userAttributes || !userAttributes.hasOwnProperty("sambaNTPassword") || !userAttributes.hasOwnProperty("AzureADuserPrincipalName")) {
                 helper.log("server.js", "server.bind", username, "Failed login -> mybe not synced yet?");
