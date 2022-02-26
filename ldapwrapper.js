@@ -69,14 +69,14 @@ ldapwrapper.do = async function () {
       db[config.LDAP_BASEDN],
       // overwrite values from before
       {
-        "objectClass": ["domain", "top", "ldapRootDSE", "subEntry"],
+        "objectClass": "domain",
         "dc": config.LDAP_BASEDN.replace('dc=', '').split(",")[0],
         "entryDN": config.LDAP_BASEDN,
         "entryUUID": "e927be8d-aab8-42f2-80c3-b2762415aed1",
         "namingContexts": config.LDAP_BASEDN,
         "structuralObjectClass": "domain",
         "hasSubordinates": "TRUE",
-        "subSchemaSubentry": "cn=subschema",
+        "subschemaSubentry": "cn=subschema",
       });
 
     var sambaDomainName = config.LDAP_SAMBADOMAINNAME;
@@ -134,7 +134,7 @@ ldapwrapper.do = async function () {
         "entryUUID": "3e01f47d-96a1-4cb4-803f-7dd17991c6bd",
         "structuralObjectClass": "organizationalRole",
         "hasSubordinates": "TRUE",
-        "subSchemaSubentry": "cn=subschema",
+        "subschemaSubentry": "cn=subschema",
       },
       // merge existing values
       db[config.LDAP_USERSDN],
@@ -159,7 +159,7 @@ ldapwrapper.do = async function () {
         "entryUUID": "39af84ac-8e5a-483e-9621-e657385b07b5",
         "structuralObjectClass": "organizationalRole",
         "hasSubordinates": "TRUE",
-        "subSchemaSubentry": "cn=subschema",
+        "subschemaSubentry": "cn=subschema",
       },
       // merge existing values
       db[config.LDAP_GROUPSDN],
@@ -204,7 +204,7 @@ ldapwrapper.do = async function () {
         "sambaSID": smbaSIDbase + "-" + (usersGroupDn_hash * 2 + 1001),
         "structuralObjectClass": "posixGroup",
         "hasSubordinates": "FALSE",
-        "subSchemaSubentry": "cn=subschema"
+        "subschemaSubentry": "cn=subschema"
       },
       // merge existing values
       db[config.LDAP_USERSGROUPSBASEDN],
@@ -282,7 +282,7 @@ ldapwrapper.do = async function () {
           "sambaSID": smbaSIDbase + "-" + (group_hash * 2 + 1001),
           "structuralObjectClass": "posixGroup",
           "hasSubordinates": "FALSE",
-          "subSchemaSubentry": "cn=subschema"
+          "subschemaSubentry": "cn=subschema"
         },
         // merge existing values
         db[gpName],
@@ -343,7 +343,7 @@ ldapwrapper.do = async function () {
       let userPrincipalName = user.userPrincipalName;
       let AzureADuserExternal = 0;
 
-      let isMicrosoftAccount = (user.hasOwnProperty('identities') &&
+      let isMicrosoftAccount = (userPrincipalName.indexOf("#EXT#") > -1 && user.hasOwnProperty('identities') &&
         user.identities.filter(x => x.hasOwnProperty('issuer') && x.issuer == 'ExternalAzureAD')
           .length == 0);
 
@@ -475,7 +475,7 @@ ldapwrapper.do = async function () {
             "uidNumber": user_hash,
             "structuralObjectClass": "inetOrgPerson",
             "hasSubordinates": "FALSE",
-            "subSchemaSubentry": "cn=subschema"
+            "subschemaSubentry": "cn=subschema"
           },
           // merge existing values
           db[upName],

@@ -26,6 +26,8 @@ ENV AZURE_TENANTID "*secret*"
 ENV AZURE_APP_SECRET "*secret*"
 ENV LDAP_SYNC_TIME "30"
 ENV DSM7 "false"
+ENV GRAPH_FILTER_USERS "userType eq 'Member'"
+ENV GRAPH_FILTER_GROUPS ""
 
 RUN mkdir -p /app && chown -R node:node /app
 WORKDIR /app

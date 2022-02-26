@@ -8,8 +8,8 @@ This is especially useful when you don't want to maintain an on-premise AD contr
 1. AzureAD-LDAP-wrapper starts an LDAP server
 2. On 'starting' all users and groups are fetched from Azure Active Directory
 3. On 'bind' the user credentials are checked with the Microsoft Graph API
-4. On successfull 'bind' the user password is saved as additional hash (sambaNTPassword) and sambaPwdLastSet ist set to "now" to allow use/access to samba shares
-5. Every 30 minutes users and groups are refetched
+4. On successful 'bind' the user password is saved as additional hash (sambaNTPassword) and sambaPwdLastSet ist set to "now" to allow use/access to samba shares
+5. Users and groups are fetched again every 30 minutes  
 (while keeping uid, gid, sambaNTPassword and sambaPwdLastSet)
 
 ## How to use it
@@ -30,8 +30,7 @@ This is especially useful when you don't want to maintain an on-premise AD contr
 2. enable ldap-client and connect it to your docker container
 ![grafik](.github/media/syno_ldap_enable.png)
 
-3. Users that exist in the AAD cannot see or change other users' passwords. So, if you'd like to use samba, please join/bind with a user from the env var `LDAP_BINDUSER`: ![grafik](https://user-images.githubusercontent.com/23347180/154803977-e018cf55-7c32-42c5-b47d-d9c6a55b246d.png)
- 
+3. Users that exist in the AAD cannot see or change other users' passwords. So, if you'd like to use samba, please join/bind with a user from the env var `LDAP_BINDUSER`: ![grafik](.github/media/syno_ldap_join.png)
 
 4. give your synced groups the permissions you want and login with your azuread-users :)
 
@@ -81,6 +80,15 @@ Your `Tenant ID` from [azure](https://docs.microsoft.com/en-us/azure/active-dire
 
 A `Client secret`-value from [azure](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret)
 
+### GRAPH_FILTER_USERS
+
+This allows you to filter the users in the graph api using the [$filter](https://docs.microsoft.com/en-us/graph/query-parameters#filter-parameter) query parameter.  
+The default filter is set to `userType eq 'Member'`. That's why external users (guests) will not be synced automatically by default.
+
+### GRAPH_FILTER_GROUPS (optional)
+
+This allows you to filter the groups in the graph api using the [$filter](https://docs.microsoft.com/en-us/graph/query-parameters#filter-parameter) query parameter. The default filter is empty, so all groups are synchronized. For example, you can set it to `securityEnabled eq true` so that only security groups are synchronized and not every single Teams group.
+
 ### LDAP_DOMAIN
 
 main domain
@@ -88,6 +96,10 @@ main domain
 ### LDAP_BASEDN
 
 basedn
+
+### LDAP_SAMBADOMAINNAME (optional)
+
+Default is the first part of your baseDN, for `dc=example,dc=net` it would be `EXAMPLE`. For any other value, just set it manually with this env ar.
 
 ### LDAP_BINDUSER (optional)
 
@@ -127,6 +139,10 @@ You may also need to set `LDAP_PORT` to 636.
 ### LDAP_SYNC_TIME
 
 The interval in minutes for fetching users/groups from azure. The default is 30 minutes.
+
+### SAMBA_BASESID (optional)
+
+Base SID for all sambaSIDs generated for sambaDomainName, groups and users. Default is `S-1-5-21-2475342291-1480345137-508597502`.
 
 ### DSM7
 

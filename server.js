@@ -253,6 +253,15 @@ server.search(SUFFIX, authorize, (req, res, next) => {
 
         helper.log("server.js", "server.search", 'Search for => DB: ' + dn + '; Scope: ' + req.scope + '; Filter: ' + req.filter + '; Attributes: ' + req.attributes + ';');
 
+        if (['cn=SubSchema', 'cn=schema,cn=config', 'cn=schema,cn=configuration'].map(v => v.toLowerCase()).indexOf(dn.toLowerCase()) > -1) {
+            res.send({
+                dn: dn,
+                attributes: schemaDB
+            });
+            res.end();
+            return next();
+        }
+
         if (!db[dn])
             return next(new ldap.NoSuchObjectError(dn));
 
