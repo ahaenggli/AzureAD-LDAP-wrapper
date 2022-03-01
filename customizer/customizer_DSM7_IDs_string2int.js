@@ -12,7 +12,6 @@ var customizer = {};
 // customizer.ModifyAzureUsers  = function (azureusers) { return azureusers; };
 // customizer.ModifyAzureGroups = function (azuregroups) { return azuregroups; };
 
-
 // convert gidNumber from string to int
 customizer.ModifyLDAPGroup = function (ldapgroup, azuregroup) {
     helper.log("customizer", "ModifyLDAPGroup", "called");
@@ -22,8 +21,6 @@ customizer.ModifyLDAPGroup = function (ldapgroup, azuregroup) {
         ldapgroup.gidNumber = parsed;
     }
 
-    //if(ldapgroup.hasOwnProperty("hasSubordinates"))   delete ldapgroup.hasSubordinates;
-    //if(ldapgroup.hasOwnProperty("subschemaSubentry")) delete ldapgroup.subschemaSubentry;
     return ldapgroup;
 };
 
@@ -40,8 +37,7 @@ customizer.ModifyLDAPUser = function (ldapuser, azureuser) {
         if (isNaN(parsed)) parsed = ldapuser.uidNumber;
         ldapuser.uidNumber = parsed;
     }
-    //if(ldapuser.hasOwnProperty("hasSubordinates"))   delete ldapuser.hasSubordinates;
-    //if(ldapuser.hasOwnProperty("subschemaSubentry")) delete ldapuser.subschemaSubentry;
+
     return ldapuser;
 };
 
@@ -50,16 +46,13 @@ customizer.ModifyLDAPGlobal = function (all) {
     for (var key of Object.keys(all)) {
         //console.log(`${key}= ${value}`);
         all[key].creatorsName = root;
-        all[key].createTimestamp = "20211018151129Z";
-        all[key].entryCSN = "20211018151157.389265Z#000000#000#000000";
+        all[key].createTimestamp = "20220301211408Z";
+        all[key].entryCSN = "20220301211408.497736Z#000000#000#000000";
         all[key].modifiersName = root;
-        all[key].modifyTimestamp = "20211018151129Z";
+        all[key].modifyTimestamp = "20220301211408Z";
 
-        if (!all[key].hasOwnProperty("namingContexts")) {
-            if (all[key].hasOwnProperty("hasSubordinates")) delete all[key].hasSubordinates;
-            if (all[key].hasOwnProperty("subschemaSubentry")) delete all[key].subschemaSubentry;
-        } else {
-            all[key].contextCSN = "20211018151157.389265Z#000000#000#000000";
+        if (all[key].hasOwnProperty("namingContexts")) {
+            all[key].contextCSN = "20220301211408.497736Z#000000#000#000000";
         }
 
         if (all[key].hasOwnProperty("sambaDomainName")) {

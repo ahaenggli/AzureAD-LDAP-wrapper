@@ -343,13 +343,24 @@ ldapwrapper.do = async function () {
       let userPrincipalName = user.userPrincipalName;
       let AzureADuserExternal = 0;
 
-      let isMicrosoftAccount = (userPrincipalName.indexOf("#EXT#") > -1 && user.hasOwnProperty('identities') &&
+      let isGuestUser = (user.userType == "Guest");
+      let isExternalUserStateAccepted = (user.externalUserState == "Accepted");
+      let isMicrosoftAccount = (isGuestUser && user.hasOwnProperty('identities') &&
         user.identities.filter(x => x.hasOwnProperty('issuer') && x.issuer == 'ExternalAzureAD')
           .length == 0);
 
+      // guest has not joined (yet) - so we cannot know if the user has a login for MicrosoftAccount or ExternalAzureAD 
+      if (isGuestUser && !isExternalUserStateAccepted) {
+        helper.warn("ldapwrapper.js", 'Guest user (#EXT#) has not yet accepted invitation',
+          {
+            mail: user.mail,
+            userPrincipalName: user.userPrincipalName,
+            info: 'RPOC is not possible for Guest usery without accepted invitation'
+          });
+      }
       // ignore personal microsoft accounts, because RPOC is not possible 
-      if (isMicrosoftAccount) {
-        helper.warn("ldapwrapper.js", '#EXT#-user ignored',
+      else if (isMicrosoftAccount) {
+        helper.warn("ldapwrapper.js", 'Guest user (#EXT#) ignored',
           {
             mail: user.mail,
             userPrincipalName: user.userPrincipalName,
@@ -359,10 +370,21 @@ ldapwrapper.do = async function () {
       else {
 
         // try handling "#EXT#"-user
-        if (userPrincipalName.indexOf("#EXT#") > -1 && user.hasOwnProperty('mail')) {
+        if (isGuestUser && user.hasOwnProperty('mail')) {
           let old_userPrincipalName = user.userPrincipalName;
           user.userPrincipalName = user.mail;
-          userPrincipalName = escapeLDAPspecialChars(userPrincipalName.substring(0, userPrincipalName.indexOf("#EXT#")));
+
+          if (userPrincipalName.indexOf("#EXT#") > -1) {
+            userPrincipalName = escapeLDAPspecialChars(userPrincipalName.substring(0, userPrincipalName.indexOf("#EXT#")));
+          } else {
+
+            let issuers = user.identities.filter(x => x.hasOwnProperty('issuer') && x.signInType == 'userPrincipalName');
+            helper.warn(issuers);
+            issuers.forEach(issuer => userPrincipalName = userPrincipalName.replace('@' + issuer.issuer, ''));
+            userPrincipalName = userPrincipalName.replace('#EXT#', '');
+            userPrincipalName = escapeLDAPspecialChars(userPrincipalName);
+          }
+
           AzureADuserExternal = 1;
 
           helper.log("ldapwrapper.js", '#EXT#-user special treatment',

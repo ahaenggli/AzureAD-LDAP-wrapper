@@ -39,14 +39,18 @@ var nthash = require('smbhash').nthash;
 
 /* build schema */
 var schemaDB = {
-    "entryDN": "cn=subschema",
+    "objectClass": ["top", "subentry", "subschema", "extensibleObject"],
     "cn": "subschema",
-    "objectClass": ["top", "subSchema"],
+    "structuralObjectClass": "subentry",
+    "entryDN": "cn=subschema",
+    "createTimestamp": "20220301211408Z",
+    "modifyTimestamp": "20220301211408Z",
     "ldapSyntaxes": "",
     "matchingRules": "",
     "matchingRuleUse": "",
     "attributeTypes": "",
-    "objectClasses": ""
+    "objectClasses": "",
+    "subschemaSubentry": "cn=subschema"
 };
 // source: https://www.iana.org/assignments/ldap-parameters/ldap-parameters.xhtml#ldap-parameters-8
 // schemaDB["ldapSyntaxes"] = helper.ReadCSVfile('./schema/ldapSyntaxes.csv', function (row) { return '(' + row[0] + ' DESC ' + row[1] + ')'; });
@@ -75,9 +79,9 @@ async function refreshDB() {
         db["cn=subschema"] = schemaDB;
         lastRefresh = Date.now();
     }
-    if (!db){
-         db = helper.ReadJSONfile(config.LDAP_DATAFILE);
-         db["cn=subschema"] = schemaDB;
+    if (!db) {
+        db = helper.ReadJSONfile(config.LDAP_DATAFILE);
+        db["cn=subschema"] = schemaDB;
     }
 }
 
@@ -107,24 +111,24 @@ function authorize(req, res, next) {
 
     const isSearch = (req instanceof ldap.SearchRequest);
     var isAdmin = false;
-   
+
     if (config.LDAP_BINDUSER) {
         for (var u of config.LDAP_BINDUSER.toString().split("||")) {
-            u = u.split("|")[0];            
+            u = u.split("|")[0];
             if (u === username) isAdmin = true;
         }
     }
 
     if (!isAdmin && !isSearch) {
         helper.error("server.js", "authorize - denied for => ", username, bindi);
-               
+
         return next(new ldap.InsufficientAccessRightsError());
     }
 
     return next();
 }
 
-function isUserENVBindUser(binduser){
+function isUserENVBindUser(binduser) {
     var allowSensitiveAttributes = false;
     if (config.LDAP_BINDUSER) {
         for (var u of config.LDAP_BINDUSER.toString().split("||")) {
@@ -143,7 +147,7 @@ function removeSensitiveAttributes(binduser, dn, attributes) {
 
         if (binduser.equals(dn)) allowSensitiveAttributes = true;
         if (isUserENVBindUser(binduser)) allowSensitiveAttributes = true;
- 
+
         if (config.LDAP_SAMBANTPWD_MAXCACHETIME && attributes["sambaPwdLastSet"])
             if (config.LDAP_SAMBANTPWD_MAXCACHETIME != -1)
                 if ((attributes["sambaPwdLastSet"] + config.LDAP_SAMBANTPWD_MAXCACHETIME * 60) < Math.floor(Date.now() / 1000))
@@ -180,13 +184,13 @@ server.bind(SUFFIX, async (req, res, next) => {
             if (config.LDAP_REMOVEDOMAIN == true && username.indexOf("@") == -1)
                 username = username + "@" + config.LDAP_DOMAIN;
 
-            if(!db.hasOwnProperty(dn)){
+            if (!db.hasOwnProperty(dn)) {
                 // helper.warn("server.js", "server.bind", "hmpf", dn);
-                let searchDN = Object.values(db).filter(g => (g.hasOwnProperty("AzureADuserPrincipalName"))).filter( g=> g.AzureADuserPrincipalName == username);
-                if (searchDN.length == 1) dn = searchDN[0]["entryDN"];     
+                let searchDN = Object.values(db).filter(g => (g.hasOwnProperty("AzureADuserPrincipalName"))).filter(g => g.AzureADuserPrincipalName == username);
+                if (searchDN.length == 1) dn = searchDN[0]["entryDN"];
             }
-            
-            var userAttributes =  db[dn]; // removeSensitiveAttributes(req.dn, dn, db[dn]);//
+
+            var userAttributes = db[dn]; // removeSensitiveAttributes(req.dn, dn, db[dn]);//
 
             if (!userAttributes || !userAttributes.hasOwnProperty("sambaNTPassword") || !userAttributes.hasOwnProperty("AzureADuserPrincipalName")) {
                 helper.log("server.js", "server.bind", username, "Failed login -> mybe not synced yet?");
