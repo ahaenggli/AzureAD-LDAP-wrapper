@@ -18,10 +18,6 @@ function removeSpecialChars(str) {
   return diacritic.clean(str).replace(/[^A-Za-z0-9._\s]+/g, '-');
 }
 
-function escapeLDAPspecialChars(str) {
-  return str.replace(/[,=+<>#;\\]/g, '\\$&');
-}
-
 ldapwrapper.do = async function () {
   helper.log("ldapwrapper.js", "start");
 
@@ -375,14 +371,13 @@ ldapwrapper.do = async function () {
           user.userPrincipalName = user.mail;
 
           if (userPrincipalName.indexOf("#EXT#") > -1) {
-            userPrincipalName = escapeLDAPspecialChars(userPrincipalName.substring(0, userPrincipalName.indexOf("#EXT#")));
+            userPrincipalName = userPrincipalName.substring(0, userPrincipalName.indexOf("#EXT#"));
           } else {
 
             let issuers = user.identities.filter(x => x.hasOwnProperty('issuer') && x.signInType == 'userPrincipalName');
             helper.warn(issuers);
             issuers.forEach(issuer => userPrincipalName = userPrincipalName.replace('@' + issuer.issuer, ''));
-            userPrincipalName = userPrincipalName.replace('#EXT#', '');
-            userPrincipalName = escapeLDAPspecialChars(userPrincipalName);
+            userPrincipalName = userPrincipalName.replace('#EXT#', '');            
           }
 
           AzureADuserExternal = 1;
@@ -411,6 +406,8 @@ ldapwrapper.do = async function () {
           helper.warn("ldapwrapper.js", 'userPrincipalNames may not contain any special chars. In a future version we are maybe using ', userPrincipalNameClean, 'instead of', userPrincipalName);
           // userPrincipalName = userPrincipalNameClean;
         }
+
+        userPrincipalName = helper.escapeLDAPspecialChars(userPrincipalName);
 
         let upName = config.LDAP_USERRDN + "=" + userPrincipalName + "," + config.LDAP_USERSDN;
         upName = upName.toLowerCase();
@@ -521,8 +518,6 @@ ldapwrapper.do = async function () {
           });
 
         db[upName] = customizer.ModifyLDAPUser(db[upName], user);
-
-
       }
     }
 

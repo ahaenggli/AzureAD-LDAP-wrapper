@@ -172,7 +172,7 @@ server.bind(SUFFIX, async (req, res, next) => {
         helper.log("server.js", "server.bind", dn);
 
         // dn bind
-        var username = dn.replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
+        var username = helper.unescapeLDAPspecialChars(dn.replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, ''));
         var pass = req.credentials;
 
         if (config.LDAP_BINDUSER && config.LDAP_BINDUSER.toString().split("||").indexOf(username + '|' + pass) > -1) {
@@ -192,7 +192,7 @@ server.bind(SUFFIX, async (req, res, next) => {
 
             var userAttributes = db[dn]; // removeSensitiveAttributes(req.dn, dn, db[dn]);//
 
-            if (!userAttributes || !userAttributes.hasOwnProperty("sambaNTPassword") || !userAttributes.hasOwnProperty("AzureADuserPrincipalName")) {
+            if (!userAttributes || !userAttributes.hasOwnProperty("sambaNTPassword") || !userAttributes.hasOwnProperty("AzureADuserPrincipalName")) {                
                 helper.log("server.js", "server.bind", username, "Failed login -> mybe not synced yet?");
                 return next(new ldap.InvalidCredentialsError());
             } else {
@@ -238,7 +238,6 @@ server.bind(SUFFIX, async (req, res, next) => {
                     helper.error("server.js", "server.bind", username, " -> Failed login");
                     return next(new ldap.InvalidCredentialsError());
                 }
-
             }
         }
     }

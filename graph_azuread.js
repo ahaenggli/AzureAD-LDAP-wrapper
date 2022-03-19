@@ -40,6 +40,7 @@ const cca = new msal.ConfidentialClientApplication({
         clientSecret: config.AZURE_APP_SECRET,
     }
 });
+
 /**
  * Acquires token with client credentials.
  * @param {object} tokenRequest
@@ -98,7 +99,7 @@ graph.loginWithUsernamePassword = async function loginWithUsernamePassword(usern
     let credential = new aIdentity.UsernamePasswordCredential(
         config.AZURE_TENANTID,
         config.AZURE_APP_ID,
-        username,
+        encodeURIComponent(username),
         encodeURIComponent(password)
     );
 

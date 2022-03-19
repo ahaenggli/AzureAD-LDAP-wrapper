@@ -69,5 +69,11 @@ helper.ReadFile = function (file, encoding = 'utf8') {
     else return "";
 };
 
+helper.escapeLDAPspecialChars = function escapeLDAPspecialChars(str) {
+    return str.replace(/[,=+<>#;\\]/g, '\\$&');    
+};
 
+helper.unescapeLDAPspecialChars = function escapeLDAPspecialChars(str) {
+    return str.replace(/\\([,=+<>#;\\])/g, '$1');
+};
 module.exports = helper;

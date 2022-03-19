@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+## [1.7.0] - 2022-03-19
+
 ### Changed
 
 - to support #ext#-users the following changes were necessary:
@@ -34,6 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - converted schema csv files from utf-16 to utf-8
 - handle cn=subschema like any other ldap entries instead of fixed search attributes
 - register an error handler for the server (EventEmitter)
+- escape LDAP special chars `,=+<>#;\` with an additional backslash
 
 ## [1.6.0] - 2021-12-19
 
