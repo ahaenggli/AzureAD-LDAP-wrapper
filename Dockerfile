@@ -11,7 +11,7 @@ RUN npm install --production && npm prune --production
 
 USER node
 FROM node:lts-alpine as final
-RUN apk add --no-cache tini
+RUN apk add --no-cache tini su-exec
 
 ENV NODE_ENV "production"
 ENV LDAP_DOMAIN "example.com"
@@ -33,9 +33,7 @@ RUN mkdir -p /app && chown -R node:node /app
 WORKDIR /app
 COPY --chown=node:node --from=build /app /app
 
-USER node
-
+USER root
 EXPOSE 13389
-
-ENTRYPOINT ["/sbin/tini", "--"]
-CMD ["node", "server.js" ]
+RUN ["chmod", "+x", "./entrypoint.sh"]
+ENTRYPOINT ["./entrypoint.sh"]

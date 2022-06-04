@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+### Fixed
+
+- Reset .cache folder owner every time the container is started
+
 ## [1.7.0] - 2022-03-19
 
 ### Changed
