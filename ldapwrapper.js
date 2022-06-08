@@ -51,9 +51,7 @@ ldapwrapper.do = async function () {
     const graph_azureResponse = await graph_azure.getToken(graph_azure.tokenRequest);
     if (!graph_azureResponse) helper.error("ldapwrapper.js", "graph_azureResponse missing");
 
-    //var domains = [];
-    //domains = await graph_azure.callApi(graph_azure.apiConfig.dri, graph_azureResponse.accessToken);
-
+    /* ROOT Domain entry: START */
     let mergeBASEDN = Object.values(db).filter(g => g.entryUUID == 'e927be8d-aab8-42f2-80c3-b2762415aed1' && g.entryDN != config.LDAP_BASEDN);
     if (mergeBASEDN.length == 1) {
       db[config.LDAP_BASEDN] = mergeBASEDN[0];
@@ -74,7 +72,9 @@ ldapwrapper.do = async function () {
         "hasSubordinates": "TRUE",
         "subschemaSubentry": "cn=subschema",
       });
+    /* ROOT Domain entry: ENDE */
 
+    /* SAMBA Domain entry: START */
     var sambaDomainName = config.LDAP_SAMBADOMAINNAME;
     var LDAP_SAMBA = "sambaDomainName=" + sambaDomainName + "," + config.LDAP_BASEDN;
     LDAP_SAMBA = LDAP_SAMBA.toLowerCase();
@@ -115,6 +115,9 @@ ldapwrapper.do = async function () {
       }
     );
 
+    /* SAMBA Domain entry: ENDE */
+
+    /* Default users organizational: START */
     let mergeUSERSDN = Object.values(db).filter(g => g.entryUUID == '3e01f47d-96a1-4cb4-803f-7dd17991c6bd' && g.entryDN != config.LDAP_USERSDN);
     if (mergeUSERSDN.length == 1) {
       db[config.LDAP_USERSDN] = mergeUSERSDN[0];
@@ -139,7 +142,8 @@ ldapwrapper.do = async function () {
         "cn": config.LDAP_USERSDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
         "entryDN": config.LDAP_USERSDN,
       });
-
+    /* Default users organizational: ENDE */
+    /* Default groups organizational: START */
     let mergeGROUPSDN = Object.values(db).filter(g => g.entryUUID == '39af84ac-8e5a-483e-9621-e657385b07b5' && g.entryDN != config.LDAP_GROUPSDN);
     if (mergeGROUPSDN.length == 1) {
       db[config.LDAP_GROUPSDN] = mergeGROUPSDN[0];
@@ -165,6 +169,9 @@ ldapwrapper.do = async function () {
         "entryDN": config.LDAP_GROUPSDN,
       });
 
+    /* Default groups organizational: ENDE */
+
+    /* Default user group for ALL users: START */
     var usersGroupDn_hash = Math.abs(encode().value(config.LDAP_USERSGROUPSBASEDN)).toString();
 
     let mergeUSERSGROUPSBASEDN = Object.values(db).filter(g => g.entryUUID == '938f7407-8e5a-48e9-a852-d862fa3bb1bc' && g.entryDN != config.LDAP_USERSGROUPSBASEDN);
@@ -196,8 +203,7 @@ ldapwrapper.do = async function () {
         "member": [],
         "memberUid": [],
         "sambaGroupType": 2,
-        //"sambaSID": "S-1-5-21-" + usersGroupDn_hash + "-" + usersGroupDn_hash + "-" + usersGroupDn_hash,
-        "sambaSID": smbaSIDbase + "-" + (usersGroupDn_hash * 2 + 1001),
+        "sambaSID": helper.generateSID(false, 0, smbaSIDbase, usersGroupDn_hash),
         "structuralObjectClass": "posixGroup",
         "hasSubordinates": "FALSE",
         "subschemaSubentry": "cn=subschema"
@@ -211,11 +217,13 @@ ldapwrapper.do = async function () {
         "displayName": config.LDAP_USERSGROUPSBASEDN.replace("," + config.LDAP_GROUPSDN, '').replace('cn=', ""),
         "member": [],
         "memberUid": [],
-        "sambaSID": smbaSIDbase + "-" + (usersGroupDn_hash * 2 + 1001),
+        "sambaSID": helper.generateSID(0, 0, smbaSIDbase, usersGroupDn_hash)
       });
 
     db[config.LDAP_USERSGROUPSBASEDN] = customizer.ModifyLDAPGroup(db[config.LDAP_USERSGROUPSBASEDN], {});
+    /* Default user group for ALL users: ENDE */
 
+    /* fetch all AD groups an handle them: START */
     helper.log("ldapwrapper.js", "try fetching the groups");
     var groups = [];
     groups = await graph_azure.callApi(graph_azure.apiConfig.gri, graph_azureResponse.accessToken);
@@ -275,7 +283,7 @@ ldapwrapper.do = async function () {
           "memberUid": [],
           "sambaGroupType": 2,
           // "sambaSID": group.securityIdentifier,
-          "sambaSID": smbaSIDbase + "-" + (group_hash * 2 + 1001),
+          "sambaSID": helper.generateSID(config.LDAP_SAMBA_USEAZURESID, 0, smbaSIDbase, group_hash, group.securityIdentifier),
           "structuralObjectClass": "posixGroup",
           "hasSubordinates": "FALSE",
           "subschemaSubentry": "cn=subschema"
@@ -287,7 +295,7 @@ ldapwrapper.do = async function () {
           "cn": groupDisplayName.toLowerCase(),
           "entryDN": gpName,
           "description": (group.description || ""),
-          "sambaSID": smbaSIDbase + "-" + (group_hash * 2 + 1001),
+          "sambaSID": helper.generateSID(config.LDAP_SAMBA_USEAZURESID, 0, smbaSIDbase, group_hash, group.securityIdentifier),
         });
 
       db[gpName] = customizer.ModifyLDAPGroup(db[gpName], group);
@@ -319,7 +327,8 @@ ldapwrapper.do = async function () {
       helper.warn("ldapwrapper.js", "no user-groups found");
       user_to_groups = [];
     }
-
+    /* fetch all AD groups an handle them: ENDE */
+    /* fetch all AD users an handle them: START */
     helper.log("ldapwrapper.js", "try fetching the users");
     var users = [];
     users = await graph_azure.callApi(graph_azure.apiConfig.uri, graph_azureResponse.accessToken);
@@ -377,7 +386,7 @@ ldapwrapper.do = async function () {
             let issuers = user.identities.filter(x => x.hasOwnProperty('issuer') && x.signInType == 'userPrincipalName');
             helper.warn(issuers);
             issuers.forEach(issuer => userPrincipalName = userPrincipalName.replace('@' + issuer.issuer, ''));
-            userPrincipalName = userPrincipalName.replace('#EXT#', '');            
+            userPrincipalName = userPrincipalName.replace('#EXT#', '');
           }
 
           AzureADuserExternal = 1;
@@ -479,7 +488,7 @@ ldapwrapper.do = async function () {
             "sambaPasswordHistory": "0000000000000000000000000000000000000000000000000000000000000000",
             "sambaPwdLastSet": sambaPwdLastSet,
             //"sambaSID": "S-1-5-21-" + user_hash + "-" + user_hash + "-" + user_hash,
-            "sambaSID": smbaSIDbase + "-" + (user_hash * 2 + 1000),
+            "sambaSID": helper.generateSID(config.LDAP_SAMBA_USEAZURESID, 1, smbaSIDbase, user_hash, user.id),
             "sambaPrimaryGroupSID": db[config.LDAP_USERSGROUPSBASEDN].sambaSID,
             "sAMAccountName": userPrincipalName,
             "shadowExpire": -1,
@@ -506,7 +515,7 @@ ldapwrapper.do = async function () {
             "entryDN": upName,
             "uid": userPrincipalName,
             "displayName": user.displayName,
-            "sambaSID": smbaSIDbase + "-" + (user_hash * 2 + 1000),
+            "sambaSID": helper.generateSID(config.LDAP_SAMBA_USEAZURESID, 1, smbaSIDbase, user_hash, user.id),
             "sAMAccountName": userPrincipalName,
             "givenName": user.givenName,
             "sn": user.surname,
@@ -518,9 +527,10 @@ ldapwrapper.do = async function () {
           });
 
         db[upName] = customizer.ModifyLDAPUser(db[upName], user);
+
       }
     }
-
+    /* fetch all AD users an handle them: ENDE */
     // save the data file
     db = customizer.ModifyLDAPGlobal(db);
     helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);

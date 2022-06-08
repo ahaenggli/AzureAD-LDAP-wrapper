@@ -12,15 +12,19 @@ config.AZURE_TENANTID = process.env.AZURE_TENANTID;
 // LDAP
 config.LDAP_DOMAIN = (process.env.LDAP_DOMAIN || "example.net").toLowerCase().replace(/ /g, '');
 config.LDAP_BASEDN = (process.env.LDAP_BASEDN || "dc=example,dc=net").toLowerCase().replace(/ /g, '');
+
 config.LDAP_SAMBADOMAINNAME = (process.env.LDAP_SAMBADOMAINNAME || config.LDAP_BASEDN.split(",")[0].replace("dc=", ""));
 config.LDAP_SAMBASIDBASE = (process.env.LDAP_SAMBASIDBASE|| "S-1-5-21-2475342291-1480345137-508597502").toUpperCase().replace(/ /g, '');
+config.LDAP_SAMBA_USEAZURESID = true;
+if (process.env.LDAP_SAMBA_USEAZURESID) config.LDAP_SAMBA_USEAZURESID = (process.env.LDAP_SAMBA_USEAZURESID == "true" || process.env.LDAP_SAMBA_USEAZURESID == "1");
+
 config.LDAP_GROUPSDN = (process.env.LDAP_GROUPSDN || "cn=groups," + config.LDAP_BASEDN).toLowerCase().replace(/ /g, '');
 config.LDAP_USERSDN = (process.env.LDAP_USERSDN || "cn=users," + config.LDAP_BASEDN).toLowerCase().replace(/ /g, '');
 config.LDAP_USERSGROUPSBASEDN = (process.env.LDAP_USERSGROUPSBASEDN || "cn=users," + config.LDAP_GROUPSDN).toLowerCase().replace(/ /g, '');
 config.LDAP_USERRDN = (process.env.LDAP_USERRDN || "uid").toLowerCase().replace(/ /g, '');
 config.LDAP_DATAFILE = process.env.LDAP_DATAFILE || "./.cache/azure.json";
 config.LDAP_SYNC_TIME = process.env.LDAP_SYNC_TIME || 30; /* minutes */
-
+ 
 // GRAPH
 config.GRAPH_FILTER_USERS = ""; if (process.env.GRAPH_FILTER_USERS) config.GRAPH_FILTER_USERS = "&$filter="+encodeURIComponent(process.env.GRAPH_FILTER_USERS);
 config.GRAPH_FILTER_GROUPS = "";if (process.env.GRAPH_FILTER_GROUPS) config.GRAPH_FILTER_GROUPS = "&$filter="+encodeURIComponent(process.env.GRAPH_FILTER_GROUPS);
