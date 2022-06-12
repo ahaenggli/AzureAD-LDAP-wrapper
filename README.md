@@ -24,15 +24,17 @@ This is especially useful when you don't want to maintain an on-premise AD contr
 
 ### Using with Docker on Synology-NAS
 
-1. add the ldap-wrapper as a container, configure it and start it
+1. Add the ldap-wrapper as a container, configure it and start it
 ![grafik](.github/media/syno_docker_add.png)
 
-2. enable ldap-client and connect it to your docker container
+2. Enable ldap-client and connect it to your docker container
 ![grafik](.github/media/syno_ldap_enable.png)
 
 3. Users that exist in the AAD cannot see or change other users' passwords. So, if you'd like to use samba, please join/bind with a user from the env var `LDAP_BINDUSER`: ![grafik](.github/media/syno_ldap_join.png)
 
-4. give your synced groups the permissions you want and login with your azuread-users :)
+4. Give your synced groups the permissions you want and login with your azuread-users :)
+
+5. Before accessing files via network/samba, each user needs to login in the dsm-web-gui or any other tool directly connected to the ldap server. It's the same after a password change, because the password-hash for samba is only set after a successfull login.
 
 ### Update a container on Synology-NAS
 
@@ -45,7 +47,7 @@ This is especially useful when you don't want to maintain an on-premise AD contr
 5. Start your container
 6. Check the logs for (new) errors (right click on container and choose "Details")
 ![grafik](.github/media/syno_docker_log.png)
-7. Keep in mind you need to login in your dsm-web-gui before accessing files via network/samba
+7. Before accessing files via network/samba, each user needs to login in the dsm-web-gui or any other tool directly connected to the ldap server. It's the same after a password change, because the password-hash for samba is only set after a successfull login.
 
 ## General Installation
 

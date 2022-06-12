@@ -8,6 +8,8 @@
 - [Is it possible to add or edit the ldap attributes?](#is-it-possible-to-add-or-edit-the-ldap-attributes)
 - [Join NAS to Azure AD Domain](#join-nas-to-azure-ad-domain)
 - [Why are personal microsoft accounts not supported?](#why-are-personal-microsoft-accounts-not-supported)
+- [Samba is not working, what can I do?](#samba-is-not-working-what-can-i-do)
+
 
 ## Does it support MFA (multi-factor authentication)?
 
@@ -38,3 +40,18 @@ My wrapper creates an entire ldap server. So you can use it with several 3rd par
 ## Why are personal microsoft accounts not supported?
 This wrapper uses the ROPC flow for authentication. Microsoft doesn't support that for personal accounts as mentioned [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth-ropc):
 > Personal accounts that are invited to an Azure AD tenant can't use ROPC.
+
+## Samba is not working, what can I do?
+Check the following points first:
+- Using DSM >= 7?: Set the ENV variable to `true`.
+- Did you really connect your device/NAS with a non-existing user from the env var `LDAP_BINDUSER`? Otherwise the required password hash for Samba is not available and access will fail.
+- Before accessing files via network/Samba, each user must log in to dsm-web-gui or another tool that is directly connected to the ldap server. This also applies after a password change, since the password hash for Samba is only set after a successful login.
+- Is your (Windows) device connected to Azure? Make sure you log in with username/password over the network, not with your pin code.
+- Make sure Synology Directory Service and Synology LDAP server are not installed.
+- Maybe there is someting in the samba log. Get it to open an issue:
+  - Enable "collect debug logs"
+![image](https://user-images.githubusercontent.com/23347180/171563962-bea25dd1-8072-45d2-bbd9-5b8c86d3af1c.png)
+  - Try the access a shared folder multiple times
+  - [ssh into your nas](https://kb.synology.com/en-global/DSM/tutorial/How_to_login_to_DSM_with_root_permission_via_SSH_Telnet) 
+  - Run `cat /var/log/samba/log.smbd` and copy the latest error/fail/... messages - please replace sensitive informations like domains, ip addresses or names.
+  - Don't forget to disable "collect debug logs" before opening an issue
