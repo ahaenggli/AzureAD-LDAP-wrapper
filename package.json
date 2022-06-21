@@ -1,6 +1,6 @@
 {
   "name": "AzureAD-LDAP-wrapper",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "description": "LDAP-Wrapper for 'microsoft 365' users (former 'office 365' - via AzureAD without AADDS)",
   "author": "Adriano Hänggli <adriano@haenggli.net>",
   "main": "server.js",
@@ -13,13 +13,14 @@
     "url": "https://github.com/ahaenggli/AzureAD-LDAP-wrapper"
   },
   "dependencies": {
-    "@azure/identity": "^2.0.4",
-    "@azure/msal-node": "~1.6.0",
+    "@azure/identity": "^2.0.5",
+    "@azure/msal-node": "~1.10.0",
     "diacritic": "0.0.2",
-    "dotenv": "^16.0.0",
+    "dotenv": "^16.0.1",
     "fs": "0.0.1-security",
     "hashcode": "1.0.3",
-    "ldapjs": "~2.3.2",
-    "smbhash": "0.0.1"
+    "ldapjs": "~2.3.3",
+    "smbhash": "0.0.1",
+    "axios":"~0.27.2"
   }
 }

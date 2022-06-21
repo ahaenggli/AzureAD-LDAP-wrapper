@@ -43,10 +43,13 @@ This wrapper uses the ROPC flow for authentication. Microsoft doesn't support th
 
 ## Samba is not working, what can I do?
 Check the following points first:
-- Using DSM >= 7?: Set the ENV variable to `true`.
+- Is samba enabled and your user has permissions to use it?
+- Are you using DSM >= 7? Set the ENV variable to `true`.
+- Look into the docker Log. Are there any errors you should resolve? ![grafik](https://user-images.githubusercontent.com/23347180/114864713-9bb5e380-9df1-11eb-9138-5213537b7a3b.png) 
 - Did you really connect your device/NAS with a non-existing user from the env var `LDAP_BINDUSER`? Otherwise the required password hash for Samba is not available and access will fail.
 - Before accessing files via network/Samba, each user must log in to dsm-web-gui or another tool that is directly connected to the ldap server. This also applies after a password change, since the password hash for Samba is only set after a successful login.
 - Is your (Windows) device connected to Azure? Make sure you log in with username/password over the network, not with your pin code.
+- Can you successfully access the shares with a local user?
 - Make sure Synology Directory Service and Synology LDAP server are not installed.
 - Maybe there is someting in the samba log. Get it to open an issue:
   - Enable "collect debug logs"
