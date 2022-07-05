@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azuread-ldap
+  namespace: default
+  labels:
+    app.kubernetes.io/name: azuread-ldap
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: azuread-ldap
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: azuread-ldap
+    spec:
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: kubernetes.io/hostname
+      #           operator: In
+      #           values:
+      #           - mynode01
+      containers:
+        - name: azuread-ldap
+          image: ahaen/azuread-ldap-wrapper:v1.7.0
+          imagePullPolicy: "Always"
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: LDAP_DOMAIN
+              value: "example.com"
+            - name: LDAP_BASEDN
+              value: "dc=example,dc=com"
+            - name: LDAP_BINDUSER
+              value: "ldapsearch|ldapsearch123"
+            - name: LDAP_PORT
+              value: "13389"
+            - name: LDAP_DEBUG
+              value: "true"   
+            - name: LDAP_ALLOWCACHEDLOGINONFAILURE
+              value: "true" 
+            - name: LDAP_SAMBANTPWD_MAXCACHETIME
+              value: "-1"
+            - name: AZURE_APP_ID
+              value: "" 
+            - name: AZURE_TENANTID
+              value: ""   
+            - name: AZURE_APP_SECRET
+              value: "" 
+            - name: LDAP_SYNC_TIME
+              value: "15"
+            - name: DSM7
+              value: "false"  
+            - name: GRAPH_FILTER_USERS
+              value: "userType eq 'Member'"  
+            - name: GRAPH_FILTER_GROUPS
+              value: ""                      
+          resources:
+            limits:
+              cpu: 100m
+              memory: 500Mi
+            requests:
+              cpu: 50m
+              memory: 256Mi
+          ports:
+            - name: ldap-server
+              containerPort: 13389            
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: azuread-ldap-service
+  namespace: default
+  labels:
+    app.kubernetes.io/name: azuread-ldap
+spec:
+  type: LoadBalancer
+  # loadBalancerIP: 
+  ports:
+    - name: ldap-server
+      port: 13389
+      targetPort: ldap-server
+  selector:
+    app.kubernetes.io/name: azuread-ldap
