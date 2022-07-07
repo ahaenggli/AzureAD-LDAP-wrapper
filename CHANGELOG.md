@@ -7,14 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
-
-## [1.8.0] - 2022-06-21
 ### Changed
 
 - Reset .cache folder owner every time the container is started
 - Use the SIDs for users/groups from Azure instead of a "randomly" generated one.
 However, you can enable the old handling by setting the env var `LDAP_SAMBA_USEAZURESID` to `false`.
 
+### Added
+- support for proxies (env var `HTTPS_PROXY` or `HTTP_PROXY`)
 
 ## [1.7.0] - 2022-03-19
 

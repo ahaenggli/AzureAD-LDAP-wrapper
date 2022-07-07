@@ -30,7 +30,7 @@ This is especially useful when you don't want to maintain an on-premise AD contr
 2. Enable ldap-client and connect it to your docker container
 ![grafik](.github/media/syno_ldap_enable.png)
 
-3. Users that exist in the AAD cannot see or change other users' passwords. So, if you'd like to use samba, please join/bind with a user from the env var `LDAP_BINDUSER`: ![grafik](.github/media/syno_ldap_join.png)
+3. Users that exist in the AAD cannot see or change other users' passwords. So, if you'd like to use samba, please join/bind with a (not in AzureAD existing) user from the env var `LDAP_BINDUSER`: ![grafik](.github/media/syno_ldap_join.png)
 
 4. Give your synced groups the permissions you want and login with your azuread-users :)
 
@@ -67,7 +67,7 @@ AZURE_TENANTID="0def2345-ff01-56789-1234-ab9d6dda1e1e"
 AZURE_APP_SECRET="iamasecret~yep-reallyreallysecret"
 LDAP_DOMAIN="example.com"
 LDAP_BASEDN="dc=example,dc=com"
-# LDAP_BINDUSER="ldapsearch|ldapsearch123"
+LDAP_BINDUSER="ldapsearch|ldapsearch123"
 ```
 
 ### AZURE_APP_ID
@@ -103,7 +103,7 @@ basedn
 
 Default is the first part of your baseDN, for `dc=example,dc=net` it would be `EXAMPLE`. For any other value, just set it manually with this env ar.
 
-### LDAP_BINDUSER (optional)
+### LDAP_BINDUSER (optional without SMB)
 
 Every AzureAD-user can bind (and auth) in this LDAP-Server.
 This parameter allows you to add additional - NOT in AzureAD existing - users.

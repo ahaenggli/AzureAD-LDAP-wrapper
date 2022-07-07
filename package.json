@@ -14,13 +14,14 @@
   },
   "dependencies": {
     "@azure/identity": "^2.0.5",
-    "@azure/msal-node": "~1.10.0",
+    "@azure/msal-node": "1.11.0",
     "diacritic": "0.0.2",
     "dotenv": "^16.0.1",
     "fs": "0.0.1-security",
     "hashcode": "1.0.3",
     "ldapjs": "~2.3.3",
     "smbhash": "0.0.1",
-    "axios":"~0.27.2"
+    "axios":"~0.27.2",
+    "https-proxy-agent":"5.0.1"
   }
 }
