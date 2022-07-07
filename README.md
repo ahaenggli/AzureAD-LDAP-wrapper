@@ -115,6 +115,10 @@ Those users have full read permissions and can also see the sambaNTPassword-hash
 
 If set to true there are more detailed logs in the console output.
 
+### LDAP_FILTER_CASEINSENSITIVE (default: false)
+
+If set to true equality filters in search will be compared without case sensitivity
+
 ### LDAP_ALLOWCACHEDLOGINONFAILURE (default: true)
 
 allows login from cached sambaNTPassword.

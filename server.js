@@ -36,6 +36,21 @@ const graph = require('./graph_azuread');
 
 var nthash = require('smbhash').nthash;
 
+if (config.LDAP_FILTER_CASEINSENSITIVE) {
+    const ldapfilter = require('ldap-filter');
+
+	// Change EqualityFilter matches function to perform a case-insensitive match
+    ldap.EqualityFilter.prototype.matches = function (target, strictAttrCase) {
+        const tv = ldapfilter.getAttrValue(target, this.attribute, strictAttrCase);
+		if (!tv) return false;
+		
+        let value = this.value.toLowerCase();
+
+        return ldapfilter.testValues(function (v) {
+            return v && (value === v.toLowerCase());
+        }, tv);
+    };
+}
 
 /* build schema */
 var schemaDB = {

@@ -33,6 +33,9 @@ config.GRAPH_FILTER_GROUPS = "";if (process.env.GRAPH_FILTER_GROUPS) config.GRAP
 config.LDAP_REMOVEDOMAIN = true;
 if (process.env.LDAP_REMOVEDOMAIN) config.LDAP_REMOVEDOMAIN = (process.env.LDAP_REMOVEDOMAIN == "true" || process.env.LDAP_REMOVEDOMAIN == "1");
 
+config.LDAP_FILTER_CASEINSENSITIVE = false;
+if (process.env.LDAP_FILTER_CASEINSENSITIVE) config.LDAP_FILTER_CASEINSENSITIVE = (process.env.LDAP_FILTER_CASEINSENSITIVE == "true" || process.env.LDAP_FILTER_CASEINSENSITIVE == "1");
+
 config.LDAP_PORT = parseInt(process.env.LDAP_PORT) || 389;
 config.LDAP_BINDUSER = process.env.LDAP_BINDUSER;
 
