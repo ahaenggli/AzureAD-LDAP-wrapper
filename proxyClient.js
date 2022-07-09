@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * proxyClient - axios as HttpClient with proxy support
+ * because msalConfig.system.proxyUrl is not (yet) working 
+ */
+
 const helper = require('./helper');
 const axios = require('axios');
 const proxyUrl = (process.env.HTTPS_PROXY || process.env.HTTP_PROXY || "");

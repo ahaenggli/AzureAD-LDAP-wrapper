@@ -16,3 +16,4 @@ data/*.json
 customizer/ldap_customizer.js
 schema/synology-openldap-export
 schema/*.ps1
+example/*
