@@ -1,6 +1,7 @@
 ﻿$ldap_server = "127.0.0.1";
-$ldap_bind   = "uid=root,cn=users,dc=domain,dc=tld";
-$ldap_pass   = "abc123";
+$ldap_bind   = "uid=root";
+$ldap_pass   = "mystrongpw";
+$base        = "dc=domain,dc=tld"; 
 
 #Install-Module -Name S.DS.P
 Add-Type -AssemblyName System.DirectoryServices.Protocols
@@ -10,24 +11,18 @@ $pwd = ConvertTo-SecureString -String $ldap_pass  -AsPlainText -Force
 $cred = new-object PSCredential($ldap_bind, $pwd)
 $Ldap = Get-LdapConnection -LdapServer $ldap_server -Credential $cred -AuthType Basic
 
-
-$SearchResults = Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(&(uid=*)(objectClass=*))" -SearchBase:"dc=domain,dc=tld" -PropertiesToLoad('dn') | measure-object
+$SearchResults = Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(&(uid=*)(objectClass=*))" -SearchBase:"$($base)" -PropertiesToLoad('dn') | measure-object
 Write-Output $SearchResults
-
-exit;
 
 
 $searcher = @('*');
-$SearchResults = Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(&(uid=a*)(objectClass=*))" -SearchBase:"cn=users,dc=domain,dc=tld" -PropertiesToLoad *
+$SearchResults = Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(&(uid=a*)(objectClass=*))" -SearchBase:"cn=users,$($base)" -PropertiesToLoad *
 Write-Output $SearchResults;
 
 $SearchResults= "";
 
-# (Get-RootDse -LdapConnection $Ldap).CurrentTime - [DateTime]::Now
-# exit;
 
-# Remove-LdapObject  -LdapConnection $Ldap -Object "cn=user1 ole ole ole,cn=users,dc=mydomain,dc=com"
-
+## test modify entries
 Function Perform-Modification
 {
   Param
@@ -47,21 +42,16 @@ Function Perform-Modification
   }
 }
 
-#gets RootDSE object
-#disable many user accounts
-## Write-Output $Dse
-## exit;
 
-Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(&(uid=root)(objectClass=*))" -SearchBase:"cn=users,dc=domain,dc=tld" -PropertiesToLoad:@('HalloWelt', 'myCustomNumber') | Perform-Modification | Edit-LdapObject -LdapConnection $Ldap -Mode Add       #-IncludedProps ['HalloWelt','myCustomNumber']
+Find-LdapObject -LdapConnection $Ldap -SearchFilter:"(&(uid=adr*)(objectClass=*))" -SearchBase:"cn=users,$($base)" -PropertiesToLoad:@('HalloWelt', 'myCustomNumber') | Perform-Modification | Edit-LdapObject -LdapConnection $Ldap -Mode Add       #-IncludedProps ['HalloWelt','myCustomNumber']
 
 
-exit;
 Register-LdapAttributeTransform -Name UnicodePwd
 Register-LdapAttributeTransform -Name UserAccountControl
 
 #Design the object
 $Props = @{
-  distinguishedName='cn=user1 ole ole ole,cn=users,dc=mydomain,dc=com'
+  distinguishedName="cn=user1 ole ole ole,cn=users,$($base)"
   objectClass='user'
   sAMAccountName='User1'
   unicodePwd='S3cur3Pa$$word'
@@ -71,9 +61,5 @@ $Props = @{
 #Create the object according to design
 $obj = new-object PSObject -Property $Props
 
-#When dealing with password, LDAP server is likely
-#to require encrypted connection
-
 #Create the object in directory
 $obj | Add-LdapObject -LdapConnection $Ldap
-exit;

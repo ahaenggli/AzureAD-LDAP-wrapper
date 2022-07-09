@@ -7,13 +7,12 @@ docker-compose*
 .git
 .github
 .gitignore
-README.md
-LICENSE
 .vscode
-data/*.json
 .cache/*
 .env
 customizer/ldap_customizer.js
 schema/synology-openldap-export
 schema/*.ps1
-example/*
+example
+tests
+*.ps1
