@@ -125,14 +125,7 @@ function authorize(req, res, next) {
     var username = bindi.toLowerCase().replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
 
     const isSearch = (req instanceof ldap.SearchRequest);
-    var isAdmin = false;
-
-    if (config.LDAP_BINDUSER) {
-        for (var u of config.LDAP_BINDUSER.toString().split("||")) {
-            u = u.split("|")[0];
-            if (u === username) isAdmin = true;
-        }
-    }
+    const isAdmin = isUserENVBindUser(bindi);
 
     if (!isAdmin && !isSearch) {
         helper.error("server.js", "authorize - denied for => ", username, bindi);
@@ -144,24 +137,30 @@ function authorize(req, res, next) {
 }
 
 function isUserENVBindUser(binduser) {
-    var allowSensitiveAttributes = false;
     if (config.LDAP_BINDUSER) {
+        var username = binduser.toString().replace(/ /g, '').toLowerCase().replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
         for (var u of config.LDAP_BINDUSER.toString().split("||")) {
             u = u.split("|")[0];
-            var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
-            if (u === username) allowSensitiveAttributes = true;
+            if (u === username) return true;
         }
     }
-    return allowSensitiveAttributes;
+    return false;
 }
 
 function removeSensitiveAttributes(binduser, dn, attributes) {
+	if (!attributes) return attributes;
+	
+	const isAdmin = isUserENVBindUser(binduser);
+	if (!isAdmin) {
+		// Remove customSecurityAttributes if not an admin user
+		for (let attribute of Object.keys(attributes)) {
+		    if (attribute.startsWith("customSecurityAttribute_")) delete attributes[attribute];
+		}
+	}
 
-    if (attributes && attributes.hasOwnProperty("sambaNTPassword")) {
+    if (attributes.hasOwnProperty("sambaNTPassword")) {
         var allowSensitiveAttributes = false;
-
-        if (binduser.equals(dn)) allowSensitiveAttributes = true;
-        if (isUserENVBindUser(binduser)) allowSensitiveAttributes = true;
+        if (binduser.equals(dn) || isAdmin) allowSensitiveAttributes = true;
 
         if (config.LDAP_SAMBANTPWD_MAXCACHETIME && attributes["sambaPwdLastSet"])
             if (config.LDAP_SAMBANTPWD_MAXCACHETIME != -1)
@@ -172,7 +171,6 @@ function removeSensitiveAttributes(binduser, dn, attributes) {
             attributes["sambaNTPassword"] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
             attributes["sambaPwdLastSet"] = 0;
         }
-
     }
 
     return attributes;

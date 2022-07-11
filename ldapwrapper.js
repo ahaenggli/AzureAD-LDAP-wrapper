@@ -452,6 +452,18 @@ ldapwrapper.do = async function () {
           if (db[g].member.indexOf(upName) < 0) { db[g].member.push(upName); }
           if (db[g].memberUid.indexOf(userPrincipalName) < 0) { db[g].memberUid.push(userPrincipalName); }
         }
+		
+        let customSecurityAttributes = {};
+        if (user.customSecurityAttributes) {
+          for (let customSecurityAttributeSet of Object.keys(user.customSecurityAttributes)) {
+            for (let customSecurityAttribute of Object.keys(user.customSecurityAttributes[customSecurityAttributeSet])) {
+              if (customSecurityAttribute !== "@odata.type") {
+                let customSecurityAttributeValue = user.customSecurityAttributes[customSecurityAttributeSet][customSecurityAttribute];
+                customSecurityAttributes["customSecurityAttribute_" + customSecurityAttributeSet + "_" + customSecurityAttribute] = customSecurityAttributeValue;
+              }
+            }
+          }
+		}
 
         db[upName] = Object.assign({},
           // default values
@@ -507,6 +519,8 @@ ldapwrapper.do = async function () {
           },
           // merge existing values
           db[upName],
+          // customSecurityAttributes
+          customSecurityAttributes,
           // overwrite values from before
           {
             "cn": userPrincipalName.toLowerCase(),
