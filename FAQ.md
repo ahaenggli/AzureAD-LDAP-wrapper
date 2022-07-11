@@ -5,7 +5,7 @@
 - [How do I give some synced users the DSM-Administrator permission on a Synology-NAS?](#how-do-i-give-some-synced-users-the-dsm-administrator-permission-on-a-synology-nas)
 - [Can I use LDAPS (LDAP over SSL) instead of LDAP (with no encryption)?](#can-i-use-ldaps-ldap-over-ssl-instead-of-ldap-with-no-encryption)
 - [Can I use LDAP over TLS (STARTTLS) instead of LDAP (with no encryption)?](#can-i-use-ldap-over-tls-starttls-instead-of-ldap-with-no-encryption)
-- [Is it possible to add or edit the ldap attributes?](#is-it-possible-to-add-or-edit-the-ldap-attributes)
+- [Is it possible to customize the ldap attributes?](#is-it-possible-to-customize-the-ldap-attributes)
 - [Join NAS to Azure AD Domain](#join-nas-to-azure-ad-domain)
 - [Why are personal microsoft accounts not supported?](#why-are-personal-microsoft-accounts-not-supported)
 - [Samba is not working, what can I do?](#samba-is-not-working-what-can-i-do)
@@ -28,10 +28,10 @@ Sure. Mount your certificate file and private key file to the docker container a
 
 Nope, that's not (yet) possible.
 
-## Is it possible to add or edit the ldap attributes?
+## Is it possible to customize the ldap attributes?
 
 Sure! That's what I do in the DSM 7 workaround.
-Look at [this](./customizer/customizer_DSM7_IDs_string2int.js) file for an example. Customize it as you need and map the file in your docker setup as `/app/customizer/ldap_customizer.js`. This file has priority over the DSM 7 workaround.
+Look at [this](./customizer/customizer_DSM7_IDs_string2int.js) file for an example. Customize it as you need and map the file in your docker setup as `/app/customizer/ldap_customizer.js`. This file has even priority over the DSM 7 workaround. Basically everything can be changed with it. Filter users or groups, overwrite a users default group, add/remove/edit entries or attributes, and much more.
 
 ## Join NAS to Azure AD Domain
 If you don't need support for older software, the officially Synology solution to [join your NAS to a Azure AD Domain](https://kb.synology.com/en-my/DSM/tutorial/How_to_join_NAS_to_Azure_AD_Domain) will work fine.

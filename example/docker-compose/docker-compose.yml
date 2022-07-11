@@ -1,0 +1,28 @@
+version: '3.2'
+
+services:
+
+  azuread-ldap:
+    image: ahaen/azuread-ldap-wrapper:v1.7.0
+    container_name: azuread-ldap
+    environment:
+      NODE_ENV: "production"
+      LDAP_DOMAIN: "example.com"
+      LDAP_BASEDN: "dc=example,dc=com"
+      LDAP_BINDUSER: "ldapsearch|ldapsearch123"
+      LDAP_PORT: "13389"
+      LDAP_DEBUG: "true"
+      LDAP_ALLOWCACHEDLOGINONFAILURE: "true"
+      LDAP_SAMBANTPWD_MAXCACHETIME: "-1"
+      AZURE_APP_ID: ""
+      AZURE_TENANTID: ""
+      AZURE_APP_SECRET: ""
+      LDAP_SYNC_TIME: "30"
+      DSM7: "false"
+      GRAPH_FILTER_USERS: "userType eq 'Member'"
+      GRAPH_FILTER_GROUPS: ""
+    ports:
+      - 13389:13389
+    volumes:
+      - /data/azuread-ldap/app:/app/.cache
+    restart: unless-stopped

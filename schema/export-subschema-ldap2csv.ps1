@@ -1,5 +1,5 @@
-﻿$ldap_server = "127.0.0.1";
-$ldap_bind   = "uid=root,cn=users,dc=han,dc=net";
+$ldap_server = "127.0.0.1";
+$ldap_bind   = "uid=root,cn=users,dc=example,dc=com";
 $ldap_pass   = "abc123";
 
 Install-Module -Name S.DS.P
