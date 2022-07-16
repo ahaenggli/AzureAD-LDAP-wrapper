@@ -10,6 +10,8 @@ config.AZURE_APP_SECRET = process.env.AZURE_APP_SECRET;
 config.AZURE_TENANTID = process.env.AZURE_TENANTID;
 
 // LDAP
+config.LDAP_ANONYMOUSBIND = (process.env.LDAP_ANONYMOUSBIND || "domain").toLowerCase().replace(/ /g, '');
+
 config.LDAP_DOMAIN = (process.env.LDAP_DOMAIN || "example.net").toLowerCase().replace(/ /g, '');
 config.LDAP_BASEDN = (process.env.LDAP_BASEDN || "dc=example,dc=net").toLowerCase().replace(/ /g, '');
 

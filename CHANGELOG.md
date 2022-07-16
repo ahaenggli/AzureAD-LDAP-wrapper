@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+### Changed
+
+- env var `LDAP_ANONYMOUSBIND` default value is set to `domain`, so everything works normal on a Synology NAS. However, you may need to change this value to `all` or `none` depending on how you use it.
+- env var `DSM7` is set to `true` as default on new containers
+- env var `GRAPH_FILTER_GROUPS` ist set to `securityEnabled eq true` as default on new containers
+
+### Fixed
+
+- WIP: modify bug
+
+### Added
+
+- env var `LDAP_ANONYMOUSBIND` to restrict access for ldap queries without any authentication if needed.
 
 ## [1.8.0] - 2022-07-09
 

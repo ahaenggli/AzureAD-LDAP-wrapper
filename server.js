@@ -3,32 +3,7 @@
 const helper = require('./helper');
 const config = require('./config');
 
-var env_check = true;
-
-if (!config.AZURE_APP_ID) { helper.error("config", "env var `AZURE_APP_ID` must be set"); env_check = false; }
-if (!config.AZURE_APP_SECRET) { helper.error("config", "env var `AZURE_APP_SECRET` must be set"); env_check = false; }
-if (!config.AZURE_TENANTID) { helper.error("config", "env var `AZURE_TENANTID` must be set"); env_check = false; }
-
-if (!config.LDAP_DOMAIN) { helper.error("config", "env var `LDAP_DOMAIN` must be set"); env_check = false; }
-if (!config.LDAP_BASEDN) { helper.error("config", "env var `LDAP_BASEDN` must be set"); env_check = false; }
-if (config.LDAP_BASEDN.indexOf(",") < 0) { helper.warn("config", "env var `LDAP_BASEDN` has the wrong format: `dc=DOMAIN,dc=TLD`"); }
-if (config.LDAP_BASEDN.indexOf(" ") > -1) { helper.warn("config", "env var `LDAP_BASEDN` should not have spaces in it"); }
-
-if (!config.LDAP_PORT) { helper.error("config", "env var `LDAP_PORT` must be set"); env_check = false; }
-if (!config.LDAP_BINDUSER) helper.forceLog("config", "env var `LDAP_BINDUSER` is not set; If you plan to handle multiple synced users on a Synology-NAS you should set it to bind your NAS with it.");
-
-if (!config.LDAP_GROUPSDN) { helper.error("config", "env var `LDAP_GROUPSDN` not set correctly"); env_check = false; }
-if (!config.LDAP_USERSDN) { helper.error("config", "env var `LDAP_USERSDN` not set correctly"); env_check = false; }
-if (!config.LDAP_USERSGROUPSBASEDN) { helper.error("config", "env var `LDAP_USERSGROUPSBASEDN` not set correctly"); env_check = false; }
-if (!config.LDAP_USERRDN) { helper.error("config", "env var `LDAP_USERRDN` not set correctly"); env_check = false; }
-if (!config.LDAP_DATAFILE) { helper.error("config", "env var `LDAP_DATAFILE` not set correctly"); env_check = false; }
-if (!config.LDAP_SYNC_TIME) { helper.error("config", "env var `LDAP_SYNC_TIME` not set correctly"); env_check = false; }
-
-if (isNaN(parseInt(config.LDAP_SAMBANTPWD_MAXCACHETIME))) { helper.error("config", "env var `LDAP_SAMBANTPWD_MAXCACHETIME` must be a number."); env_check = false; }
-
-if ((config.LDAPS_CERTIFICATE || config.LDAPS_KEY) && !(config.LDAPS_CERTIFICATE && config.LDAPS_KEY)) { helper.error("config", "env var `LDAPS_CERTIFICATE` AND `LDAPS_KEY` must be set."); env_check = false; }
-if (config.LDAPS_CERTIFICATE && config.LDAPS_KEY && config.LDAP_PORT != 636) { helper.warn("config", "LDAPS usually runs on port 636. So you may need to set the env var `LDAP_PORT` to 636."); }
-if (!env_check) return;
+if (!helper.checkEnvVars()) return;
 
 const ldapwrapper = require('./ldapwrapper');
 const ldap = require('ldapjs');
@@ -105,11 +80,21 @@ setInterval(interval_func, interval);
 ///--- Shared handlers
 const SUFFIX = '';
 function authorize(req, res, next) {
-    /* Any user may search after bind, only cn=root has full power */
+
     var bindi = req.connection.ldap.bindDN.toString().replace(/ /g, '');
     var username = bindi.toLowerCase().replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
 
     const isSearch = (req instanceof ldap.SearchRequest);
+    const isAnonymous = req.connection.ldap.bindDN.equals('cn=anonymous');
+
+    if (config.LDAP_ANONYMOUSBIND == "none" && isAnonymous) {
+        helper.error("server.js", "authorize - denied because of env var `LDAP_ANONYMOUSBIND` ", bindi);
+        return next(new ldap.InsufficientAccessRightsError());
+    }
+
+    /* Any user may search after bind, only cn=root has full power */
+
+
     var isAdmin = false;
 
     if (config.LDAP_BINDUSER) {
@@ -192,7 +177,7 @@ server.bind(SUFFIX, async (req, res, next) => {
 
             var userAttributes = db[dn]; // removeSensitiveAttributes(req.dn, dn, db[dn]);//
 
-            if (!userAttributes || !userAttributes.hasOwnProperty("sambaNTPassword") || !userAttributes.hasOwnProperty("AzureADuserPrincipalName")) {                
+            if (!userAttributes || !userAttributes.hasOwnProperty("sambaNTPassword") || !userAttributes.hasOwnProperty("AzureADuserPrincipalName")) {
                 helper.log("server.js", "server.bind", username, "Failed login -> mybe not synced yet?");
                 return next(new ldap.InvalidCredentialsError());
             } else {
@@ -251,11 +236,12 @@ server.bind(SUFFIX, async (req, res, next) => {
 // search
 server.search(SUFFIX, authorize, (req, res, next) => {
     try {
-        var dn = req.dn.toString().toLowerCase().replace(/ /g, '');
-        if (!dn) dn = config.LDAP_BASEDN;
+        const isAnonymous = req.connection.ldap.bindDN.equals('cn=anonymous');
+        var dn = req.dn.toString().toLowerCase().replace(/ /g, '') || config.LDAP_BASEDN;
 
         helper.log("server.js", "server.search", 'Search for => DB: ' + dn + '; Scope: ' + req.scope + '; Filter: ' + req.filter + '; Attributes: ' + req.attributes + ';');
 
+        // search for schema/configuration
         if (['cn=SubSchema', 'cn=schema,cn=config', 'cn=schema,cn=configuration'].map(v => v.toLowerCase()).indexOf(dn.toLowerCase()) > -1) {
             res.send({
                 dn: dn,
@@ -265,17 +251,28 @@ server.search(SUFFIX, authorize, (req, res, next) => {
             return next();
         }
 
-        if (!db[dn])
+        let searchableEntries = JSON.parse(JSON.stringify(db));
+        if (config.LDAP_ANONYMOUSBIND == 'domain' && isAnonymous) {
+            for (var key of Object.keys(searchableEntries)) {
+                if (!searchableEntries[key].hasOwnProperty("namingContexts")) {
+                    delete searchableEntries[key];
+                }
+            }
+            helper.log("server.js", "server.search", 'searchableEntries modified for anonymous', Object.keys(searchableEntries).length);
+        } else {
+            helper.log("server.js", "server.search", 'searchableEntries NOT modified', Object.keys(searchableEntries).length);
+        }
+
+        if (!searchableEntries[dn])
             return next(new ldap.NoSuchObjectError(dn));
 
         let scopeCheck;
-
         let bindDN = req.connection.ldap.bindDN;
 
         switch (req.scope) {
             case 'base':
 
-                if (req.filter.matches(removeSensitiveAttributes(bindDN, dn, db[dn]))) {
+                if (req.filter.matches(removeSensitiveAttributes(bindDN, dn, searchableEntries[dn]))) {
                     res.send({
                         dn: dn,
                         attributes: removeSensitiveAttributes(bindDN, dn, db[dn])
@@ -303,12 +300,12 @@ server.search(SUFFIX, authorize, (req, res, next) => {
                 break;
         }
 
-        const keys = Object.keys(db);
+        const keys = Object.keys(searchableEntries);
         for (const key of keys) {
             if (!scopeCheck(key))
                 continue;
 
-            if (req.filter.matches(removeSensitiveAttributes(bindDN, key, db[key]))) {
+            if (req.filter.matches(removeSensitiveAttributes(bindDN, key, searchableEntries[key]))) {
                 res.send({
                     dn: key,
                     attributes: removeSensitiveAttributes(bindDN, key, db[key])

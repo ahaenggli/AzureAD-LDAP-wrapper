@@ -98,7 +98,7 @@ helper.generateSID = function (modus, level, smbaSIDbase, hash, objectId) {
 
         if (!modus)
             return smbaSIDbase + "-" + (hash * 2 + 1001);
-            
+
         if (modus)
             return objectId;
 
@@ -107,41 +107,77 @@ helper.generateSID = function (modus, level, smbaSIDbase, hash, objectId) {
     else if (level == 1) {
 
         if (modus == undefined)
-        return "S-1-5-21-" + hash + "-" + hash + "-" + hash;
+            return "S-1-5-21-" + hash + "-" + hash + "-" + hash;
 
-    if (!modus)
-        return smbaSIDbase + "-" + (hash * 2 + 1000);
-        
-    if (modus){
-        
-        let str = objectId;
-        //console.log(str);
+        if (!modus)
+            return smbaSIDbase + "-" + (hash * 2 + 1000);
 
-        // $d=[UInt32[]]::new(4);
-        let d = new Uint32Array(4);
-        //console.log(d);
+        if (modus) {
 
-        // [Guid]::Parse($ObjectId).ToByteArray()
-        let bytes = guidToBytes(str);
-        //console.log(bytes);
+            let str = objectId;
+            //console.log(str);
 
-        for (let i = 0, len = d.length; i < len; i++) {
-          let data = bytes.slice(4 * i, 4 * i + 4);
-          // console.log(data);
-          let u8 = new Uint8Array(data); // original array
-          let u32bytes = u8.buffer.slice(-4); // last four bytes as a new `ArrayBuffer`
-          d[i] = new Uint32Array(u32bytes)[0];
+            // $d=[UInt32[]]::new(4);
+            let d = new Uint32Array(4);
+            //console.log(d);
+
+            // [Guid]::Parse($ObjectId).ToByteArray()
+            let bytes = guidToBytes(str);
+            //console.log(bytes);
+
+            for (let i = 0, len = d.length; i < len; i++) {
+                let data = bytes.slice(4 * i, 4 * i + 4);
+                // console.log(data);
+                let u8 = new Uint8Array(data); // original array
+                let u32bytes = u8.buffer.slice(-4); // last four bytes as a new `ArrayBuffer`
+                d[i] = new Uint32Array(u32bytes)[0];
+            }
+
+            // let b = new ArrayBuffer(bytes);//.copy(d, 0, 0, 16);
+            // d = b.slice(0, 16);
+            // console.log(d);
+
+            return "S-1-12-1-" + d.join("-");
         }
-
-        // let b = new ArrayBuffer(bytes);//.copy(d, 0, 0, 16);
-        // d = b.slice(0, 16);
-        // console.log(d);
-
-         return "S-1-12-1-"+d.join("-");        
-    }
 
     }
 
 };
+
+
+helper.checkEnvVars = function () {
+    var env_check = true;
+
+    if (!config.AZURE_APP_ID) { helper.error("config", "env var `AZURE_APP_ID` must be set"); env_check = false; }
+    if (!config.AZURE_APP_SECRET) { helper.error("config", "env var `AZURE_APP_SECRET` must be set"); env_check = false; }
+    if (!config.AZURE_TENANTID) { helper.error("config", "env var `AZURE_TENANTID` must be set"); env_check = false; }
+
+    if (!config.LDAP_DOMAIN) { helper.error("config", "env var `LDAP_DOMAIN` must be set"); env_check = false; }
+    if (!config.LDAP_BASEDN) { helper.error("config", "env var `LDAP_BASEDN` must be set"); env_check = false; }
+    if (config.LDAP_BASEDN.indexOf(",") < 0) { helper.warn("config", "env var `LDAP_BASEDN` has the wrong format: `dc=DOMAIN,dc=TLD`"); }
+    if (config.LDAP_BASEDN.indexOf(" ") > -1) { helper.warn("config", "env var `LDAP_BASEDN` should not have spaces in it"); }
+
+    if (!config.LDAP_PORT) { helper.error("config", "env var `LDAP_PORT` must be set"); env_check = false; }
+    if (!config.LDAP_BINDUSER) helper.forceLog("config", "env var `LDAP_BINDUSER` is not set; If you plan to handle multiple synced users on a Synology-NAS you should set it to bind your NAS with it.");
+
+    if (!config.LDAP_GROUPSDN) { helper.error("config", "env var `LDAP_GROUPSDN` not set correctly"); env_check = false; }
+    if (!config.LDAP_USERSDN) { helper.error("config", "env var `LDAP_USERSDN` not set correctly"); env_check = false; }
+    if (!config.LDAP_USERSGROUPSBASEDN) { helper.error("config", "env var `LDAP_USERSGROUPSBASEDN` not set correctly"); env_check = false; }
+    if (!config.LDAP_USERRDN) { helper.error("config", "env var `LDAP_USERRDN` not set correctly"); env_check = false; }
+    if (!config.LDAP_DATAFILE) { helper.error("config", "env var `LDAP_DATAFILE` not set correctly"); env_check = false; }
+    if (!config.LDAP_SYNC_TIME) { helper.error("config", "env var `LDAP_SYNC_TIME` not set correctly"); env_check = false; }
+
+    if (isNaN(parseInt(config.LDAP_SAMBANTPWD_MAXCACHETIME))) { helper.error("config", "env var `LDAP_SAMBANTPWD_MAXCACHETIME` must be a number."); env_check = false; }
+
+    if ((config.LDAPS_CERTIFICATE || config.LDAPS_KEY) && !(config.LDAPS_CERTIFICATE && config.LDAPS_KEY)) { helper.error("config", "env var `LDAPS_CERTIFICATE` AND `LDAPS_KEY` must be set."); env_check = false; }
+    if (config.LDAPS_CERTIFICATE && config.LDAPS_KEY && config.LDAP_PORT != 636) { helper.warn("config", "LDAPS usually runs on port 636. So you may need to set the env var `LDAP_PORT` to 636."); }
+
+    if (!(["none", "domain", "all"].includes(config.LDAP_ANONYMOUSBIND))) {
+        helper.error("config", "env var `LDAP_ANONYMOUSBIND` is invalid");
+        env_check = false;
+    }
+
+    return env_check;
+}
 
 module.exports = helper;
