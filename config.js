@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 
-var config = {}
+var config = {};
 
 // AZURE
 config.AZURE_APP_ID = process.env.AZURE_APP_ID;
@@ -11,6 +11,8 @@ config.AZURE_TENANTID = process.env.AZURE_TENANTID;
 
 // LDAP
 config.LDAP_ANONYMOUSBIND = (process.env.LDAP_ANONYMOUSBIND || "domain").toLowerCase().replace(/ /g, '');
+config.LDAP_SENSITIVE_ATTRIBUTES = (process.env.LDAP_SENSITIVE_ATTRIBUTES || "").replace(/ /g, '');
+config.LDAP_SECURE_ATTRIBUTES = (process.env.LDAP_SECURE_ATTRIBUTES || "").replace(/ /g, '');
 
 config.LDAP_DOMAIN = (process.env.LDAP_DOMAIN || "example.net").toLowerCase().replace(/ /g, '');
 config.LDAP_BASEDN = (process.env.LDAP_BASEDN || "dc=example,dc=net").toLowerCase().replace(/ /g, '');

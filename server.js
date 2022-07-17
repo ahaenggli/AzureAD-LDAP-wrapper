@@ -130,22 +130,53 @@ function isUserENVBindUser(binduser) {
 
 function removeSensitiveAttributes(binduser, dn, attributes) {
 
-    if (attributes && attributes.hasOwnProperty("sambaNTPassword")) {
-        var allowSensitiveAttributes = false;
+    if (!attributes) return attributes;
+    const isEnvBindUser = isUserENVBindUser(binduser);
+    var allowSensitiveAttributes = (binduser.equals(dn) || isEnvBindUser);
 
-        if (binduser.equals(dn)) allowSensitiveAttributes = true;
-        if (isUserENVBindUser(binduser)) allowSensitiveAttributes = true;
+    // samba is special, the own user must have access to them
+    if (attributes.hasOwnProperty("sambaNTPassword")) {
 
-        if (config.LDAP_SAMBANTPWD_MAXCACHETIME && attributes["sambaPwdLastSet"])
-            if (config.LDAP_SAMBANTPWD_MAXCACHETIME != -1)
-                if ((attributes["sambaPwdLastSet"] + config.LDAP_SAMBANTPWD_MAXCACHETIME * 60) < Math.floor(Date.now() / 1000))
-                    allowSensitiveAttributes = false;
+        if (config.LDAP_SAMBANTPWD_MAXCACHETIME && attributes["sambaPwdLastSet"] && config.LDAP_SAMBANTPWD_MAXCACHETIME != -1)
+            // time is up
+            if ((attributes["sambaPwdLastSet"] + config.LDAP_SAMBANTPWD_MAXCACHETIME * 60) < Math.floor(Date.now() / 1000)) {
+                attributes["sambaNTPassword"] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+                attributes["sambaPwdLastSet"] = 0;
+            }
 
+        // user is not allowed to see
         if (!allowSensitiveAttributes) {
             attributes["sambaNTPassword"] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
             attributes["sambaPwdLastSet"] = 0;
         }
+    }
 
+    // secure attributes - only the respective user and superusers are allowed to see them
+    if (!allowSensitiveAttributes) {
+        if (config.LDAP_SENSITIVE_ATTRIBUTES != "") {
+            const sensitiveAttributes = config.LDAP_SENSITIVE_ATTRIBUTES.split("|");
+            // remove all sensitive attributes from the env var
+            let attKeys = Object.keys(attributes);
+            sensitiveAttributes.forEach(sensAttName => {
+                let foundAttNames = attKeys.filter((key) => key.match(new RegExp(sensAttName, "gi")));
+                foundAttNames.forEach(found => {
+                    delete attributes[found];
+                });
+            });
+        }
+    }
+
+    // secure attributes - only superusers are allowed to see them
+    if (!isEnvBindUser && config.LDAP_SECURE_ATTRIBUTES != "") {
+        const secureAttributes = config.LDAP_SECURE_ATTRIBUTES.split("|");
+        // remove all sensitive attributes from the env var
+        let attKeys = Object.keys(attributes);
+        secureAttributes.forEach(sensAttName => {
+            let foundAttNames = attKeys.filter((key) => key.match(new RegExp(sensAttName, "gi")));
+            foundAttNames.forEach(found => {
+                delete attributes[found];
+            });
+        });
     }
 
     return attributes;
@@ -329,7 +360,7 @@ server.search(SUFFIX, authorize, (req, res, next) => {
 
 // compare entries  
 server.compare(SUFFIX, authorize, (req, res, next) => {
-    const dn = req.dn.toString().toLowerCase().replace(/  /g, ' ').replace(/, /g, ',');
+    const dn = req.dn.toString().toLowerCase().replace(/  {2,}/g, ' ').replace(/, /g, ',');
 
     if (!db[dn])
         return next(new ldap.NoSuchObjectError(dn));
@@ -340,7 +371,7 @@ server.compare(SUFFIX, authorize, (req, res, next) => {
     if (!db[dn][req.attribute])
         return next(new ldap.NoSuchAttributeError(req.attribute));
 
-    const matches = false;
+    var matches = false;
     const vals = db[dn][req.attribute];
     for (const value of vals) {
         if (value === req.value) {
@@ -355,7 +386,7 @@ server.compare(SUFFIX, authorize, (req, res, next) => {
 
 // add entries  
 server.add(SUFFIX, authorize, (req, res, next) => {
-    const dn = req.dn.toString().toLowerCase().replace(/  /g, ' ').replace(/, /g, ',');
+    const dn = req.dn.toString().toLowerCase().replace(/  {2,}/g, ' ').replace(/, /g, ',');
 
     if (db[dn]) {
         helper.error("server.js", "add", "EntryAlreadyExistsError", dn);
@@ -377,7 +408,7 @@ server.add(SUFFIX, authorize, (req, res, next) => {
 
 // delete entries
 server.del(SUFFIX, authorize, (req, res, next) => {
-    const dn = req.dn.toString().toLowerCase().replace(/  /g, ' ').replace(/, /g, ',');
+    const dn = req.dn.toString().toLowerCase().replace(/  {2,}/g, ' ').replace(/, /g, ',');
 
     if (!db[dn]) {
         helper.error("server.js", "del", "NoSuchObjectError", dn);
@@ -392,21 +423,21 @@ server.del(SUFFIX, authorize, (req, res, next) => {
 });
 
 server.modifyDN(SUFFIX, authorize, (req, res, next) => {
-    
+
     helper.error("server.js", "modifyDN", "not yet implemented");
     return next(new ldap.ProtocolError('not yet implemented'));
-    
+
     // console.log('DN: ' + req.dn.toString());
     // console.log('new RDN: ' + req.newRdn.toString());
     // console.log('deleteOldRDN: ' + req.deleteOldRdn);
     // console.log('new superior: ' +(req.newSuperior ? req.newSuperior.toString() : ''));
     // res.end();
-    
-  });
+
+});
 
 // edit entries
 server.modify(SUFFIX, authorize, (req, res, next) => {
-    const dn = req.dn.toString().toLowerCase().replace(/  /g, ' ').replace(/, /g, ',');
+    const dn = req.dn.toString().toLowerCase().replace(/  {2,}/g, ' ').replace(/, /g, ',');
 
     if (!req.changes.length) {
         helper.error("server.js", "modify", "ProtocolError", req.changes);
@@ -431,6 +462,8 @@ server.modify(SUFFIX, authorize, (req, res, next) => {
         var modType = Object.keys(entry).find(key => key.toLowerCase() === mod.type.toLowerCase()) || mod.type;
         var modVals = mod.vals;
 
+        helper.log("server.js", "modify", "req.changes -> change-details", { operation: change.operation, modType: modType, modVals: modVals });
+
         //helper.error("server.js", "modify", "modVals2", modVals);
         switch (change.operation) {
             case 'replace':
@@ -438,16 +471,16 @@ server.modify(SUFFIX, authorize, (req, res, next) => {
                     helper.error("server.js", "modify", "NoSuchAttributeError", modType);
                     return next(new ldap.NoSuchAttributeError(modType));
                 }
-  
+
                 if (!modVals || !modVals.length) {
                     delete entry[modType];
                 } else {
                     entry[modType] = modVals;
 
-                     //modifiy array to single entry
-                     if (['objectclass', 'memberuid', 'member', 'memberof'].indexOf(modType.toLowerCase()) === -1 && entry[modType].length == 1) {
+                    //modifiy array to single entry
+                    if (['objectclass', 'memberuid', 'member', 'memberof'].indexOf(modType.toLowerCase()) === -1 && entry[modType].length == 1) {
                         entry[modType] = entry[modType][0];
-                     }
+                    }
 
                 }
 
@@ -457,11 +490,11 @@ server.modify(SUFFIX, authorize, (req, res, next) => {
                 if (!entry[modType]) {
                     entry[modType] = modVals;
                 } else {
-                    if(!Array.isArray(entry[modType])) entry[modType] = [entry[modType]];
+                    if (!Array.isArray(entry[modType])) entry[modType] = [entry[modType]];
                     for (const v of modVals) {
                         if (entry[modType].indexOf(v) === -1)
                             entry[modType].push(v);
-                    }                    
+                    }
                 }
 
                 //modifiy array to single entry
@@ -475,7 +508,16 @@ server.modify(SUFFIX, authorize, (req, res, next) => {
                     helper.error("server.js", "modify", "NoSuchAttributeError", modType);
                     return next(new ldap.NoSuchAttributeError(modType));
                 } else {
-                    delete entry[modType];
+                    if (!Array.isArray(entry[modType])) entry[modType] = [entry[modType]];
+
+                    for (const v of modVals) {
+                        let idx = entry[modType].indexOf(v);
+                        if (idx > -1)
+                            entry[modType].splice(idx, 1);
+                    }
+
+                    if (entry[modType].length == 0 || !modVals || modVals.length == 0)
+                        delete entry[modType];
                 }
                 break;
         }
@@ -492,11 +534,11 @@ server.modify(SUFFIX, authorize, (req, res, next) => {
 
 server.on("error", (error) => {
     helper.error("server.js", "!!! error !!!", error);
-})
+});
 
 server.on("uncaughtException", (error) => {
     helper.error("server.js", "!!! uncaughtException !!!", error);
-})
+});
 
 server.listen(config.LDAP_PORT, function () {
     console.log("server.js", '---->  LDAP server up at: ', server.url);

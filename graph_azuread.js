@@ -2,6 +2,7 @@
 
 const config = require('./config');
 const helper = require('./helper');
+const customizer = require('./customizer/customizer');
 
 const proxyUrl = (process.env.HTTPS_PROXY || process.env.HTTP_PROXY || "");
 const proxyClient = require('./proxyClient.js');
@@ -24,11 +25,12 @@ graph.tokenRequest = {
 };
 
 graph.apiConfig = {
-    //dri: MS_GRAPH_SCOPE + 'v1.0/domains',
     uri: MS_GRAPH_SCOPE + 'v1.0/users?$select=businessPhones,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState' + config.GRAPH_FILTER_USERS,
     gri: MS_GRAPH_SCOPE + 'v1.0/groups?' + config.GRAPH_FILTER_GROUPS,
     mri: MS_GRAPH_SCOPE + 'v1.0/groups/{id}/members',
 };
+
+graph.apiConfig = customizer.modifyGraphApiConfig(graph.apiConfig, MS_GRAPH_SCOPE);
 
 /**
  * Initialize a confidential client application. For more info, visit:
@@ -45,6 +47,7 @@ const msalConfig = {
     system: {
         loggerOptions: {
             loggerCallback(loglevel, message, containsPii) {
+                if(!containsPii)
                 helper.log("graph_azuread.js", "system.loggerOptions", loglevel, message);
             },
             piiLoggingEnabled: false,
@@ -75,7 +78,7 @@ const cca = new msal.ConfidentialClientApplication(msalConfig);
  */
 graph.getToken = async function getToken(tokenRequest) {
     return await cca.acquireTokenByClientCredential(tokenRequest);
-}
+};
 
 /**
  * Calls the endpoint with authorization bearer token.

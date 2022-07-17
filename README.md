@@ -20,7 +20,7 @@ AzureAD-LDAP-wrapper is a nodejs ldap server ([ldapjs](https://github.com/ldapjs
 ## Motivation and background information
 
 I personally run the project in a Docker container on my Synology NAS. The NAS and some intranet web applications are connected to the ldap server. This way my users can log in to the NAS, the web applications and of course office.com with the same credentials.
-The whole thing could probably also be achieved by [joining the NAS to AADDS](https://kb.synology.com/en-global/DSM/tutorial/How_to_join_NAS_to_Azure_AD_Domain). However, I wasn't willing to pay that much just for 3 users.
+The whole thing could probably also be achieved by [joining the NAS to AADDS](https://kb.synology.com/en-global/DSM/tutorial/How_to_join_NAS_to_Azure_AD_Domain). However, I was not willing to pay that much for a virtual machine/VPN/AADDS only that my 3 users can use the same credentials (almost) everywhere.
 
 ### How the server works
 
@@ -177,8 +177,8 @@ Default is the first part of your baseDN, for `dc=example,dc=net` it would be `E
 Every AzureAD-user can bind (and auth) in this LDAP-Server.
 This parameter allows you to add additional - NOT in AzureAD existing - users.
 Format: "username|password". This can be useful to "join" a device (e.g. NAS).
-Multiple users can be split by "||". (ex. `ldapsearch1|mysecret||searchy2|othersecret`).
-Those users have full read permissions and can also see the sambaNTPassword-hash.
+Multiple users can be split by "||". (e.g. `ldapsearch1|mysecret||searchy2|othersecret`).
+Those users are superusers (e.g. root, admin, ...) and have full read and modify permissions and can also see the sambaNTPassword-hash.
 
 ### LDAP_ANONYMOUSBIND (default: domain)
 
@@ -192,6 +192,17 @@ Depending on the value, anonymous binding is handelt differently
 
 If set to true there are more detailed logs in the console output.
 
+### LDAP_SECURE_ATTRIBUTES (optional)
+
+Allows to define secure attributes. Onlye superusers can see them all.
+Multiple attributes can be split by "|". (e.g. `customSecurityAttributes_*|PlannedDischargeDate`).
+
+### LDAP_SENSITIVE_ATTRIBUTES (optional)
+
+Allows to define sensitive attributes. Each user can see his own values, but not those of another user.
+Additionally, superusers can see them all, too.
+Multiple attributes can be split by "|". (e.g. `middlename|PrivatePhoneNumber`).
+
 ### LDAP_ALLOWCACHEDLOGINONFAILURE (default: true)
 
 allows login from cached sambaNTPassword.
@@ -200,7 +211,7 @@ If set to true, the login has failed and the error does NOT say "wrong credentia
 ### LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity)
 
 Maximum time in minutes that defines how long a cached sambaNTPassword hash can be used (for login and samba access).
-After that time, a user has to login 'normal' via the bind method (ex. dsm-web-gui) to reset the cached value.
+After that time, a user has to login 'normal' via the bind method (e.g. dsm-web-gui) to reset the cached value.
 As default there is no time limit (-1=infinity).
 
 ### LDAPS_CERTIFICATE

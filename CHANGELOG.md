@@ -20,6 +20,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - env var `LDAP_ANONYMOUSBIND` to restrict access for ldap queries without any authentication if needed.
+- env var `LDAP_SECURE_ATTRIBUTES` to restrict access for the specified attributes only to superusers.
+- env var `LDAP_SENSITIVE_ATTRIBUTES`  to restrict access to the specified attributes to the respective user only and superusers.
+- customizer option to change api endpoints from e.g. v1.0 to beta
 
 ## [1.8.0] - 2022-07-09
 

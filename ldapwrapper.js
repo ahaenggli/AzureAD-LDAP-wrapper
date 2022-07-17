@@ -5,13 +5,11 @@ const graph_azure = require('./graph_azuread');
 const config = require('./config');
 const helper = require('./helper');
 const fs = require('fs');
-
+const customizer = require('./customizer/customizer');
 const smbaSIDbase = config.LDAP_SAMBASIDBASE;
 
 var diacritic = require('diacritic');
-
 var encode = require('hashcode').hashCode;
-
 var ldapwrapper = {};
 
 function removeSpecialChars(str) {
@@ -35,19 +33,8 @@ ldapwrapper.do = async function () {
       helper.log("ldapwrapper.js", "mkdirSync: nothing to do");
     }
 
-    var customizer = {};
-    if (config.DSM7 && fs.existsSync('./customizer/customizer_DSM7_IDs_string2int.js')) {
-      customizer = require('./customizer/customizer_DSM7_IDs_string2int');
-    }
-    if (fs.existsSync('./customizer/ldap_customizer.js')) {
-      customizer = require('./customizer/ldap_customizer');
-    }
-    if (typeof customizer.ModifyLDAPUser === "undefined") customizer.ModifyLDAPUser = function (ldapuser, azureuser) { return ldapuser; };
-    if (typeof customizer.ModifyLDAPGroup === "undefined") customizer.ModifyLDAPGroup = function (ldapgroup, azuregroup) { return ldapgroup; };
-    if (typeof customizer.ModifyLDAPGlobal === "undefined") customizer.ModifyLDAPGlobal = function (all) { return all; };
-    if (typeof customizer.ModifyAzureUsers === "undefined") customizer.ModifyAzureUsers = function (azureusers) { return azureusers; };
-    if (typeof customizer.ModifyAzureGroups === "undefined") customizer.ModifyAzureGroups = function (azuregroups) { return azuregroups; };
-
+    
+    
     const graph_azureResponse = await graph_azure.getToken(graph_azure.tokenRequest);
     if (!graph_azureResponse) helper.error("ldapwrapper.js", "graph_azureResponse missing");
 

@@ -75,4 +75,4 @@ async function sendPostRequestAsync(url, options) {
 module.exports = {
   sendGetRequestAsync,
   sendPostRequestAsync
-}
+};
