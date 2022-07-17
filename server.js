@@ -7,9 +7,11 @@ if (!helper.checkEnvVars()) return;
 
 const ldapwrapper = require('./ldapwrapper');
 const ldap = require('ldapjs');
-const graph = require('./graph_azuread');
+const ldap_overwrites = require('./ldapjs_overwrites.js');
+ldap_overwrites(ldap);
 
-var nthash = require('smbhash').nthash;
+const graph = require('./graph_azuread');
+const nthash = require('smbhash').nthash;
 
 
 /* build schema */
@@ -44,6 +46,7 @@ var tlsOptions = {};
 //if(config.LDAPS_CERTIFICATE && config.LDAPS_KEY)
 tlsOptions = { certificate: helper.ReadFile(config.LDAPS_CERTIFICATE), key: helper.ReadFile(config.LDAPS_KEY) };
 var server = ldap.createServer(tlsOptions);
+
 
 const interval = config.LDAP_SYNC_TIME /*minutes*/ * 60 * 1000;
 
@@ -388,6 +391,19 @@ server.del(SUFFIX, authorize, (req, res, next) => {
     return next();
 });
 
+server.modifyDN(SUFFIX, authorize, (req, res, next) => {
+    
+    helper.error("server.js", "modifyDN", "not yet implemented");
+    return next(new ldap.ProtocolError('not yet implemented'));
+    
+    // console.log('DN: ' + req.dn.toString());
+    // console.log('new RDN: ' + req.newRdn.toString());
+    // console.log('deleteOldRDN: ' + req.deleteOldRdn);
+    // console.log('new superior: ' +(req.newSuperior ? req.newSuperior.toString() : ''));
+    // res.end();
+    
+  });
+
 // edit entries
 server.modify(SUFFIX, authorize, (req, res, next) => {
     const dn = req.dn.toString().toLowerCase().replace(/  /g, ' ').replace(/, /g, ',');
@@ -411,14 +427,9 @@ server.modify(SUFFIX, authorize, (req, res, next) => {
 
         var mod = change.modification;
 
-        // change search attribute(s) to make it "case in-sensitive"
+        // search change/add/delete attribute(s) in lowercase, so the first CamelCase variante is kept
         var modType = Object.keys(entry).find(key => key.toLowerCase() === mod.type.toLowerCase()) || mod.type;
         var modVals = mod.vals;
-
-        // modifiy array to single entry
-        if (['objectclass', 'memberuid', 'member', 'memberof'].indexOf(modType.toLowerCase()) === -1 && modVals.length == 1) {
-            modVals = modVals[0];
-        }
 
         //helper.error("server.js", "modify", "modVals2", modVals);
         switch (change.operation) {
@@ -427,14 +438,17 @@ server.modify(SUFFIX, authorize, (req, res, next) => {
                     helper.error("server.js", "modify", "NoSuchAttributeError", modType);
                     return next(new ldap.NoSuchAttributeError(modType));
                 }
-                //helper.error("server.js", "modify", "Info", modType);
-                //helper.error("server.js", "modify", "Info", modVals);
-
-
+  
                 if (!modVals || !modVals.length) {
                     delete entry[modType];
                 } else {
                     entry[modType] = modVals;
+
+                     //modifiy array to single entry
+                     if (['objectclass', 'memberuid', 'member', 'memberof'].indexOf(modType.toLowerCase()) === -1 && entry[modType].length == 1) {
+                        entry[modType] = entry[modType][0];
+                     }
+
                 }
 
                 break;
@@ -443,12 +457,17 @@ server.modify(SUFFIX, authorize, (req, res, next) => {
                 if (!entry[modType]) {
                     entry[modType] = modVals;
                 } else {
+                    if(!Array.isArray(entry[modType])) entry[modType] = [entry[modType]];
                     for (const v of modVals) {
                         if (entry[modType].indexOf(v) === -1)
                             entry[modType].push(v);
-                    }
+                    }                    
                 }
 
+                //modifiy array to single entry
+                if (['objectclass', 'memberuid', 'member', 'memberof'].indexOf(modType.toLowerCase()) === -1 && entry[modType].length == 1) {
+                    entry[modType] = entry[modType][0];
+                }
                 break;
 
             case 'delete':

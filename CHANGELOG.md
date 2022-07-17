@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- WIP: modify bug
+- Modify-Requests: Update custom attributes/values and keep the CamelCase for the attribute names
 
 ### Added
 
