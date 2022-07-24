@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+## [1.8.1] - 2022-07-24
+
 ### Changed
 
 - env var `LDAP_ANONYMOUSBIND` default value is set to `domain`, so everything works normal on a Synology NAS. However, you may need to change this value to `all` or `none` depending on how you use it.
@@ -22,7 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - env var `LDAP_ANONYMOUSBIND` to restrict access for ldap queries without any authentication if needed.
 - env var `LDAP_SECURE_ATTRIBUTES` to restrict access for the specified attributes only to superusers.
 - env var `LDAP_SENSITIVE_ATTRIBUTES`  to restrict access to the specified attributes to the respective user only and superusers.
-- customizer option to change api endpoints from e.g. v1.0 to beta
+- customizer options to change api endpoints from e.g. v1.0 to beta
 
 ## [1.8.0] - 2022-07-09
 

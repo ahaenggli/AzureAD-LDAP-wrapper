@@ -1,6 +1,6 @@
 {
   "name": "AzureAD-LDAP-wrapper",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "type": "commonjs",
   "engines": {
     "node": ">=8.10.0"
