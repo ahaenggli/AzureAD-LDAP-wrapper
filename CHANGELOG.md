@@ -7,13 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+### Added
+ - env var `LDAP_PORT` to set a custom port for the listener (e.g. 389 for running the container directly on the host network)
+
 ## [1.8.1] - 2022-07-24
 
 ### Changed
 
 - env var `LDAP_ANONYMOUSBIND` default value is set to `domain`, so everything works normal on a Synology NAS. However, you may need to change this value to `all` or `none` depending on how you use it.
 - env var `DSM7` is set to `true` as default on new containers
-- env var `GRAPH_FILTER_GROUPS` ist set to `securityEnabled eq true` as default on new containers
+- env var `GRAPH_FILTER_GROUPS` is set to `securityEnabled eq true` as default on new containers
 
 ### Fixed
 

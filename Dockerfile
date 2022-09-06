@@ -6,10 +6,8 @@ RUN mkdir -p /app && chown -R node:node /app
 WORKDIR /app
 COPY . .
 
-USER root
 RUN npm install --production && npm prune --production
 
-USER node
 FROM node:lts-alpine as final
 RUN apk add --no-cache tini su-exec
 
@@ -33,7 +31,6 @@ RUN mkdir -p /app && chown -R node:node /app
 WORKDIR /app
 COPY --chown=node:node --from=build /app /app
 
-USER root
 EXPOSE 13389
 RUN ["chmod", "+x", "./entrypoint.sh"]
 ENTRYPOINT ["./entrypoint.sh"]

@@ -192,6 +192,11 @@ Depending on the value, anonymous binding is handelt differently
 
 If set to true there are more detailed logs in the console output.
 
+### LDAP_PORT (default: 13389)
+
+Sets the port for the listener. The wrapper listens on port 13389 by default.
+However, if you are running a Docker container directly on the host network, you may want to change the port to 389.
+
 ### LDAP_SECURE_ATTRIBUTES (optional)
 
 Allows to define secure attributes. Onlye superusers can see them all.
