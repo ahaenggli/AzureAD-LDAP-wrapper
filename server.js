@@ -542,4 +542,6 @@ server.on("uncaughtException", (error) => {
 
 server.listen(config.LDAP_PORT, function () {
     console.log("server.js", '---->  LDAP server up at: ', server.url);
+    var packagejson = require('./package.json');
+    console.log("server.js", '----> ', packagejson.name, 'version:', packagejson.version);
 });

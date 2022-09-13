@@ -8,7 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased] (in 'dev')
 
 ### Added
- - env var `LDAP_PORT` to set a custom port for the listener (e.g. 389 for running the container directly on the host network)
+
+- env var `LDAP_PORT` to set a custom port for the listener (e.g. 389 for running the container directly on the host network)
+- print version at startup
+- check if the volume /app/.cache is mapped inside a docker container
 
 ## [1.8.1] - 2022-07-24
 
