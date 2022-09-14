@@ -33,8 +33,8 @@ ldapwrapper.do = async function () {
       helper.log("ldapwrapper.js", "mkdirSync: nothing to do");
     }
 
-    
-    
+
+
     const graph_azureResponse = await graph_azure.getToken(graph_azure.tokenRequest);
     if (!graph_azureResponse) helper.error("ldapwrapper.js", "graph_azureResponse missing");
 
@@ -58,6 +58,7 @@ ldapwrapper.do = async function () {
         "structuralObjectClass": "domain",
         "hasSubordinates": "TRUE",
         "subschemaSubentry": "cn=subschema",
+        "contextCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
       });
     /* ROOT Domain entry: ENDE */
 
@@ -490,7 +491,10 @@ ldapwrapper.do = async function () {
             "uidNumber": user_hash,
             "structuralObjectClass": "inetOrgPerson",
             "hasSubordinates": "FALSE",
-            "subschemaSubentry": "cn=subschema"
+            "subschemaSubentry": "cn=subschema",
+            "createTimestamp": helper.ldap_now() + "Z",
+            "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
+            "modifyTimestamp": helper.ldap_now() + "Z",
           },
           // merge existing values
           db[upName],
@@ -511,13 +515,45 @@ ldapwrapper.do = async function () {
             "memberOf": user_to_groups[user.id],
             "gidNumber": db[config.LDAP_USERSGROUPSBASEDN].gidNumber,
             "sambaPrimaryGroupSID": db[config.LDAP_USERSGROUPSBASEDN].sambaSID,
+            "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
+            "modifyTimestamp": helper.ldap_now() + "Z",
           });
 
         db[upName] = customizer.ModifyLDAPUser(db[upName], user);
 
       }
     }
+
+    /* Delete users and groups whose last synchronization is older than a week. They are probably already deleted in Azure. */
+    let compDate = helper.ldap_now_2_date(helper.ldap_now(-7));
+    let deletedGroups = Object.values(db).filter(g => g.hasOwnProperty('sambaGroupType')
+      && (!g.hasOwnProperty('modifyTimestamp') // there was a time before the modifyTimestamp was added... 
+        || (g.hasOwnProperty('modifyTimestamp') && 
+          helper.ldap_now_2_date(g.modifyTimestamp) < compDate
+        ))
+    );
+    for (var key of deletedGroups) {
+      helper.forceLog('ldapwrapper.js', 'do', 'deleted group:', {entryDN: key.entryDN, modifyTimestamp: helper.ldap_now_2_date(key.modifyTimestamp), compDate: compDate});
+      delete db[key.entryDN];
+    }
+
+    let deletedUsers = Object.values(db).filter(u => u.hasOwnProperty('sAMAccountName')
+      && (!u.hasOwnProperty('modifyTimestamp') // there was a time before the modifyTimestamp was added... 
+        || (u.hasOwnProperty('modifyTimestamp') && 
+          helper.ldap_now_2_date(u.modifyTimestamp) < compDate
+        ))
+    );
+    for (var key of deletedUsers) {
+      helper.forceLog('ldapwrapper.js', 'do', 'deleted user:', {entryDN: key.entryDN, modifyTimestamp: helper.ldap_now_2_date(key.modifyTimestamp), compDate: compDate});
+      delete db[key.entryDN];
+    }
+    /* delete old users: ENDE */
+
+
     /* fetch all AD users an handle them: ENDE */
+
+
+
     // save the data file
     db = customizer.ModifyLDAPGlobal(db);
     helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);

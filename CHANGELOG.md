@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - env var `LDAP_PORT` to set a custom port for the listener (e.g. 389 for running the container directly on the host network)
 - print version at startup
 - check if the volume /app/.cache is mapped inside a docker container
+- Deleted users and groups in Azure are now also removed from the LDAP entries. (see [FAQ](./FAQ.md#are-deleted-users-or-groups-in-azure-also-removed-from-the-ldap-entries) for more details)
 
 ## [1.8.1] - 2022-07-24
 
@@ -41,6 +42,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 However, you can enable the old handling by setting the env var `LDAP_SAMBA_USEAZURESID` to `false`.
 
 ### Added
+
 - support for proxies (env var `HTTPS_PROXY` or `HTTP_PROXY`)
 
 ## [1.7.0] - 2022-03-19

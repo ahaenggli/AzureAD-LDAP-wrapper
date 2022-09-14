@@ -9,7 +9,7 @@
 - [Join NAS to Azure AD Domain](#join-nas-to-azure-ad-domain)
 - [Why are personal microsoft accounts not supported?](#why-are-personal-microsoft-accounts-not-supported)
 - [Samba is not working, what can I do?](#samba-is-not-working-what-can-i-do)
-
+- [Are deleted users or groups in Azure also removed from the LDAP entries?](#are-deleted-users-or-groups-in-azure-also-removed-from-the-ldap-entries)
 
 ## Does it support MFA (multi-factor authentication)?
 
@@ -34,18 +34,22 @@ Sure! That's what I do in the DSM 7 workaround.
 Look at [this](./customizer/customizer_DSM7_IDs_string2int.js) file for an example. Customize it as you need and map the file in your docker setup as `/app/customizer/ldap_customizer.js`. This file has even priority over the DSM 7 workaround. Basically everything can be changed with it. Filter users or groups, overwrite a users default group, add/remove/edit entries or attributes, and much more.
 
 ## Join NAS to Azure AD Domain
+
 If you don't need support for older software, the officially Synology solution to [join your NAS to a Azure AD Domain](https://kb.synology.com/en-my/DSM/tutorial/How_to_join_NAS_to_Azure_AD_Domain) will work fine.
 My wrapper creates an entire ldap server. So you can use it with several 3rd party (legacy) software in the same network.
 
 ## Why are personal microsoft accounts not supported?
+
 This wrapper uses the ROPC flow for authentication. Microsoft doesn't support that for personal accounts as mentioned [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth-ropc):
 > Personal accounts that are invited to an Azure AD tenant can't use ROPC.
 
 ## Samba is not working, what can I do?
+
 Check the following points first:
+
 - Is samba enabled and your user has permissions to use it?
 - Are you using DSM >= 7? Set the ENV variable to `true`.
-- Look into the docker Log. Are there any errors you should resolve? ![grafik](https://user-images.githubusercontent.com/23347180/114864713-9bb5e380-9df1-11eb-9138-5213537b7a3b.png) 
+- Look into the docker Log. Are there any errors you should resolve? ![grafik](https://user-images.githubusercontent.com/23347180/114864713-9bb5e380-9df1-11eb-9138-5213537b7a3b.png)
 - Did you really connect your device/NAS with a non-existing user from the env var `LDAP_BINDUSER`? Otherwise the required password hash for Samba is not available and access will fail.
 - Before accessing files via network/Samba, each user must log in to dsm-web-gui or another tool that is directly connected to the ldap server. This also applies after a password change, since the password hash for Samba is only set after a successful login.
 - Is your (Windows) device connected to Azure? Make sure you log in with username/password over the network, not with your pin code.
@@ -55,6 +59,11 @@ Check the following points first:
   - Enable "collect debug logs"
 ![image](https://user-images.githubusercontent.com/23347180/171563962-bea25dd1-8072-45d2-bbd9-5b8c86d3af1c.png)
   - Try the access a shared folder multiple times
-  - [ssh into your nas](https://kb.synology.com/en-global/DSM/tutorial/How_to_login_to_DSM_with_root_permission_via_SSH_Telnet) 
+  - [ssh into your nas](https://kb.synology.com/en-global/DSM/tutorial/How_to_login_to_DSM_with_root_permission_via_SSH_Telnet)
   - Run `cat /var/log/samba/log.smbd` and copy the latest error/fail/... messages - please replace sensitive informations like domains, ip addresses or names.
   - Don't forget to disable "collect debug logs" before opening an issue
+
+## Are deleted users or groups in Azure also removed from the LDAP entries?
+
+Yes. The deletion takes place about 7 days later. During each synchronization with Azure, a modification date is stored in the LDAP entries. If the modification date of a user or a group is 7 days in the past, the entry is removed. User directories and further dependent data remain on a NAS. You must delete this data yourself if necessary. Only the entry in the LDAP server is removed automatically.
+If you want to keep all users in the LDAP server, the users must not be deleted in Azure. However, they could be deactivated there.

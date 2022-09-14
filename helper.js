@@ -144,6 +144,26 @@ helper.generateSID = function (modus, level, smbaSIDbase, hash, objectId) {
 
 };
 
+helper.ldap_now = function (offsetDays = 0) {
+    let d = new Date();
+    if (offsetDays != 0) {
+        d.setDate(d.getDate() + offsetDays);
+    }
+    return d.toISOString().replace(/T/, ' ').replace(/\..+/, '').replaceAll('-', '').replaceAll(':', '').replaceAll(' ', '');
+};
+
+helper.ldap_now_2_date = function (vari) {
+    if(vari == undefined || vari == "") return;
+    const dateString = vari.toString();
+    let year = dateString.substring(0, 4);
+    let month = dateString.substring(4, 6);
+    let day = dateString.substring(6, 8);
+    let hours = dateString.substring(8, 10);
+    let minutes = dateString.substring(10, 12);
+    let seconds = dateString.substring(12, 14);
+
+    return new Date(year, month - 1, day, hours, minutes, seconds);
+};
 
 helper.checkEnvVars = function () {
     var env_check = true;
@@ -177,9 +197,9 @@ helper.checkEnvVars = function () {
         env_check = false;
     }
 
-    if (fs.existsSync("/app/.cache/IshouldNotExist.txt") && config.LDAP_SAMBANTPWD_MAXCACHETIME != 0) { 
-        helper.error("config", "The volume /app/.cache/ is not mapped in the Docker container. You will lose your cached credentials from time to time and therefore have problems with Samba access. If you do not intend to cache the credentials, set the environment variable LDAP_SAMBANTPWD_MAXCACHETIME to 0."); 
-        env_check = false; 
+    if (fs.existsSync("/app/.cache/IshouldNotExist.txt") && config.LDAP_SAMBANTPWD_MAXCACHETIME != 0) {
+        helper.error("config", "The volume /app/.cache/ is not mapped in the Docker container. You will lose your cached credentials from time to time and therefore have problems with Samba access. If you do not intend to cache the credentials, set the environment variable LDAP_SAMBANTPWD_MAXCACHETIME to 0.");
+        env_check = false;
     }
 
     return env_check;
