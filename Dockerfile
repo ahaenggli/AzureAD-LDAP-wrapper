@@ -26,6 +26,7 @@ ENV LDAP_SYNC_TIME "30"
 ENV DSM7 "true"
 ENV GRAPH_FILTER_USERS "userType eq 'Member'"
 ENV GRAPH_FILTER_GROUPS "securityEnabled eq true"
+ENV GRAPH_IGNORE_MFA_ERRORS "false"
 
 RUN mkdir -p /app && chown -R node:node /app
 RUN mkdir -p /app/.cache  && chown -R node:node /app/.cache

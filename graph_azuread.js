@@ -40,15 +40,15 @@ graph.apiConfig = customizer.modifyGraphApiConfig(graph.apiConfig, MS_GRAPH_SCOP
 const msalConfig = {
     auth: {
         clientId: config.AZURE_APP_ID,
-        authority: TOKEN_ENDPOINT,                
-        knownAuthorities: [TOKEN_ENDPOINT],        
+        authority: TOKEN_ENDPOINT,
+        knownAuthorities: [TOKEN_ENDPOINT],
         clientSecret: config.AZURE_APP_SECRET
-        },
+    },
     system: {
         loggerOptions: {
             loggerCallback(loglevel, message, containsPii) {
-                if(!containsPii)
-                helper.log("graph_azuread.js", "system.loggerOptions", loglevel, message);
+                if (!containsPii)
+                    helper.log("graph_azuread.js", "system.loggerOptions", loglevel, message);
             },
             piiLoggingEnabled: false,
             logLevel: msal.LogLevel.Verbose,
@@ -147,47 +147,54 @@ graph.loginWithUsernamePassword = async function loginWithUsernamePassword(usern
         });
     */
 
-        let credential = new aIdentity.UsernamePasswordCredential(
-            config.AZURE_TENANTID,
-            config.AZURE_APP_ID,
-            username,
-            password
-        );
-    
-        var check = 0;
-    
-        try {
-    
-            await credential.getToken('.default').then(() => {
+    let credential = new aIdentity.UsernamePasswordCredential(
+        config.AZURE_TENANTID,
+        config.AZURE_APP_ID,
+        username,
+        password
+    );
+
+    var check = 0;
+
+    try {
+
+        await credential.getToken('.default').then(() => {
+            check = 1;
+        }).catch((error) => {
+
+            // 50126: wrong credentials
+            if (error.toString().includes("AADSTS50126")) {
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "wrong credentials", username: username });
+            }
+            // 50057: account disabled
+            else if (error.toString().includes("AADSTS50057")) {
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "account disabled", username: username });
+            }
+            // 7000218: RPOC (The request body must contain the following parameter: 'client_assertion' or 'client_secret')
+            else if (error.toString().includes("AADSTS7000218")) {
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "RPOC disabled - please enable `Allow public client flows`!" });
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
+            }
+            // if MFA-related errors can be ignored, handle AADSTS50076 and AADSTS50079 as successful logins
+            // AADSTS50076: Security defaults
+            // AADSTS50079: Per-user MFA, Conditional Access
+            else if (config.GRAPH_IGNORE_MFA_ERRORS && (error.toString().includes("AADSTS50076") || error.toString().includes("AADSTS50079"))) {
+                helper.log('graph_azuread.js', "loginWithUsernamePassword", { info: "MFA ignored", username: username });
                 check = 1;
-            }).catch((error) => {
-    
-                // 50126: wrong credentials
-                if (error.toString().includes("AADSTS50126")) {
-                    helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "wrong credentials", username: username });
-                }
-                // 50057: account disabled
-                else if (error.toString().includes("AADSTS50057")) {
-                    helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "account disabled", username: username });
-                }
-                // 7000218: RPOC (The request body must contain the following parameter: 'client_assertion' or 'client_secret')
-                else if (error.toString().includes("AADSTS7000218")) {
-                    helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "RPOC disabled - please enable `Allow public client flows`!" });
-                    helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
-                }
-                else {
-                    helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "fallback", username: username, detail: error });
-                    // fallback: try it with cached passwords
-                    check = 2;
-                }
-            });
-    
-        } catch (error) {
-            check = 2;
-            helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
-        }
-        return check;
-        
+            }
+            else {
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "fallback", username: username, detail: error });
+                // fallback: try it with cached passwords
+                check = 2;
+            }
+        });
+
+    } catch (error) {
+        check = 2;
+        helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
+    }
+    return check;
+
 };
 
 // exports

@@ -32,6 +32,7 @@ config.LDAP_SYNC_TIME = process.env.LDAP_SYNC_TIME || 30; /* minutes */
 // GRAPH
 config.GRAPH_FILTER_USERS = ""; if (process.env.GRAPH_FILTER_USERS) config.GRAPH_FILTER_USERS = "&$filter="+encodeURIComponent(process.env.GRAPH_FILTER_USERS);
 config.GRAPH_FILTER_GROUPS = "";if (process.env.GRAPH_FILTER_GROUPS) config.GRAPH_FILTER_GROUPS = "&$filter="+encodeURIComponent(process.env.GRAPH_FILTER_GROUPS);
+config.GRAPH_IGNORE_MFA_ERRORS = (process.env.GRAPH_IGNORE_MFA_ERRORS == "true" || process.env.GRAPH_IGNORE_MFA_ERRORS == "1");
 
 // set to true to remove the domain e.g. "alice@example.net" will just be "alice" for login
 config.LDAP_REMOVEDOMAIN = true;

@@ -9,10 +9,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- env var `LDAP_PORT` to set a custom port for the listener (e.g. 389 for running the container directly on the host network)
-- Print version at start-up, so you don't have to remember which version you are currently using
-- check if the volume /app/.cache is mapped inside a docker container
-- Deleted users and groups in Azure are now also removed from the LDAP entries. (see [FAQ](./FAQ.md#are-deleted-users-or-groups-in-azure-also-removed-from-the-ldap-entries) for more details)
+- Env var `GRAPH_IGNORE_MFA_ERRORS` to allow logins despite required MFA. When set to true, some MFA-related error codes are treated as successful logins. Attention, this is only a first attempt and may not work in all cases. Please open an issue if you encounter any problems with this.
+- Deleted users and groups in Azure are now also removed from the LDAP entries. The number of days these entries should be kept in this wrapper before deletion can be specified with the env var `LDAP_DAYSTOKEEPDELETEDUSERS`. (see [FAQ](./FAQ.md#are-deleted-users-or-groups-in-azure-also-removed-from-the-ldap-entries) for more details)
+- Env var `LDAP_PORT` to set a custom port for the listener (e.g. 389 for running the container directly on the host network)
+- Print version at start-up, so you don't have to remember which version you are currently using.
+- Check if the volume /app/.cache is mapped inside a docker container
 
 ### Fixed
 
