@@ -144,6 +144,11 @@ helper.generateSID = function (modus, level, smbaSIDbase, hash, objectId) {
 
 };
 
+/**
+ * 
+ * @param {offsetDays} days before or after the current date
+ * @returns datetime string (UTC)
+ */
 helper.ldap_now = function (offsetDays = 0) {
     let d = new Date();
     if (offsetDays != 0) {
@@ -151,10 +156,14 @@ helper.ldap_now = function (offsetDays = 0) {
     }
     return d.toISOString().replace(/T/, ' ').replace(/\..+/, '').replaceAll('-', '').replaceAll(':', '').replaceAll(' ', '');
 };
-
-helper.ldap_now_2_date = function (vari) {
-    if(vari == undefined || vari == "") return;
-    const dateString = vari.toString();
+/**
+ * 
+ * @param {strDate} datetime string
+ * @returns Date (UTC)
+ */
+helper.ldap_now_2_date = function (strDate) {
+    if (strDate == undefined || strDate == "") return;
+    const dateString = strDate.toString();
     let year = dateString.substring(0, 4);
     let month = dateString.substring(4, 6);
     let day = dateString.substring(6, 8);
@@ -162,7 +171,7 @@ helper.ldap_now_2_date = function (vari) {
     let minutes = dateString.substring(10, 12);
     let seconds = dateString.substring(12, 14);
 
-    return new Date(year, month - 1, day, hours, minutes, seconds);
+    return new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds, 0));
 };
 
 helper.checkEnvVars = function () {

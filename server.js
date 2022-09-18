@@ -235,9 +235,12 @@ server.bind(SUFFIX, async (req, res, next) => {
                         helper.log("server.js", "server.bind", username, "Saving PwdLastSet for user ", dn);
                         userAttributes["sambaPwdLastSet"] = Math.floor(Date.now() / 1000);
 
-                        // save the data file
-                        db[dn] = userAttributes;
-                        helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);
+                        // save the data file, except LDAP_SAMBANTPWD_MAXCACHETIME is set to 0 
+                        if(config.LDAP_SAMBANTPWD_MAXCACHETIME != 0)
+                        {
+                            db[dn] = userAttributes;                        
+                            helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);
+                        }
                     }
 
                     res.end();

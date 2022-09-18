@@ -1,4 +1,4 @@
-# LDAP-wrapper for AzureAD users/groups [![GitHub release (latest by date)](https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social)](https://github.com/ahaenggli/AzureAD-LDAP-wrapper) <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px"></a>
+LDAP_SAMBANTPWD_MAXCACHETIME# LDAP-wrapper for AzureAD users/groups [![GitHub release (latest by date)](https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social)](https://github.com/ahaenggli/AzureAD-LDAP-wrapper) <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px"></a>
 
 AzureAD-LDAP-wrapper is a nodejs ldap server ([ldapjs](https://github.com/ldapjs/node-ldapjs)) that provides AzureAD users and groups via LDAP protocol. User authentication is done through Microsoft Graph Api. As a result, other applications can connect to the LDAP server, allowing users to use their familiar AzureAD login information. This is especially useful for (older) applications that do not (yet) support AzureAD and for which you do not want to maintain a local AD controller.
 
@@ -216,8 +216,13 @@ If set to true, the login has failed and the error does NOT say "wrong credentia
 ### LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity)
 
 Maximum time in minutes that defines how long a cached sambaNTPassword hash can be used (for login and samba access).
-After that time, a user has to login 'normal' via the bind method (e.g. dsm-web-gui) to reset the cached value.
-As default there is no time limit (-1=infinity).
+After that time, a user has to login 'normal' via the bind method (e.g. dsm-web-gui) to reset the cached value. As default there is no time limit (-1=infinity).
+If this time limit is set to 0, no samba access is possible and therefore no password hash is cached.
+
+### LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7)
+
+Defines the number of days after deletion in Azure after which an entry is also removed in the wrapper. By default, te deletion in the wrapper takes place about 7 days later. The reason for the  delay is simple: A user could also no longer be in the wrapper due to a misconfigured filter (env var). But just because of such an error, users (and their cached password hashes) should not be deleted immediately.
+However, you can set the value to 0 to delete a user/group immediately. Use a negative value like -1 to keep everything in the wrapper and not delete anything.
 
 ### LDAPS_CERTIFICATE
 

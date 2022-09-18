@@ -10,9 +10,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - env var `LDAP_PORT` to set a custom port for the listener (e.g. 389 for running the container directly on the host network)
-- print version at startup
+- Print version at start-up, so you don't have to remember which version you are currently using
 - check if the volume /app/.cache is mapped inside a docker container
 - Deleted users and groups in Azure are now also removed from the LDAP entries. (see [FAQ](./FAQ.md#are-deleted-users-or-groups-in-azure-also-removed-from-the-ldap-entries) for more details)
+
+### Fixed
+
+- if env var `LDAP_SAMBANTPWD_MAXCACHETIME` is set to `0` (= no cache), the hashed password will never be written to the cache file.
 
 ## [1.8.1] - 2022-07-24
 
