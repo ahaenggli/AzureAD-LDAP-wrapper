@@ -1,6 +1,6 @@
 {
   "name": "AzureAD-LDAP-wrapper",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "type": "commonjs",
   "engines": {
     "node": ">=8.10.0"
@@ -18,12 +18,12 @@
     "url": "https://github.com/ahaenggli/AzureAD-LDAP-wrapper"
   },
   "dependencies": {
-    "@azure/identity": "^2.0.5",
-    "@azure/msal-node": "1.11.0",
+    "@azure/identity": "^3.0.0",
+    "@azure/msal-node": "1.14.0",
     "assert-plus": "^1.0.0",
     "axios": "~0.27.2",
     "diacritic": "0.0.2",
-    "dotenv": "^16.0.1",
+    "dotenv": "^16.0.2",
     "fs": "0.0.1-security",
     "hashcode": "1.0.3",
     "https-proxy-agent": "5.0.1",

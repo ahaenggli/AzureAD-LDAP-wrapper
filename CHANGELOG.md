@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+## [1.8.2] - 2022-09-25
+
 ### Added
 
 - Env var `GRAPH_IGNORE_MFA_ERRORS` to allow logins despite required MFA. When set to true, some MFA-related error codes are treated as successful logins. Attention, this is only a first attempt and may not work in all cases. Please open an issue if you encounter any problems with this.
@@ -18,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - if env var `LDAP_SAMBANTPWD_MAXCACHETIME` is set to `0` (= no cache), the hashed password will never be written to the cache file.
+- update npm dependencies
 
 ## [1.8.1] - 2022-07-24
 
@@ -221,6 +224,8 @@ if set to true and the login is failed, the login is retried against the sambaNT
 - Container on hub.docker.cm
 
 [Unreleased]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/projects/1
+[1.8.2]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.8.2
+[1.8.1]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.8.1
 [1.8.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.8.0
 [1.7.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.7.0
 [1.6.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.6.0
