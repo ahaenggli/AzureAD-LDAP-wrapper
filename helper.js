@@ -208,7 +208,7 @@ helper.checkEnvVars = function () {
 
     if (fs.existsSync("/app/.cache/IshouldNotExist.txt") && config.LDAP_SAMBANTPWD_MAXCACHETIME != 0) {
         helper.error("config", "The volume /app/.cache/ is not mapped in the Docker container. You will lose your cached credentials from time to time and therefore have problems with Samba access. If you do not intend to cache the credentials, set the environment variable LDAP_SAMBANTPWD_MAXCACHETIME to 0.");
-        env_check = false;
+        // env_check = false;
     }
 
     return env_check;
