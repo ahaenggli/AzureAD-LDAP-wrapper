@@ -1,6 +1,6 @@
 # LDAP-wrapper for AzureAD users/groups [![GitHub release (latest by date)](https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social)](https://github.com/ahaenggli/AzureAD-LDAP-wrapper) <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px"></a>
 
-AzureAD-LDAP-wrapper is a nodejs ldap server ([ldapjs](https://github.com/ldapjs/node-ldapjs)) that provides AzureAD users and groups via LDAP protocol. User authentication is done through Microsoft Graph Api. As a result, other applications can connect to the LDAP server, allowing users to use their familiar AzureAD login information. This is especially useful for (older) applications that do not (yet) support AzureAD and for which you do not want to maintain a local AD controller.
+AzureAD-LDAP-wrapper is a nodejs ldap server ([ldapjs](https://github.com/ldapjs/node-ldapjs)) that provides AzureAD users and groups via LDAP protocol. User authentication is done each time through Microsoft Graph Api. As a result, other applications can connect to the LDAP server, allowing users to use their familiar AzureAD login information. This is especially useful for (older) applications that do not (yet) support AzureAD and for which you do not want to maintain a local AD controller.
 
 ## Table of Contents
 
@@ -20,7 +20,7 @@ AzureAD-LDAP-wrapper is a nodejs ldap server ([ldapjs](https://github.com/ldapjs
 ## Motivation and background information
 
 I personally run the project in a Docker container on my Synology NAS. The NAS and some intranet web applications are connected to the ldap server. This way my users can log in to the NAS, the web applications and of course office.com with the same credentials.
-The whole thing could probably also be achieved by [joining the NAS to AADDS](https://kb.synology.com/en-global/DSM/tutorial/How_to_join_NAS_to_Azure_AD_Domain). However, I was not willing to pay that much for a virtual machine/VPN/AADDS only that my 3 users can use the same credentials (almost) everywhere.
+The whole thing could probably also be achieved by [joining the NAS to AADDS](https://kb.synology.com/en-global/DSM/tutorial/How_to_join_NAS_to_Azure_AD_Domain). However, I was not willing to maintain such a big setup (virtual machine/VPN/AADDS) only that my 3 users can use the same credentials (almost) everywhere.
 
 ### How the server works
 
@@ -33,8 +33,9 @@ The whole thing could probably also be achieved by [joining the NAS to AADDS](ht
 
 ### Important information about samba
 
-To access a share on the NAS, for example, from a Windows PC, the credentials must be entered. These credentials are NOT sent to the LDAP-wrapper (or any other LDAP server). They are sent to samba so that it can generate a hash from the password. Afterwards samba fetches the password hash from the LDAP-wrapper and compares the two hashes. Perhaps you are now wondering why this is important to know?
-Well, the AzureAD-LDAP-wrapper must have this hash before you access a shared folder. Otherwise, you will get an error due to invalid credentials. Perhaps you are now wondering how the LDAP-wrapper can obtain the necessary hash? The answer is simple: The user MUST first log in to a service (DSM, web application, etc.) that is directly connected to the LDAP-wrapper. Only after that the login in samba can work. The same applies after a password change. The new password has a new hash, so the user must first log in again via another service. This restriction cannot be circumvented. And last but not least: MFA/2FA (multi-factor authentication or two-factor authentication) is also not supported by this method.
+To access a share on the NAS, for example, from a Windows PC, the credentials must be entered. These credentials are NOT sent to the LDAP-wrapper (or any other LDAP server). They are sent to samba so that it can generate a hash from the password. Afterwards samba fetches the password hash from the LDAP-wrapper and compares the two hashes.  
+Perhaps you are now wondering why this is important to know?
+Well, the AzureAD-LDAP-wrapper must have this hash before you access a shared folder. Otherwise, you will get an error due to invalid credentials. Maybe you are now wondering how the LDAP-wrapper can obtain the necessary hash? The answer is simple: The user MUST first log in to a service (DSM, web application, etc.) that is directly connected to the LDAP-wrapper. Only after that the login in samba can work. The same applies after a password change. The new password has a new hash, so the user must first log in again via another service. This restriction cannot be circumvented. And last but not least: MFA/2FA (multi-factor authentication or two-factor authentication) is also not supported by this method.
 
 ## Installation
 
@@ -92,7 +93,7 @@ For the network use bridge as we have to map the local Port 389 to the container
 ![grafik](.github/media/syno_ldap_enable.png)
 
 3. Users that exist in the AAD cannot see or change other users password hashes. So, if you'd like to use samba, please join/bind with a (not in AzureAD existing) user from the previously defined env var `LDAP_BINDUSER`: ![grafik](.github/media/syno_ldap_join.png)
-The warning a local group has the same name as a synchronized group can be skipped.
+The warning "a local group has the same name as a synchronized group" can be skipped. Should your BINDUSER not be found, try writing "uid=ldapsearch" or the full name "uid=ldapsearch,cn=users,dc=domain,dc=tld" instead of "ldapsearch".
 
 4. Give your synchronized groups the desired permissions and log in with your synchronized users :)
 
@@ -159,6 +160,12 @@ The default filter is set to `userType eq 'Member'`. That's why external users (
 ### GRAPH_FILTER_GROUPS (optional)
 
 This allows you to filter the groups in the graph api using the [$filter](https://docs.microsoft.com/en-us/graph/query-parameters#filter-parameter) query parameter. The default filter is empty, so all groups are synchronized. For example, you can set it to `securityEnabled eq true` so that only security groups are synchronized and not every single Teams group. More properties to filter are documented [here](https://docs.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties).
+
+### GRAPH_IGNORE_MFA_ERRORS (default: false)
+
+When set to true, some MFA/2FA-related error codes are treated as successful logins. So, it allows logins despite required MFA/2FA. MFA/2FA is thus bypassed.
+
+Warning: This feature is only experimental and may not work in all cases. Please open an issue if you encounter any problems.
 
 ### LDAP_DOMAIN
 

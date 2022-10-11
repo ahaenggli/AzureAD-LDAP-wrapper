@@ -13,7 +13,8 @@
 
 ## Does it support MFA (multi-factor authentication)?
 
-Nope, see [here](https://github.com/Azure/ms-rest-nodeauth/issues/93). The login will just fail as mentioned [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth-ropc).
+Yes and no... There is an experimental feature to bypass MFA/2FA. It can be enabled by setting the the env var `GRAPH_IGNORE_MFA_ERRORS` to `true`.
+Officially no, because the login simply fails, as mentioned [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/v2-oauth-ropc) and [here](https://github.com/Azure/ms-rest-nodeauth/issues/93). Even if the env var is set to true, the login attempt appears as "Failure" in the AzureAD sign-in logs due to MFA/2FA. It is only the LDAP-wrapper that internally treats some MFA/2FA related error codes as a successful login.
 
 ## How do I give some synced users the DSM-Administrator permission on a Synology-NAS?
 

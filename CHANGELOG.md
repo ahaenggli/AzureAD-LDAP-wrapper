@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+### Added
+- multi-arch build and images for Docker
+
 ## [1.8.2] - 2022-09-25
 
 ### Added
