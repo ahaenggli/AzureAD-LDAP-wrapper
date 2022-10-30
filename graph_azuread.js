@@ -8,7 +8,7 @@ const proxyUrl = (process.env.HTTPS_PROXY || process.env.HTTP_PROXY || "");
 const proxyClient = require('./proxyClient.js');
 
 const msal = require('@azure/msal-node');
-const aIdentity = require("@azure/identity");
+
 const axios = require('axios');
 
 const TOKEN_ENDPOINT = `https://login.microsoftonline.com/${config.AZURE_TENANTID}/`;
@@ -98,13 +98,13 @@ graph.callApi = async function callApi(endpoint, accessToken, opts = {}) {
 
     try {
         let data = [];
-        let response = await axios.default.get(endpoint, options);
+        let response = await axios.get(endpoint, options);
         data = [...data, ...response.data.value];
 
         // call nextLink as long as it exists, so all data should be fetched
         while (response.data.hasOwnProperty('@odata.nextLink')) {
             helper.log('graph_azuread.js', "callApi", { endpoint: endpoint, '@odata.nextLink': response.data['@odata.nextLink'] });
-            response = await axios.default.get(response.data['@odata.nextLink'], options);
+            response = await axios.get(response.data['@odata.nextLink'], options);
             // concat previous (nextLink-)data with current nextLink-data
             data = [...data, ...response.data.value];
         }
@@ -127,48 +127,31 @@ graph.callApi = async function callApi(endpoint, accessToken, opts = {}) {
  */
 graph.loginWithUsernamePassword = async function loginWithUsernamePassword(username, password) {
 
-    /* 
-    * AAD errors are masked by misleading "network_error" from MSAL node
-    * So, some needed informations are missing - change to this if it is fixed 
-    * https://github.com/AzureAD/microsoft-authentication-library-for-js/issues/4878
-    */
-    /*
-        const pca = new msal.PublicClientApplication(msalConfig);
-        const usernamePasswordRequest = {
-            scopes: ["user.read"],
-            username: username, // Add your username here
-            password: password, // Add your password here
-        };
-        
-        pca.acquireTokenByUsernamePassword(usernamePasswordRequest).then((response) => {
-            console.log("acquired token by password grant");
-        }).catch((error) => {
-            console.log(error);
-        });
-    */
-
-    let credential = new aIdentity.UsernamePasswordCredential(
-        config.AZURE_TENANTID,
-        config.AZURE_APP_ID,
-        username,
-        password
-    );
+    const pca = new msal.PublicClientApplication(msalConfig);
+    const usernamePasswordRequest = {
+        scopes: ["user.read"],
+        username: username,
+        password: password,
+    };
 
     var check = 0;
 
     try {
 
-        await credential.getToken('.default').then(() => {
+        await pca.acquireTokenByUsernamePassword(usernamePasswordRequest).then((response) => {
+            //console.log("acquired token by password grant");
             check = 1;
-        }).catch((error) => {
+        }).catch((fullError) => {
+            //console.log(error);
+            let error = fullError.errorMessage;
 
             // 50126: wrong credentials
             if (error.toString().includes("AADSTS50126")) {
-                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "wrong credentials", username: username });
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "wrong credentials", username: username, details: error });
             }
             // 50057: account disabled
             else if (error.toString().includes("AADSTS50057")) {
-                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "account disabled", username: username });
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "account disabled", username: username, details: error });
             }
             // 7000218: RPOC (The request body must contain the following parameter: 'client_assertion' or 'client_secret')
             else if (error.toString().includes("AADSTS7000218")) {
@@ -179,11 +162,11 @@ graph.loginWithUsernamePassword = async function loginWithUsernamePassword(usern
             // AADSTS50076: Security defaults
             // AADSTS50079: Per-user MFA, Conditional Access
             else if (config.GRAPH_IGNORE_MFA_ERRORS && (error.toString().includes("AADSTS50076") || error.toString().includes("AADSTS50079"))) {
-                helper.log('graph_azuread.js', "loginWithUsernamePassword", { info: "MFA ignored", username: username });
+                helper.log('graph_azuread.js', "loginWithUsernamePassword", { info: "MFA ignored", username: username, details: error });
                 check = 1;
             }
             else {
-                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "fallback", username: username, detail: error });
+                helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "fallback", username: username, details: error });
                 // fallback: try it with cached passwords
                 check = 2;
             }
@@ -193,8 +176,8 @@ graph.loginWithUsernamePassword = async function loginWithUsernamePassword(usern
         check = 2;
         helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
     }
-    return check;
 
+    return check;
 };
 
 // exports
