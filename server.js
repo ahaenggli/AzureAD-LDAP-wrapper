@@ -186,7 +186,7 @@ function removeSensitiveAttributes(binduser, dn, attributes) {
 // Auth via azure for binding
 server.bind(SUFFIX, async (req, res, next) => {
     try {
-        var dn = req.dn.toString().replace(/ /g, '');
+        var dn = req.dn.toString().toLowerCase().replace(/ /g, '');
 
         helper.log("server.js", "server.bind", dn);
 
@@ -205,7 +205,7 @@ server.bind(SUFFIX, async (req, res, next) => {
 
             if (!db.hasOwnProperty(dn)) {
                 // helper.warn("server.js", "server.bind", "hmpf", dn);
-                let searchDN = Object.values(db).filter(g => (g.hasOwnProperty("AzureADuserPrincipalName"))).filter(g => g.AzureADuserPrincipalName == username);
+                let searchDN = Object.values(db).filter(g => (g.hasOwnProperty("AzureADuserPrincipalName"))).filter(g => g.AzureADuserPrincipalName.toLowerCase() == username);
                 if (searchDN.length == 1) dn = searchDN[0]["entryDN"];
             }
 

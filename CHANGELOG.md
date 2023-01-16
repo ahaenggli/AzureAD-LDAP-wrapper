@@ -7,13 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
-### Added
-
-- Multi-arch build and images for Docker
-
 ### Changed
 
 - Replaced usage of @azure/identity with @azure/msal-node
+
+### Fixed
+
+- Usernames should be case insensitive (issue #40)
+
+### Added
+
+- Multi-arch build and images for Docker
 
 ## [1.8.2] - 2022-09-25
 
