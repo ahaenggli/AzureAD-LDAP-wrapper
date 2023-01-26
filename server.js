@@ -11,8 +11,6 @@ const ldap_overwrites = require('./ldapjs_overwrites.js');
 ldap_overwrites(ldap);
 
 const graph = require('./graph_azuread');
-const nthash = require('smbhash').nthash;
-
 
 /* build schema */
 var schemaDB = {
@@ -219,7 +217,7 @@ server.bind(SUFFIX, async (req, res, next) => {
                 var check = await graph.loginWithUsernamePassword(userAttributes["AzureADuserPrincipalName"], pass);
                 helper.log("server.js", "server.bind", "check", check);
 
-                var userNtHash = nthash(pass);
+                var userNtHash = helper.md4(pass);
 
                 if (check === 1) {
                     helper.log("server.js", "server.bind", username, "check=true: you shall pass");

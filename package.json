@@ -3,13 +3,13 @@
   "version": "1.8.2",
   "type": "commonjs",
   "engines": {
-    "node": ">=8.10.0"
+    "node": ">=17"
   },
   "description": "LDAP-Wrapper for 'microsoft 365' users (former 'office 365' - via AzureAD without AADDS)",
   "author": "Adriano Hänggli <adriano@haenggli.net>",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node --openssl-legacy-provider server.js",
     "lint": "npm exec --no -- eslint *.js"
   },
   "license": "MIT",
@@ -20,14 +20,13 @@
   "dependencies": {
     "@azure/msal-node": "1.14.6",
     "assert-plus": "^1.0.0",
-    "axios": "~1.2.2",
+    "axios": "~1.2.5",
     "diacritic": "0.0.2",
     "dotenv": "^16.0.3",
     "fs": "0.0.1-security",
     "hashcode": "1.0.3",
     "https-proxy-agent": "5.0.1",
-    "ldapjs": "~2.3.3",
-    "smbhash": "0.0.1"
+    "ldapjs": "~2.3.3"
   },
   "devDependencies": {
     "eslint": "^8.32.0",

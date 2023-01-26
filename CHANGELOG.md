@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Node v17 (or newer) needed (--openssl-legacy-provider for md4 in sambaNTPassword)
+- Replaced use of smbhash with crypto.createHash
 - Replaced usage of @azure/identity with @azure/msal-node
 
 ### Fixed

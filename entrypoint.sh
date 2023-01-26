@@ -7,8 +7,8 @@ x=$(which node)
 
 if [ "$LDAP_PORT" -gt "1024" ]
 then
-    su-exec node:node /sbin/tini -s -- $x server.js
+    su-exec node:node /sbin/tini -s -- $x --openssl-legacy-provider server.js
 else
-    su-exec root:root /sbin/tini -s -- $x server.js
+    su-exec root:root /sbin/tini -s -- $x --openssl-legacy-provider server.js
 fi
 

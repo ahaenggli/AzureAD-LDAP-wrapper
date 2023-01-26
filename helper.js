@@ -2,6 +2,7 @@
 
 const config = require('./config');
 const fs = require('fs');
+const crypto = require('crypto');
 
 var helper = {};
 
@@ -172,6 +173,18 @@ helper.ldap_now_2_date = function (strDate) {
     let seconds = dateString.substring(12, 14);
 
     return new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds, 0));
+};
+
+/**
+ * 
+ * @param {strValue} value to encode as md4 string
+ * @returns md4 encoded value
+ */
+helper.md4 = function(strValue){        
+        // convert to unicode (UCS2LE) because of special characters
+        strValue = Buffer.from(strValue, 'UCS2');
+        // create and return md4
+        return crypto.createHash("md4").update(strValue).digest("hex").toUpperCase();
 };
 
 helper.checkEnvVars = function () {
