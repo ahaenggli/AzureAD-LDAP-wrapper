@@ -1,0 +1,6 @@
+---
+header:
+  - name: GitHub
+    ref: https://github.com/ahaenggli/AzureAD-LDAP-wrapper
+    icon: gdoc_github
+    external: true

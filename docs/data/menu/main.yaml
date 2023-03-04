@@ -1,0 +1,31 @@
+---
+main:
+  - name: Overview
+    ref: /
+
+  - name: 1. Installation
+    ref: "/installation"
+    sub:
+      - name: 1.1 Create an AzureAD application
+        ref: "/installation/create-azuread-application"
+      - name: 1.2 Run the LDAP-wrapper
+        ref: "/installation/run-ldap-wrapper"
+      - name: 1.3 Use on a Synology NAS
+        ref: "/installation/use-synology-nas"
+
+  - name: 2. Configuration
+    ref: /configuration
+    sub:
+      - name: 2.1 Settings
+        ref: "/configuration/settings"
+      - name: 2.2 Bypass MFA
+        ref: "/configuration/bypass-mfa"
+      - name: 2.3 Customize attributes
+        ref: "/configuration/customize-attributes"
+
+  - name: 4. Security
+    ref: /security
+
+  - name: 5. Troubleshooting
+    ref: /troubleshooting
+

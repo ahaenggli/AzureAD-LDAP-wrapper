@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Multi-arch build and images for Docker
+- Documentation with GitHub Pages
 
 ## [1.8.2] - 2022-09-25
 

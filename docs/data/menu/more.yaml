@@ -1,0 +1,14 @@
+---
+more:
+  - name: Releases
+    ref: "https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases"
+    external: true
+    icon: "gdoc_download"
+  - name: "View Source"
+    ref: "https://github.com/ahaenggli/AzureAD-LDAP-wrapper"
+    external: true
+    icon: "gdoc_github"
+  - name: "Docker"
+    ref: "https://hub.docker.com/r/ahaen/azuread-ldap-wrapper"
+    external: true
+    icon: "gdoc_tag"
