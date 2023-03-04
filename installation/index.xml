@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Installation on AzureAD-LDAP-wrapper</title>
+    <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/</link>
+    <description>Recent content in Installation on AzureAD-LDAP-wrapper</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>1.1 Create an AzureAD application</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/</guid>
+      <description>Prerequisites Register an application with Azure AD and create a service principal Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites To register an application in your Azure AD tenant, you need:
+An Azure AD user account. If you don&amp;rsquo;t already have one, you can create an account for free. Register an application with Azure AD and create a service principal Register a new application in your aad-portal.</description>
+    </item>
+    
+    <item>
+      <title>Run the LDAP-wrapper</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/</guid>
+      <description>The preferred way to use the LDAP wrapper is with Docker. Alternatively, the source can be downloaded and started manually with npm/node. As domain and basedn it is recommended to use the same as used in AzureAD tenant (e.g. @domain.tld). This way, the spelling of the users (e.g. username@domain.tld) will match at the end. Otherwise, your users will have to use username@example.com instead of the estimated username@domain.tld, for example.
+The API results and a local copy of the LDAP entries are stored as JSON files inside the container at this path: /app/.</description>
+    </item>
+    
+    <item>
+      <title>Use on a Synology NAS</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/</guid>
+      <description>To access a share on the NAS, for example, from a Windows PC, the credentials must be entered. These credentials are NOT sent to the LDAP-wrapper (or any other LDAP server). They are sent to samba so that it can generate a hash from the password. Afterwards samba fetches the password hash from the LDAP-wrapper and compares the two hashes. Perhaps you are now wondering why this is important to know?</description>
+    </item>
+    
+  </channel>
+</rss>

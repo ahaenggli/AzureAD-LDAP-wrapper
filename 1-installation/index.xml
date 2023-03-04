@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AzureAD-LDAP-wrapper</title>
+    <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/1-installation/</link>
+    <description>Recent content on AzureAD-LDAP-wrapper</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/1-installation/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>1.1. Create an AzureAD application</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/1-installation/1-1-create-azuread-application/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/1-installation/1-1-create-azuread-application/</guid>
+      <description>Register a new application in your aad-portal as described here.
+Set the following Graph-API Application permissions:
+For type Application allow User.Read.All and Group.Read.All.
+For type Delegated allow User.Read.
+Set Treat application as a public client to Yes
+(former &amp;ldquo;Allow public client flows&amp;rdquo;)
+Copy and save those values for the later use as environment variables in the Docker container.
+Directory (tenant) ID from the page &amp;ldquo;overview&amp;rdquo; as AZURE_TENANTID.
+A description with printscreen can be found here in #3.</description>
+    </item>
+    
+    <item>
+      <title>1.2 Run the LDAP-wrapper</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/1-installation/1-2-run-ldap-wrapper/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/1-installation/1-2-run-ldap-wrapper/</guid>
+      <description>The preferred way to use the LDAP wrapper is with Docker. Alternatively, the source can be downloaded and started manually with npm/node. As domain and basedn it is recommended to use the same as used in AzureAD tenant (e.g. @domain.tld). This way, the spelling of the users (e.g. username@domain.tld) will match at the end. Otherwise, your users will have to use username@example.com instead of the estimated username@domain.tld, for example.
+The API results and a local copy of the LDAP entries are stored as JSON files inside the container at this path: /app/.</description>
+    </item>
+    
+    <item>
+      <title>1.3 Use on a Synology NAS</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/1-installation/1-3-use-synology-nas/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/1-installation/1-3-use-synology-nas/</guid>
+      <description>Enable ldap-client and connect it to your docker container Users that exist in the AAD cannot see or change other users password hashes. So, if you&amp;rsquo;d like to use samba, please join/bind with a (not in AzureAD existing) user from the previously defined env var LDAP_BINDUSER: The warning &amp;ldquo;a local group has the same name as a synchronized group&amp;rdquo; can be skipped. Should your BINDUSER not be found, try writing &amp;ldquo;uid=ldapsearch&amp;rdquo; or the full name &amp;ldquo;uid=ldapsearch,cn=users,dc=domain,dc=tld&amp;rdquo; instead of &amp;ldquo;ldapsearch&amp;rdquo;.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /tags/*
+
+Sitemap: https://ahaenggli.github.io/AzureAD-LDAP-wrapper/sitemap.xml

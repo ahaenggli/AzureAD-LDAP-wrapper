@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>AzureAD-LDAP-wrapper</title>
+    <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/</link>
+    <description>Recent content on AzureAD-LDAP-wrapper</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>1.1 Create an AzureAD application</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/</guid>
+      <description>Prerequisites Register an application with Azure AD and create a service principal Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites To register an application in your Azure AD tenant, you need:
+An Azure AD user account. If you don&amp;rsquo;t already have one, you can create an account for free. Register an application with Azure AD and create a service principal Register a new application in your aad-portal.</description>
+    </item>
+    
+    <item>
+      <title>Bypass MFA</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/bypass-mfa/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/bypass-mfa/</guid>
+      <description>Officially MFA is not supported by this LDAP-wrapper. The login for users with activated MFA simply fails, as mentioned here and here. There is no interactive window to enter another factor, and LDAP does not support this either. If you need to use this LDAP-wrapper despite of activated MFA, there are two options:
+Disable MFA for this application in AzureAD (preferred).
+There are several ways to define MFA, but only some of them allows you to disable MFA.</description>
+    </item>
+    
+    <item>
+      <title>Customize attributes</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/customize-attributes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/customize-attributes/</guid>
+      <description>It is possible to customize all the ldap attributes. That&amp;rsquo;s what I do in the DSM 7 workaround. Look at this file for an example. Customize it as you need and map the file in your docker setup as /app/customizer/ldap_customizer.js. This file has even priority over the DSM 7 workaround. Basically everything can be changed with it. Filter users or groups, overwrite a users default group, add/remove/edit entries or attributes, and much more.</description>
+    </item>
+    
+    <item>
+      <title>Run the LDAP-wrapper</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/</guid>
+      <description>The preferred way to use the LDAP wrapper is with Docker. Alternatively, the source can be downloaded and started manually with npm/node. As domain and basedn it is recommended to use the same as used in AzureAD tenant (e.g. @domain.tld). This way, the spelling of the users (e.g. username@domain.tld) will match at the end. Otherwise, your users will have to use username@example.com instead of the estimated username@domain.tld, for example.
+The API results and a local copy of the LDAP entries are stored as JSON files inside the container at this path: /app/.</description>
+    </item>
+    
+    <item>
+      <title>Settings</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/</guid>
+      <description>The following is a list of all possible settings. The LDAP wrapper is intended to be used with Docker. The settings must therefore be made using environment variables.
+AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET GRAPH_FILTER_USERS GRAPH_FILTER_GROUPS (optional) GRAPH_IGNORE_MFA_ERRORS (default: false) LDAP_DOMAIN LDAP_BASEDN LDAP_SAMBADOMAINNAME (optional) LDAP_BINDUSER (optional without SMB) LDAP_ANONYMOUSBIND (default: domain) LDAP_DEBUG (default: false) LDAP_PORT (default: 13389) LDAP_SECURE_ATTRIBUTES (optional) LDAP_SENSITIVE_ATTRIBUTES (optional) LDAP_ALLOWCACHEDLOGINONFAILURE (default: true) LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity) LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7) LDAPS_CERTIFICATE LDAPS_KEY LDAP_SYNC_TIME SAMBA_BASESID (optional) DSM7 LDAP_SAMBA_USEAZURESID (default: true) HTTPS_PROXY or HTTP_PROXY (optional) AZURE_APP_ID Your Application ID from azure (see #4)</description>
+    </item>
+    
+    <item>
+      <title>Use on a Synology NAS</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/</guid>
+      <description>To access a share on the NAS, for example, from a Windows PC, the credentials must be entered. These credentials are NOT sent to the LDAP-wrapper (or any other LDAP server). They are sent to samba so that it can generate a hash from the password. Afterwards samba fetches the password hash from the LDAP-wrapper and compares the two hashes. Perhaps you are now wondering why this is important to know?</description>
+    </item>
+    
+  </channel>
+</rss>

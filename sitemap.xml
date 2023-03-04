@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/</loc>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/</loc>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/troubleshooting/</loc>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/</loc>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/bypass-mfa/</loc>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/</loc>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/customize-attributes/</loc>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/</loc>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/</loc>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/</loc>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/tags/</loc>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/</loc>
+  </url>
+</urlset>
