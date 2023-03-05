@@ -190,9 +190,9 @@ helper.md4 = function(strValue){
 helper.checkEnvVars = function () {
     var env_check = true;
 
-    if (!config.AZURE_APP_ID) { helper.error("config", "env var `AZURE_APP_ID` must be set"); env_check = false; }
-    if (!config.AZURE_APP_SECRET) { helper.error("config", "env var `AZURE_APP_SECRET` must be set"); env_check = false; }
-    if (!config.AZURE_TENANTID) { helper.error("config", "env var `AZURE_TENANTID` must be set"); env_check = false; }
+    if (!config.AZURE_APP_ID || config.AZURE_APP_ID == "*secret*") { helper.error("config", "env var `AZURE_APP_ID` must be set"); env_check = false; }
+    if (!config.AZURE_APP_SECRET || config.AZURE_APP_SECRET == "*secret*") { helper.error("config", "env var `AZURE_APP_SECRET` must be set"); env_check = false; }
+    if (!config.AZURE_TENANTID || config.AZURE_TENANTID == "*secret*") { helper.error("config", "env var `AZURE_TENANTID` must be set"); env_check = false; }
 
     if (!config.LDAP_DOMAIN) { helper.error("config", "env var `LDAP_DOMAIN` must be set"); env_check = false; }
     if (!config.LDAP_BASEDN) { helper.error("config", "env var `LDAP_BASEDN` must be set"); env_check = false; }

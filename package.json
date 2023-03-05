@@ -18,23 +18,23 @@
     "url": "https://github.com/ahaenggli/AzureAD-LDAP-wrapper"
   },
   "dependencies": {
-    "@azure/msal-node": "1.14.6",
+    "@azure/msal-node": "1.15.0",
     "assert-plus": "^1.0.0",
-    "axios": "~1.2.5",
+    "axios": "~1.3.4",
     "diacritic": "0.0.2",
     "dotenv": "^16.0.3",
     "fs": "0.0.1-security",
     "hashcode": "1.0.3",
     "https-proxy-agent": "5.0.1",
-    "ldapjs": "~2.3.3"
+    "ldapjs": "~3.0.0"
   },
   "devDependencies": {
-    "eslint": "^8.32.0",
+    "eslint": "^8.35.0",
     "eslint-config-standard": "^17.0.0",
-    "eslint-plugin-import": "^2.27.4",
+    "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-n": "^15.6.1",
     "eslint-plugin-node": "~11.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "eslint-plugin-security": "~1.6.0"
+    "eslint-plugin-security": "~1.7.1"
   }
 }

@@ -14,7 +14,9 @@ const axios = require('axios');
 const TOKEN_ENDPOINT = `https://login.microsoftonline.com/${config.AZURE_TENANTID}/`;
 const MS_GRAPH_SCOPE = 'https://graph.microsoft.com/';
 
-var graph = {};
+// object for later export
+let graph = {};
+
 /**
  * With client credentials flows permissions need to be granted in the portal by a tenant administrator.
  * The scope is always in the format '<resource>/.default'. For more, visit:
@@ -24,12 +26,14 @@ graph.tokenRequest = {
     scopes: [MS_GRAPH_SCOPE + '.default'],
 };
 
+// Default settings
 graph.apiConfig = {
     uri: MS_GRAPH_SCOPE + 'v1.0/users?$select=businessPhones,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState' + config.GRAPH_FILTER_USERS,
     gri: MS_GRAPH_SCOPE + 'v1.0/groups?' + config.GRAPH_FILTER_GROUPS,
     mri: MS_GRAPH_SCOPE + 'v1.0/groups/{id}/members',
 };
 
+// Settings can be overwritten by a customizer
 graph.apiConfig = customizer.modifyGraphApiConfig(graph.apiConfig, MS_GRAPH_SCOPE);
 
 /**
@@ -77,6 +81,7 @@ const cca = new msal.ConfidentialClientApplication(msalConfig);
  * @param {object} tokenRequest
  */
 graph.getToken = async function getToken(tokenRequest) {
+    if (!tokenRequest) tokenRequest = graph.tokenRequest;
     return await cca.acquireTokenByClientCredential(tokenRequest);
 };
 
@@ -85,7 +90,7 @@ graph.getToken = async function getToken(tokenRequest) {
  * @param {string} endpoint
  * @param {string} accessToken
  */
-graph.callApi = async function callApi(endpoint, accessToken, opts = {}) {
+graph.callApi = async function callApi(endpoint, accessToken, opts = {}, skipError = false) {
 
     const options = {
         headers: {
@@ -111,9 +116,11 @@ graph.callApi = async function callApi(endpoint, accessToken, opts = {}) {
 
         return data;
     } catch (error) {
-        helper.error('graph_azuread.js', 'callApi-error', error);
-        helper.error('graph_azuread.js', 'callApi-endpoint', endpoint);
-        helper.error('graph_azuread.js', 'callApi-opts', opts);
+        if (!skipError) {
+            helper.error('graph_azuread.js', 'callApi-error', error);
+            helper.error('graph_azuread.js', 'callApi-endpoint', endpoint);
+            helper.error('graph_azuread.js', 'callApi-opts', opts);
+        }
         return error;
     }
 };
@@ -134,7 +141,7 @@ graph.loginWithUsernamePassword = async function loginWithUsernamePassword(usern
         password: password,
     };
 
-    var check = 0;
+    let check = 0;
 
     try {
 
@@ -178,6 +185,143 @@ graph.loginWithUsernamePassword = async function loginWithUsernamePassword(usern
     }
 
     return check;
+};
+
+// check user variables TenantId, AppId, AppSecret and permissions
+graph.checkVars = async function () {
+    let cVars = true;
+
+    let cTenant = false;
+    let cApp = false;
+    let cPermissions = false;
+
+    cTenant = await checkTenant(msalConfig.auth.authority);
+
+    if (cTenant) cApp = await checkApp();
+    else cVars = false;
+
+    if (cApp !== false) cPermissions = await checkPermissions(cApp);
+    else cVars = false;
+
+    //console.log(cPermissions);
+    //console.log(cVars);
+    if (!cPermissions) cVars = false;
+    //console.log(cVars);
+    return cVars;
+};
+
+// check if tenant exists
+async function checkTenant(tenant) {
+    // console.log('checkTenant');
+
+    let cTenant = false;
+    let tenantURL = `${tenant}v2.0/.well-known/openid-configuration`;
+
+    // check tenantId and network/dns
+    await axios.get(tenantURL).then((response) => {
+
+        // TenantID seems okay
+        cTenant = true;
+
+    }).catch((error) => {
+
+        cTenant = false;
+        let errResp = error.response || { status: null, statusText: null, data: error.cause || null };
+
+        helper.error('graph_azuread.js', 'checkVars',
+            {
+                message:
+                    'There are some errors with your `AZURE_TENANTID` or your network. Please check your settings.',
+                testetUrl: tenantURL,
+                errorStatus: errResp.status,
+                errorStatusText: errResp.statusText,
+                errorDetail: errResp.data
+            }
+        );
+
+        // check for further DNS errors
+        if (!errResp.status) {
+            if (error.request._options.hostname)
+                checkDNS(error.request._options.hostname);
+        }
+
+    });
+
+    return cTenant;
+};
+
+// check DNS settings and name resolution (called on specific checkTenant errors)
+function checkDNS(url) {
+    const dns = require('node:dns');
+    helper.log('graph_azuread.js', 'checkVars', 'dnsServers', dns.getServers());
+    dns.lookup(url, (err, address, family) => {
+        if (err == null)
+            helper.forceLog('graph_azuread.js', 'checkDNS',
+                {
+                    host: url,
+                    dnsServers: dns.getServers(),
+                    address: address,
+                    ipv: family,
+                    err: err
+                });
+        else helper.error('graph_azuread.js', 'checkDNS',
+            {
+                host: url,
+                dnsServers: dns.getServers(),
+                address: address,
+                ipv: family,
+                err: err
+            });
+    });
+};
+
+// try fetch a token to validate AppId and AppSecret for this tenant
+async function checkApp() {
+    // console.log("checkApp");
+    let cApp = false;
+
+    await graph.getToken().then((tokenResp) => {
+        cApp = tokenResp.accessToken;
+    }).catch((errToken) => {
+        // failed, no token, something must be wrong
+        cApp = false;
+        helper.error('graph_azuread.js', 'checkToken', {
+            errorCode: errToken.errorCode || null,
+            errorMessage: errToken.errorMessage || null,
+            subError: errToken.subError || null,
+        });
+    });
+
+    return cApp;
+};
+
+// check permissions `Group.Read.All` and `User.Read.All` for the application
+async function checkPermissions(token) {
+    let cPermissions = true;
+
+    // console.log("checkPermissions");
+    // console.log(token);    
+    let groupCount = await graph.callApi(graph.apiConfig.gri + "&$count=true", token, {}, true);
+    let errGroup = groupCount.response || { status: null, statusText: null, data: groupCount || null };
+    if (errGroup.data.hasOwnProperty("error")) {
+        cPermissions = false;
+        helper.error('graph_azuread.js', 'checkPermissions:',
+            'Probably missing permission `Group.Read.All` for the Application.',
+            errGroup.data.error
+        );
+    } //else console.log(Object.keys(errGroup).length);
+
+    let userCount = await graph.callApi(graph.apiConfig.uri + "&$count=true", token, {}, true);
+    let errUser = userCount.response || { status: null, statusText: null, data: userCount || null };
+    if (errUser.data.hasOwnProperty("error")) {
+        cPermissions = false;
+        helper.error('graph_azuread.js', 'checkPermissions:',
+            'Probably missing permission `User.Read.All` for the Application.',
+            errUser.data.error
+        );
+    } //else console.log(Object.keys(errUser).length);
+
+    return cPermissions;
 };
 
 // exports

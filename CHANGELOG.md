@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Node v17 (or newer) needed (--openssl-legacy-provider for md4 in sambaNTPassword)
 - Replaced use of smbhash with crypto.createHash
 - Replaced usage of @azure/identity with @azure/msal-node
+- Updated ldapjs to v3
 
 ### Fixed
 
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Multi-arch build and images for Docker
 - Documentation with GitHub Pages
+- Check TenantId, AppId, AppSecret and AppPermissions at startup
 
 ## [1.8.2] - 2022-09-25
 

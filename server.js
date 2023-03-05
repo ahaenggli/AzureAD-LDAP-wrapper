@@ -1,16 +1,25 @@
 'use strict';
 
-const helper = require('./helper');
 const config = require('./config');
 
+const helper = require('./helper');
 if (!helper.checkEnvVars()) return;
+
+const graph = require('./graph_azuread');
+
+// top-level code that uses await
+(async () => {
+    // check network, dns, tenantId, appId, appSecret and permissions
+    
+    let cVars = null;
+    cVars = await graph.checkVars();    
+    if (!cVars) return;
 
 const ldapwrapper = require('./ldapwrapper');
 const ldap = require('ldapjs');
 const ldap_overwrites = require('./ldapjs_overwrites.js');
 ldap_overwrites(ldap);
 
-const graph = require('./graph_azuread');
 
 /* build schema */
 var schemaDB = {
@@ -546,3 +555,5 @@ server.listen(config.LDAP_PORT, function () {
     var packagejson = require('./package.json');
     console.log("server.js", '----> ', packagejson.name, 'version:', packagejson.version);
 });
+
+})(); //top-level code that uses await
