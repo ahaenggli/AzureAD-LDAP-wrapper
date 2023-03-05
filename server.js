@@ -327,6 +327,7 @@ server.search(SUFFIX, authorize, (req, res, next) => {
                 return next();
 
             case 'one':
+            case 'single':
                 scopeCheck = (k) => {
                     if (req.dn.equals(k))
                         return true;
@@ -337,6 +338,7 @@ server.search(SUFFIX, authorize, (req, res, next) => {
                 break;
 
             case 'sub':
+            case 'subtree':
                 scopeCheck = (k) => {
                     return (req.dn.equals(k) || req.dn.parentOf(k));
                 };
@@ -550,7 +552,7 @@ server.on("uncaughtException", (error) => {
     helper.error("server.js", "!!! uncaughtException !!!", error);
 });
 
-server.listen(config.LDAP_PORT, function () {
+server.listen(config.LDAP_PORT, "0.0.0.0", function () {
     console.log("server.js", '---->  LDAP server up at: ', server.url);
     var packagejson = require('./package.json');
     console.log("server.js", '----> ', packagejson.name, 'version:', packagejson.version);

@@ -31,6 +31,10 @@ Register a new application in your [aad-portal](https://aad.portal.azure.com/#bl
   For type `Delegated` allow `User.Read`.\
   ![Azure Permissions](../azure_permissions.png)
 
+- Click "Grant admin consent". The status should be "Granted for".\
+  If you see en entry with "Not granted for", click again:
+  ![Azure wrong permissions](../azure_permissions_notgranted.png)
+
 - Set [Treat application as a public client](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Username-Password-Authentication#application-registration) to `Yes`  
 (former "Allow public client flows")![Azure ROPC](../azure_ROPC.png)
 
