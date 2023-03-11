@@ -12,11 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Node v17 (or newer) needed (--openssl-legacy-provider for md4 in sambaNTPassword)
 - Replaced use of smbhash with crypto.createHash
 - Replaced usage of @azure/identity with @azure/msal-node
-- Updated ldapjs to v3
+- Updated ldapjs to v3.0.1
 
 ### Fixed
 
-- Usernames should be case insensitive (issue #40)
+- Usernames should be case-insensitive (issue #40)
+- Searches should generally be case-insensitive, while results are fine with CamelCase.
 
 ### Added
 

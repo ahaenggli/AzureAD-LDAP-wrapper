@@ -26,7 +26,7 @@
     "fs": "0.0.1-security",
     "hashcode": "1.0.3",
     "https-proxy-agent": "5.0.1",
-    "ldapjs": "~3.0.0"
+    "ldapjs": "~3.0.1"
   },
   "devDependencies": {
     "eslint": "^8.35.0",
