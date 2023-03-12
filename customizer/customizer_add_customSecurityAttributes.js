@@ -17,7 +17,7 @@ function hasSubArrays(arr) {
     var returni = false;
     //(Array.isArray(ob[i]) && ob[i].length == 1 && 
     for (var i in arr) {
-        if (!arr.hasOwnProperty(i)) continue;
+        //if (!arr.hasOwnProperty(i)) continue;
         if ((typeof arr[i]) == 'object' && arr[i] !== null) return true;
     }
     return returni;
@@ -29,15 +29,15 @@ function flattenObjectAndIgnoreOdata(ob) {
     var returni = {};
 
     for (var i in ob) {
-        if (!ob.hasOwnProperty(i)) continue;
-        if (i.indexOf('@odata') > 0) continue;
+        //if (!ob.hasOwnProperty(i)) continue;
+        if (i.indexOf('@odata') > -1) continue;
         // eayh sub multi-array has to be flatten
         // single items or items without deeper items are also okay, so an attribute can hav multiple values         
         if ((typeof ob[i]) == 'object' && ob[i] !== null && hasSubArrays(ob[i])) {
             var flatObject = flattenObjectAndIgnoreOdata(ob[i]);
             for (var x in flatObject) {
-                if (!flatObject.hasOwnProperty(x)) continue;
-                if (x.indexOf('@odata') > 0) continue;
+                //if (!flatObject.hasOwnProperty(x)) continue;
+                //if (x.indexOf('@odata') > -1) continue;
 
                 returni[i + '_' + x] = flatObject[x];
             }
@@ -114,5 +114,8 @@ customizer.ModifyLDAPGlobal = function (all) {
 
     return all;
 };
+
+customizer.ModifyAzureGroups = function (azuregroups) { return azuregroups; };
+customizer.ModifyAzureUsers = function (azureusers) { return azureusers; };
 
 module.exports = customizer;
