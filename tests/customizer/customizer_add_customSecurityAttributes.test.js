@@ -1,6 +1,9 @@
 'use strict';
 
+process.env.SKIP_DOTENV = "true";
 const customizer = require('../../customizer/customizer_add_customSecurityAttributes');
+
+// jest.mock('../../helper');
 
 describe('customizer security attributes tests', () => {
     beforeAll(() => {

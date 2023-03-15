@@ -7,72 +7,56 @@
 
 const helper = require('./helper');
 const axios = require('axios');
-const proxyUrl = (process.env.HTTPS_PROXY || process.env.HTTP_PROXY || "");
+const HttpsProxyAgent = require('https-proxy-agent');
+
+const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY;
+
+axios.defaults.proxy = false;
+axios.defaults.httpsAgent = new HttpsProxyAgent(proxyUrl);
 
 /**
- * Proxy support
- *  - set defaults axios proxy 
+ * Sends an HTTP request using Axios with proxy support.
+ * @async
+ * @function
+ * @param {string} method - The HTTP method (e.g. 'GET', 'POST').
+ * @param {string} url - The URL to send the request to.
+ * @param {object} [options] - An optional object that can contain the following keys:
+ * @param {object} [options.headers] - An object containing the request headers.
+ * @param {string} [options.body] - The request body.
+ * @returns {Promise<object>} - A Promise that resolves to an object containing the response headers, body, and status code.
  */
 
-if (proxyUrl != "") {
-  const HttpsProxyAgent = require('https-proxy-agent');
-  axios.defaults.proxy = false;
-  axios.defaults.httpsAgent = new HttpsProxyAgent(proxyUrl);
-}
-
-async function sendGetRequestAsync(url, options) {
-  helper.log("sendGetRequestAsync", "url", url);
-  helper.log("sendGetRequestAsync", "options", options);
+async function sendRequestAsync(method, url, { headers = {}, body = '' } = {}) {
+  helper.log(`graph.proxyClient.js`, `send${method}RequestAsync`, { method, url, headers, body });
 
   const request = {
-    method: "GET",
-    url: url,
-    headers: options && options.headers,
-    validateStatus: () => true
-  };
-  helper.log("sendGetRequestAsync", "request", request);
-
-  const response = await axios(request);
-  helper.log("sendGetRequestAsync", "response", response);
-
-  const result = {
-    headers: response.headers,
-    body: response.data,
-    status: response.status
-  };
-  helper.log("sendGetRequestAsync", "result", result);
-
-  return result;
-
-}
-
-async function sendPostRequestAsync(url, options) {
-  helper.log("sendPostRequestAsync", "url", url);
-  helper.log("sendPostRequestAsync", "options", options);
-
-  const request = {
-    method: "POST",
-    url: url,
-    data: (options && options.body) || "",
-    headers: options && options.headers,
-    validateStatus: () => true
+    method,
+    url,
+    data: body,
+    headers,
   };
 
-  helper.log("sendPostRequestAsync", "request", request);
-  const response = await axios(request);
+  helper.log(`graph.proxyClient.js`, `send${method}RequestAsync`, 'request', request);
 
-  const result = {
-    headers: response.headers,
-    body: response.data,
-    status: response.status
-  };
+  try {
+    const response = await axios(request);
+    const result = {
+      headers: response.headers,
+      body: response.body || response.data,
+      status: response.status,
+    };
 
-  helper.log("sendPostRequestAsync", "result", result);
+    helper.log(`graph.proxyClient.js`, `send${method}RequestAsync`, 'result', result);
 
-  return result;
+    return result;
+  } catch (error) {
+    helper.log(`graph.proxyClient.js`, `send${method}RequestAsync`, 'error', error);
+
+    throw error;
+  }
 }
 
 module.exports = {
-  sendGetRequestAsync,
-  sendPostRequestAsync
+  sendGetRequestAsync: (url, options) => sendRequestAsync('GET', url, options),
+  sendPostRequestAsync: (url, options) => sendRequestAsync('POST', url, options),
 };

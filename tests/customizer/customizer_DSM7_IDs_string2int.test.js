@@ -1,6 +1,9 @@
 'use strict';
 
+process.env.SKIP_DOTENV = "true";
 const customizer = require('../../customizer/customizer_DSM7_IDs_string2int');
+
+// jest.mock('../../helper');
 
 describe('DSM7 customizer tests', () => {
     beforeAll(() => {

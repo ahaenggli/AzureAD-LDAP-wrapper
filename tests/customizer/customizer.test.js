@@ -1,7 +1,11 @@
 'use strict';
 
+process.env["SKIP_DOTENV"] = "true";
 const originalEnv = process.env;
 var customizer;
+
+// jest.mock('../../helper');
+
 
 describe('customizer tests', () => {
     beforeAll(() => {
@@ -13,6 +17,7 @@ describe('customizer tests', () => {
         jest.spyOn(console, 'log').mockImplementation(() => { });
         jest.spyOn(console, 'warn').mockImplementation(() => { });
         jest.spyOn(console, 'error').mockImplementation(() => { });
+        process.env["DSM7"] = "false";
     });
 
     afterEach(() => {
@@ -29,29 +34,55 @@ describe('customizer tests', () => {
         // restore original console log
     });
 
-    test('DSM7 = false', () => {
-        // Run your test here
-        process.env = originalEnv;
-        process.env.DSM7 = "false";
-        customizer = require('../../customizer/customizer');
 
-        const data = { gidNumber: "123", creatorsName: "none" };
+test('DSM7 = false', () => {
+    // Run your test here
+    customizer = require('../../customizer/customizer');
 
-        expect(customizer.modifyGraphApiConfig(data)).toStrictEqual(data);
-        expect(customizer.ModifyAzureGroups(data, {})).toStrictEqual(data);
-        expect(customizer.ModifyLDAPGroup(data, {})).toStrictEqual(data);
-        expect(customizer.ModifyAzureUsers(data, {})).toStrictEqual(data);
-        expect(customizer.ModifyLDAPUser(data, {})).toStrictEqual(data);
-        expect(customizer.ModifyLDAPGlobal(data)).toStrictEqual(data);
+    const data = { gidNumber: "123", creatorsName: "none" };
 
+    expect(customizer.modifyGraphApiConfig(data)).toStrictEqual(data);
+    expect(customizer.ModifyAzureGroups(data, {})).toStrictEqual(data);
+    expect(customizer.ModifyLDAPGroup(data, {})).toStrictEqual(data);
+    expect(customizer.ModifyAzureUsers(data, {})).toStrictEqual(data);
+    expect(customizer.ModifyLDAPUser(data, {})).toStrictEqual(data);
+    expect(customizer.ModifyLDAPGlobal(data)).toStrictEqual(data);
+
+});
+});
+
+describe('customizer tests #2', () => {
+    beforeAll(() => {
+        // Set before all tests
     });
+
+    beforeEach(() => {
+        jest.resetModules();
+        jest.spyOn(console, 'log').mockImplementation(() => { });
+        jest.spyOn(console, 'warn').mockImplementation(() => { });
+        jest.spyOn(console, 'error').mockImplementation(() => { });
+        process.env["DSM7"] = "true";
+    });
+
+    afterEach(() => {
+        process.env = originalEnv;
+        console.log.mockRestore();
+        console.warn.mockRestore();
+        console.error.mockRestore();
+    });
+
+    afterAll(() => {
+        // Clean up after all tests have run
+        // delete process.env.NODE_ENV;
+        // delete process.env.LDAP_SYNC_TIME;
+        // restore original console log
+    });
+
+
 
     test('DSM7 = true', () => {
         // Run your test here
-        process.env = originalEnv;
-        process.env.DSM7 = "true";
         customizer = require('../../customizer/customizer');
-
 
         const user = { "gidNumber": "123", "uidNumber": "456", "creatorsName": "none" };
         const group = { "gidNumber": "123", "creatorsName": "none" };
