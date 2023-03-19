@@ -50,9 +50,19 @@ async function sendRequestAsync(method, url, { headers = {}, body = '' } = {}) {
 
     return result;
   } catch (error) {
-    helper.log(`graph.proxyClient.js`, `send${method}RequestAsync`, 'error', error);
 
-    throw error;
+    // helper.error(`graph.proxyClient.js`, `send${method}RequestAsync`, 'error', error);
+    const response = error.response || {};
+
+    const result = {
+      headers: response.headers || {},
+      body: response.body || response.data || error,
+      status: response.status || 500,
+    };
+    
+    return result;
+
+    // throw error.response || error;
   }
 }
 

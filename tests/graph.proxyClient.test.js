@@ -3,13 +3,13 @@
 process.env["SKIP_DOTENV"] = "true";
 const originalEnv = process.env;
 
-const proxyClient = require('../proxyClient');
+const proxyClient = require('../graph.proxyClient');
 const axios = require('axios');
 const HttpsProxyAgent = require('https-proxy-agent');
 jest.mock('axios');
 jest.mock('https-proxy-agent');
 
-process.env.HTTP_PROXY="";
+process.env.HTTP_PROXY = "";
 
 describe.each`
 EnvName    | EnvVal
@@ -18,7 +18,7 @@ ${'HTTPS_PROXY'} | ${'http://127.0.0.1:3128'}
 ${'SKIP_DOTENV'} | ${'true'}
 `('when $EnvName=$EnvVal', ({ EnvName, EnvVal }) => {
 
-//describe('proxyClient', () => {
+    //describe('proxyClient', () => {
     describe('sendPostRequestAsync', () => {
         beforeEach(() => {
             process.env[EnvName] = EnvVal;
@@ -78,7 +78,16 @@ ${'SKIP_DOTENV'} | ${'true'}
             const error = new Error('Request failed!');
             axios.mockRejectedValueOnce(error);
 
-            await expect(proxyClient.sendPostRequestAsync(url)).rejects.toThrow(error);
+            const expectedResponse = {
+                headers: {},
+                body: error,
+                status: 500,
+            };
+
+            const result = await proxyClient.sendPostRequestAsync(url);
+            expect(result).toEqual(expectedResponse);
+
+            // await expect(proxyClient.sendPostRequestAsync(url)).rejects.toThrow(error);
         });
     });
 

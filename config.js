@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 
-if(!process.env["SKIP_DOTENV"])
+if (!process.env["SKIP_DOTENV"])
     require('dotenv').config();
 
 const config = {};
@@ -26,12 +26,14 @@ const allConfigs = {
     AZURE_APP_ID: { format: "String", required: true, default: null, transform: (val) => (val === "*secret*") ? null : val },
     AZURE_APP_SECRET: { format: "String", required: true, default: null, transform: (val) => (val === "*secret*") ? null : val },
     AZURE_TENANTID: { format: "String", required: true, default: null, transform: (val) => (val === "*secret*") ? null : val },
+    AZURE_ENDPOINT: { format: "String", required: true, default: 'https://login.microsoftonline.com/', transform: (url) => url.replace(/\/$/, '') },
 
     // GRAPH
+    GRAPH_ENDPOINT: { format: "String", required: true, default: 'https://graph.microsoft.com/', transform: (url) => url.replace(/\/$/, '') },
+    GRAPH_API_VERSION: { format: "String", required: true, default: 'v1.0', transform: (url) => url.replace(/\/$/, '') },
+
     GRAPH_FILTER_USERS: { format: "String", required: false, default: null, transform: "TRIM" },
-    //  config.GRAPH_FILTER_USERS = "&$filter="+encodeURIComponent(process.env.GRAPH_FILTER_USERS);
     GRAPH_FILTER_GROUPS: { format: "String", required: false, default: null, transform: "TRIM" },
-    // config.GRAPH_FILTER_GROUPS = "&$filter="+encodeURIComponent(process.env.GRAPH_FILTER_GROUPS);
     GRAPH_IGNORE_MFA_ERRORS: { format: "Boolean", required: false, default: true },
     LDAP_SYNC_TIME: { format: "Integer", required: false, default: 30 /* minutes */ },
     LDAP_DAYSTOKEEPDELETEDUSERS: { format: "Integer", required: false, default: 7 /* days */ },
@@ -55,7 +57,7 @@ const allConfigs = {
     LDAP_USERSGROUPSBASEDN: { format: "String", required: true, default: () => "cn=users," + config.LDAP_GROUPSDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
 
     LDAP_USERRDN: { format: "String", required: true, default: "uid", transform: nonWhiteSpaceLowerCase },
-    LDAP_DATAFILE: { format: "String", required: true, default: "./.cache/azure.json" },
+    LDAP_DATAFILE: { format: "String", required: true, default: "./.cache/azure.json", transform: "TRIM" },
 
     // LDAPS
     LDAPS_CERTIFICATE: { format: "String", required: false, default: null },
