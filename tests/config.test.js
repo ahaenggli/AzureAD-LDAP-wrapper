@@ -3,6 +3,7 @@
 const fs = require('fs');
 const dotenv = require('dotenv');
 
+process.env["SKIP_DOTENV"] = "true";
 const originalEnv = process.env;
 var config;
 
@@ -22,18 +23,18 @@ describe('config tests', () => {
             if (fs.existsSync("./.cache/IshouldNotExist.txt"))
                 fs.unlinkSync('./.cache/IshouldNotExist.txt');
             if (nodeEnv === "Test2")
-                fs.writeFileSync('./.cache/IshouldNotExist.txt', 'Hello content!');        
+                fs.writeFileSync('./.cache/IshouldNotExist.txt', 'Hello content!');
 
-            
+
         });
 
         beforeEach(() => {
             jest.resetModules();
-            jest.spyOn(console, 'log').mockImplementation(() => {});
-            jest.spyOn(console, 'warn').mockImplementation(() => {});
-            jest.spyOn(console, 'error').mockImplementation(() => {});
+            jest.spyOn(console, 'log').mockImplementation(() => { });
+            jest.spyOn(console, 'warn').mockImplementation(() => { });
+            jest.spyOn(console, 'error').mockImplementation(() => { });
             process.env = originalEnv;
-            dotenv.config({ path: expectedPath + nodeEnv + '.env', override: true });            
+            dotenv.config({ path: expectedPath + nodeEnv + '.env', override: true });
             config = require('../config');
         });
 
@@ -49,7 +50,7 @@ describe('config tests', () => {
             // delete process.env.NODE_ENV;
             // delete process.env.LDAP_SYNC_TIME;
             // restore original console log
-            
+
         });
 
         test('azure configs', () => {
@@ -79,12 +80,12 @@ describe('config tests', () => {
 
         test('LDAPS configs', () => {
             // Run your test here
-            const cert = (nodeEnv === 'Test1')? null : process.env.LDAPS_CERTIFICATE;
-            const keyf = (nodeEnv === 'Test2')? process.env.LDAPS_KEY : null;
+            const cert = (nodeEnv === 'Test1') ? null : process.env.LDAPS_CERTIFICATE;
+            const keyf = (nodeEnv === 'Test2') ? process.env.LDAPS_KEY : null;
 
             expect(config.LDAPS_CERTIFICATE).toBe(cert);
             expect(config.LDAPS_KEY).toBe(keyf); // .toBeUndefined();
-            
+
         });
 
         test('other configs', () => {
@@ -103,7 +104,6 @@ describe('config tests', () => {
             expect(config.LDAP_SENSITIVE_ATTRIBUTES).toBeNull();
             expect(config.LDAP_SECURE_ATTRIBUTES).toBeNull();
 
-            expect(config.LDAP_REMOVEDOMAIN).toBe(true);
             expect(config.LDAP_ALLOWCACHEDLOGINONFAILURE).toBe(true);
 
             expect(config.LDAP_GROUPSDN).toBe(`cn=groups,${exDN}`);

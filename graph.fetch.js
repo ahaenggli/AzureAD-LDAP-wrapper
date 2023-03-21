@@ -90,7 +90,7 @@ fetch.getUsers = async function () {
  * @param {string} accessToken
  * @returns {Promise<Array<object>>} A promise that resolves to an array of fetched data
  */
-fetch.callApi = async function (endpoint, accessToken, opts = {}, skipError=true) {
+fetch.callApi = async function (endpoint, accessToken, opts = {}, skipError = true) {
 
     const options = {
         headers: {
@@ -117,7 +117,7 @@ fetch.callApi = async function (endpoint, accessToken, opts = {}, skipError=true
         return data;
     } catch (error) {
         helper.error('graph.fetch.js', 'callApi', 'error with', { endpoint, opts, error: error.message });
-        return (skipError)? [] : {error: error.message};
+        return (skipError) ? [] : { error: error.message };
     }
 };
 

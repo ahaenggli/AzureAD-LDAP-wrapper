@@ -4,6 +4,14 @@ jest.spyOn(console, 'log').mockImplementation(() => { });
 jest.spyOn(console, 'warn').mockImplementation(() => { });
 jest.spyOn(console, 'error').mockImplementation(() => { });
 
+process.env["SKIP_DOTENV"] = "true";
+const originalEnv = process.env;
+const dotenv = require('dotenv');
+process.env = originalEnv;
+dotenv.config({ path: `.env`, override: true });
+process.env['GRAPH_FILTER_USERS'] = '';
+process.env['GRAPH_FILTER_GROUPS'] = '';
+
 const fetch = require('../graph.fetch');
 
 describe('Graph API Fetch without access token', () => {

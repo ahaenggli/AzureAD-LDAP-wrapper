@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Usernames should be case-insensitive (issue #40)
 - Searches should generally be case-insensitive, while results are fine with CamelCase.
+- searches for 'one' (singleLevel/singleLevel) shold not return the base entry itself
 
 ### Added
 

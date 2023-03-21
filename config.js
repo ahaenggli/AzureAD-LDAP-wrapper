@@ -41,7 +41,6 @@ const allConfigs = {
     //LDAP
     LDAP_PORT: { format: "Integer", required: true, default: 389, validate: "PORT" },
     LDAP_BINDUSER: { format: "String", required: true, default: null, validate: (val) => { return ((val || "").indexOf("|") > -1); } },
-
     LDAP_DOMAIN: { format: "String", required: true, default: "example.net", transform: nonWhiteSpaceLowerCase },
     LDAP_BASEDN: { format: "String", required: true, default: () => "dc=" + config.LDAP_DOMAIN.split(".").join(",dc="), transform: nonWhiteSpaceLowerCase, validate: validateDN },
 
@@ -49,7 +48,6 @@ const allConfigs = {
     LDAP_ANONYMOUSBIND: { format: "enum", required: true, default: "domain", enum: ["domain", "all", "none"], transform: nonWhiteSpaceLowerCase },
     LDAP_SENSITIVE_ATTRIBUTES: { format: "String", required: false, transform: nonWhiteSpaceLowerCase },
     LDAP_SECURE_ATTRIBUTES: { format: "String", required: false, transform: nonWhiteSpaceLowerCase },
-    LDAP_REMOVEDOMAIN: { format: "Boolean", required: false, default: true },
     LDAP_ALLOWCACHEDLOGINONFAILURE: { format: "Boolean", required: false, default: true },
 
     LDAP_GROUPSDN: { format: "String", required: true, default: () => "cn=groups," + config.LDAP_BASEDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
