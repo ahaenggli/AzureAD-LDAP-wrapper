@@ -17,3 +17,4 @@ example
 tests
 docs
 *.ps1
+*.env-*

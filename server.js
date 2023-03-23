@@ -46,6 +46,9 @@ function authorize(req, res, next) {
 
     const isSearch = (req instanceof ldap.SearchRequest);
     const isAnonymous = req.connection.ldap.bindDN.equals('cn=anonymous');
+    console.log(req.connection.ldap.bindDN.toString());
+    console.log(isAnonymous);
+    console.log(config.LDAP_ANONYMOUSBIND);
 
     if (config.LDAP_ANONYMOUSBIND == "none" && isAnonymous) {
         helper.error("server.js", "authorize - denied because of env var `LDAP_ANONYMOUSBIND` ", bindi);
@@ -57,11 +60,9 @@ function authorize(req, res, next) {
 
     var isAdmin = false;
 
-    if (config.LDAP_BINDUSER) {
-        for (var u of config.LDAP_BINDUSER.toString().split("||")) {
-            u = u.split("|")[0];
-            if (u === username) isAdmin = true;
-        }
+    for (var u of config.LDAP_BINDUSER.toString().split("||")) {
+        u = u.split("|")[0];
+        if (u === username) isAdmin = true;
     }
 
     if (!isAdmin && !isSearch) {
@@ -75,12 +76,10 @@ function authorize(req, res, next) {
 
 function isUserENVBindUser(binduser) {
     var allowSensitiveAttributes = false;
-    if (config.LDAP_BINDUSER) {
-        for (var u of config.LDAP_BINDUSER.toString().split("||")) {
-            u = u.split("|")[0];
-            var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
-            if (u === username) allowSensitiveAttributes = true;
-        }
+    for (var u of config.LDAP_BINDUSER.toString().split("||")) {
+        u = u.split("|")[0];
+        var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
+        if (u === username) allowSensitiveAttributes = true;
     }
     return allowSensitiveAttributes;
 }
@@ -321,6 +320,7 @@ server.search(SUFFIX, authorize, (req, res, next) => {
                     const parent = ldap.parseDN(k).parent();
                     return (parent ? parent.equals(req.dn) : false);
                 };
+                console.log('single!!');
                 break;
 
             // wholeSubtree(2)
@@ -348,6 +348,7 @@ server.search(SUFFIX, authorize, (req, res, next) => {
                 continue;
 
             // filter searchableEntries, everything lowercase (case-insensitive)
+            console.log('found something!!');
             if (req.filter.matches(removeSensitiveAttributes(bindDN, key, searchableEntries[key]))) {
                 res.send(
                     {
