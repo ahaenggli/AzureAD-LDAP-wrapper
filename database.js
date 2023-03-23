@@ -576,7 +576,7 @@ async function mergeAzureUserEntries(db) {
                 db['tmp_user_to_groups'][user.id] = [];
             }
 
-            // default `users`-group
+            // default `users`-group (may)
             if (db['tmp_user_to_groups'][user.id].indexOf(config.LDAP_USERSGROUPSBASEDN) < 0) {
                 db['tmp_user_to_groups'][user.id].push(config.LDAP_USERSGROUPSBASEDN);
             }
@@ -703,7 +703,7 @@ database.init = async function (callback) {
     };
 
     helper.log("database.js", "every", config.LDAP_SYNC_TIME, "minutes refreshDBentries()");
-    helper.log("database.js", "every", refreshInterval, "ms");
+    helper.error("database.js", "every", refreshInterval, "ms");
 
     if (refreshInterval > 0)
         return setInterval(interval_func, refreshInterval);

@@ -17,12 +17,12 @@ ${'HTTP_PROXY'} | ${'http://127.0.0.1:3128'}| ${false}| ${''}| ${'0'}
 ${'AZURE_TENANTID'} | ${'xxx-xxx-xxx'}| ${false}| ${''}¨| ${'0'}
 ${'GRAPH_FILTER_GROUPS'} | ${''}| ${false}| ${''}¨| ${'0'}
 ${'AZURE_APP_ID'} | ${'xxx-xxx-xxx'}| ${false}| ${''}| ${'0'}
-${'AZURE_APP_ID'} | ${'xxx/xxx-xxx'}| ${false}| ${''}| ${'0'}
+${'LDAP_USERSGROUPSBASEDN'} | ${'cn=secu,cn=groups,dc=domain,dc=tld'}| ${false}| ${''}| ${'0'}
 ${'AZURE_APP_ID'} | ${''}| ${false}| ${''}| ${'0'}
 ${'AZURE_APP_SECRET'} | ${'xxx-xxx-xxx'}| ${false}| ${''}| ${'0'}
 ${'AAD_Permissions'} | ${'not granted'} | ${false}| ${'-notgranted'}| ${'0'}
 ${'AZURE_ENDPOINT'} | ${'https://i-shall-not.exist/'}| ${false}| ${''}| ${'0'}
-${'AZURE_ENDPOINT'} | ${'https://:1234/'}| ${false}| ${''}| ${'0'}
+${'LDAP_DATAFILE'} | ${'./tests/tmp_azure_empty.test.json'}| ${false}| ${''}| ${'0'}
 ${'everything2'} | ${'okay2'} | ${true}| ${''}| ${'1'}
 `('test database.js with $EnvName=$EnvVal', ({ EnvName, EnvVal, validResult, envSuffix, syncTime }) => {
 
@@ -36,12 +36,12 @@ ${'everything2'} | ${'okay2'} | ${true}| ${''}| ${'1'}
         jest.spyOn(console, 'error').mockImplementation(() => { });
         process.env = originalEnv;
         dotenv.config({ path: `.env${envSuffix}`, override: true });
-        process.env[EnvName] = EnvVal;
-        process.env['LDAP_SYNC_TIME'] = syncTime;
 
         fs.copyFileSync('./tests/azure.test.json', './tests/tmp_azure.test.json');
-
         process.env['LDAP_DATAFILE'] = './tests/tmp_azure.test.json';
+        process.env['LDAP_SYNC_TIME'] = syncTime;
+        process.env[EnvName] = EnvVal;
+
         database = require('../database');
         jest.useFakeTimers();
         jest.spyOn(global, 'setInterval');
@@ -53,7 +53,12 @@ ${'everything2'} | ${'okay2'} | ${true}| ${''}| ${'1'}
         console.log.mockRestore();
         console.warn.mockRestore();
         console.error.mockRestore();
-        fs.unlinkSync('./tests/tmp_azure.test.json');
+
+        if (fs.existsSync('./tests/tmp_azure.test.json'))
+            fs.unlinkSync('./tests/tmp_azure.test.json');
+
+        if (fs.existsSync('./tests/tmp_azure_empty.test.json'))
+            fs.unlinkSync('./tests/tmp_azure_empty.test.json');
     });
 
     test('callback should be called', async () => {
@@ -112,17 +117,3 @@ ${'everything2'} | ${'okay2'} | ${true}| ${''}| ${'1'}
     });
 
 });
-
-
-
-//         test('databaseEntry data', () => {
-//             // Run your test here
-//             expect(database.getEntries()).toHaveProperty('dc=domain,dc=tld');
-//             expect(database.getEntries()).toHaveProperty('sambadomainname=domain,dc=domain,dc=tld');
-//             expect(database.getEntries()).toHaveProperty('cn=users,dc=domain,dc=tld');
-//             expect(database.getEntries()).toHaveProperty('cn=groups,dc=domain,dc=tld');
-//             expect(database.getEntries()).toHaveProperty('cn=users,cn=groups,dc=domain,dc=tld');
-//         });
-//     });
-// });
-

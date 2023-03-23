@@ -3,13 +3,26 @@
 const config = require('./config');
 const helper = require('./helper');
 const auth = require('./graph.auth');
+const ldap = require('ldapjs');
+
+var tlsOptions = {};
+
+//TODO: add tls
+//if(config.LDAPS_CERTIFICATE && config.LDAPS_KEY)
+//tlsOptions = { certificate: helper.ReadFile(config.LDAPS_CERTIFICATE), key: helper.ReadFile(config.LDAPS_KEY) };
+const server = ldap.createServer(tlsOptions);
 
 const database = require('./database');
 
 let db = helper.ReadJSONfile(config.LDAP_DATAFILE);
-database.init(() => { db = database.getEntries(); });
 
-const ldap = require('ldapjs');
+server.init = async function (cb) {
+    return database.init(() => {
+        db = database.getEntries();
+        cb();
+    });
+};
+
 
 Object.prototype.hasOwnPropertyCI = function (prop) {
     return Object.keys(this)
@@ -22,11 +35,7 @@ const { SearchRequest } = require('@ldapjs/messages');
 const parseFilter = require('ldapjs').parseFilter;
 
 
-var tlsOptions = {};
-//TODO: add tls
-//if(config.LDAPS_CERTIFICATE && config.LDAPS_KEY)
-//tlsOptions = { certificate: helper.ReadFile(config.LDAPS_CERTIFICATE), key: helper.ReadFile(config.LDAPS_KEY) };
-var server = ldap.createServer(tlsOptions);
+
 
 ///--- Shared handlers
 const SUFFIX = '';

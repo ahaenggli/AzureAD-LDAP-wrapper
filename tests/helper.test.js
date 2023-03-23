@@ -108,6 +108,12 @@ describe('helper tests debug = true', () => {
     expect(helper.ldap_now_2_date(ln)).toStrictEqual(ld);
     expect(helper.ldap_now_2_date("")).toBe(undefined);
     expect(helper.ldap_now_2_date(undefined)).toBe(undefined);
+
+
+    let d = new Date();
+    d.setDate(d.getDate() + 5);
+    d = d.toISOString().replace(/T/, ' ').replace(/\..+/, '').replaceAll('-', '').replaceAll(':', '').replaceAll(' ', '');
+    expect(helper.ldap_now(5)).toBe(d);
   });
 
 });
@@ -154,6 +160,11 @@ describe('helper tests debug = false', () => {
     expect(ldapSyntaxes).toHaveLength(32);
     expect(ldapSyntaxes[0]).toStrictEqual(["( 1.3.6.1.4.1.1466.115.121.1.4 DESC 'Audio' X-NOT-HUMAN-READABLE 'TRUE' )"]);
     expect(ldapSyntaxes[31]).toStrictEqual(["( 1.3.6.1.1.16.1 DESC 'UUID' )"]);
+
+    let ldapSyntaxes2 = helper.ReadCSVfile('./schema/ldapSyntaxes.csv', null, 'utf8', 0);
+    expect(ldapSyntaxes2[0]).not.toStrictEqual(["( 1.3.6.1.4.1.1466.115.121.1.4 DESC 'Audio' X-NOT-HUMAN-READABLE 'TRUE' )"]);
+    expect(ldapSyntaxes2[30]).toStrictEqual(["( 1.3.6.1.1.16.1 DESC 'UUID' )"]);
+
   });
 
 });
