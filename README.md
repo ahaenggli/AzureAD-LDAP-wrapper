@@ -9,6 +9,7 @@ AzureAD-LDAP-wrapper is a Node.js LDAP server built on top of ([ldapjs](https://
   * [Requirements](#requirements)
   * [Run the LDAP-wrapper](#run-the-ldap-wrapper)
   * [Usage](#usage)
+  * [Settings](#settings)
 * [Troubleshooting](#troubleshooting)
 * [Security](#security)
 * [Contributing](#contributing)
@@ -142,6 +143,10 @@ To enable users to log in to Synology NAS with their Azure credentials, you need
 ![check users](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use/syno_ldap_check.png)
 
 7. Note that before accessing shared folders or files via network or Samba, each user must log in to DSM web GUI or another tool directly connected to the LDAP server. This step is also required after a password change, as the password hash for Samba is only set after a successful login.
+
+### Settings
+
+To configure the LDAP-wrapper, you can use environment variables as it is intended to be used with Docker. A complete list of available variables can be found in the [configuration settings page](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings) of the documentation.
 
 ## Troubleshooting
 
