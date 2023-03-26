@@ -63,7 +63,7 @@
       "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/",
       "headline": "Use on a Synology NAS",
       "description": "To access a share on the NAS, for example, from a Windows PC, the credentials must be entered. These credentials are NOT sent to the LDAP-wrapper (or any other LDAP server). They are sent to samba so that it can generate a hash from the password. Afterwards samba fetches the password hash from the LDAP-wrapper and compares the two hashes. Perhaps you are now wondering why this is important to know?",
-      "wordCount" : "567",
+      "wordCount" : "628",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -1150,30 +1150,58 @@ Perhaps you are now wondering why this is important to know? Well, the AzureAD-L
         </a>
     </h2>
 </div>
-<p>If you connect your Synology NAS to the LDAP-wrapper, users can login with their azure credentials.</p>
+<p>To enable users to log in to Synology NAS with their Azure credentials, you need to connect the NAS to the AzureAD-LDAP-wrapper. Here are the steps:</p>
 <ol>
 <li>
-<p>Enable ldap-client and connect it to your docker container
+<p>Go to Control Panel &gt; Domain/LDAP and click &ldquo;Join&rdquo;.
 <img
-  src="../syno_ldap_enable.png"
-  alt="grafik"
+  src="../use/syno_ldap_join.png"
+  alt="ldap join"
   
 /></p>
 </li>
 <li>
-<p>Users that exist in the AAD cannot see or change other users password hashes.
-So, if you&rsquo;d like to use samba, please join/bind with a (not in AzureAD existing) superuser from the previously defined env var <code>LDAP_BINDUSER</code>: <img
-  src="../syno_ldap_join.png"
-  alt="grafik"
+<p>Enter the IP address (e.g., 127.0.0.1) of your NAS as the server address.
+<img
+  src="../use/syno_ldap_serveraddress.png"
+  alt="server address"
   
-/><br>
-The warning &ldquo;a local group has the same name as a synchronized group&rdquo; can be skipped. Should your BINDUSER not be found, try writing &ldquo;uid=ldapsearch&rdquo; or the full name &ldquo;uid=ldapsearch,cn=users,dc=domain,dc=tld&rdquo; instead of just &ldquo;ldapsearch&rdquo;.</p>
+/></p>
 </li>
 <li>
-<p>Give your synchronized groups the desired permissions and log in with your synchronized users.</p>
+<p>Enter the credentials of your previously defined superuser (environment variable <code>LDAP_BINDUSER</code>) as Bind DN. Should your user not be found, try writing &ldquo;uid=root&rdquo; or the full name &ldquo;uid=root,cn=users,dc=domain,dc=tld&rdquo; instead of just &ldquo;root&rdquo;. Select your domain in Base DN.
+<img
+  src="../use/syno_ldap_infos.png"
+  alt="enter ldap infos"
+  
+/></p>
 </li>
 <li>
-<p>Before accessing shared folders/files via network/samba, each user must log in to dsm-web-gui or another tool directly connected to the ldap server. This also applies after a password change, since the password hash for samba is only set after a successful login.</p>
+<p>If you see a warning about a local group having the same name as a synchronized group, you can ignore it and skip the warning in &ldquo;Details&rdquo;.
+<img
+  src="../use/syno_ldap_skipwarning.png"
+  alt="skip warning"
+  
+/></p>
+</li>
+<li>
+<p>Your NAS should now be connected successfully to the Azure AD LDAP-wrapper.
+<img
+  src="../use/syno_ldap_connected.png"
+  alt="nas connected"
+  
+/></p>
+</li>
+<li>
+<p>Check the &ldquo;LDAP User&rdquo; and &ldquo;LDAP Group&rdquo; tabs to ensure that all entries are fully synced. Assign the desired permissions to your synchronized users and groups. You can now log in with your Azure AD credentials.
+<img
+  src="../use/syno_ldap_check.png"
+  alt="check users"
+  
+/></p>
+</li>
+<li>
+<p>Note that before accessing shared folders or files via network or Samba, each user must log in to DSM web GUI or another tool directly connected to the LDAP server. This step is also required after a password change, as the password hash for Samba is only set after a successful login.</p>
 </li>
 </ol>
 <div class="gdoc-page__anchorwrap">
@@ -1248,7 +1276,7 @@ Please be aware, it&rsquo;s not working on every DSM version. First tests on a S
 <li>
 <p>Check the logs for (new) errors (right click on container and choose &ldquo;Details&rdquo;)
 <img
-  src="../syno_docker_log.png"
+  src="../syno_docker_logs.png"
   alt="grafik"
   
 /></p>
