@@ -14,7 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced usage of @azure/identity with @azure/msal-node
 - Updated ldapjs to v3.0.1
 - Refactored codebase to improve maintainability, including restructuring the project into multiple files for better organization and readability.
-As a result, existing customizers (mapped `./customizer/ldap_customizer.js`) must be modified to use the following paths:
+As a result, existing customizers (mapped `/app/customizer/ldap_customizer.js`) must be modified to use the following paths:
 
     ```js
   const config = require('../src/config');
