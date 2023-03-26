@@ -189,6 +189,33 @@
         <span>
           <a
             href="
+              https://www.buymeacoffee.com/ahaenggli
+            "
+            class="gdoc-header__link"
+          >
+            <svg class="gdoc-icon none">
+              <title>\&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; style=&#34;height: 20px; width: 20px;&#34; alt=&#34;Buy Me A Coffee&#34;&gt;</title>
+              <use xlink:href="#none"></use>
+            </svg>
+          </a>
+        </span>
+      
+    
+  
+    
+      
+      
+      
+
+      
+      
+
+      
+
+      
+        <span>
+          <a
+            href="
               https://github.com/ahaenggli/AzureAD-LDAP-wrapper
             "
             class="gdoc-header__link"
@@ -1038,17 +1065,10 @@
     class="gdoc-markdown gdoc-markdown__align--left"
   >
     <h1>AzureAD-LDAP-wrapper</h1>
-    <p>The AzureAD-LDAP-wrapper (<a
-  class="gdoc-markdown__link--raw"
-  href="https://github.com/ahaenggli/AzureAD-LDAP-wrapper"
-><img
-  src="https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social"
-  alt="GitHub release (latest by date)"
-  
-/></a> <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px"></a>) is a nodejs ldap server (<a
+    <p>AzureAD-LDAP-wrapper is a Node.js LDAP server built on top of (<a
   class="gdoc-markdown__link"
   href="https://github.com/ldapjs/node-ldapjs"
->ldapjs</a>) that provides AzureAD users and groups via LDAP protocol. User authentication is done each time through Microsoft Graph API. As a result, other applications can connect to the LDAP server, allowing users to use their familiar AzureAD credentials. This is especially useful for applications that do not support AzureAD and for which you do not want to maintain a local AD controller.</p>
+>ldapjs</a>) that allows users and groups from Azure Active Directory to be accessed through the LDAP protocol. User authentication is performed using Microsoft Graph API on every login attempt. This enables other applications to connect to the LDAP server and utilize AzureAD login credentials, making it a possible solution for older applications that lack AzureAD support or for scenarios where managing a local AD controller is undesirable.</p>
 
 
 
@@ -1056,11 +1076,10 @@
 
 <blockquote class="gdoc-hint note">
   <div class="gdoc-hint__title flex align-center"><i class="fa note" title="About the motivation"></i></div>
-  <div class="gdoc-hint__text">I personally run the project in a Docker container on my Synology NAS. The NAS and some intranet web applications are connected to the ldap server. This way my users can log in to the NAS, the web applications and of course office.com with the same credentials.
-The whole thing could probably also be achieved by <a
+  <div class="gdoc-hint__text">I run the project on my Synology NAS in a Docker container. By connecting the NAS and some intranet web applications to the LDAP server, my users can log in to these services using their AzureAD credentials. Although it is possible to achieve this by <a
   class="gdoc-markdown__link"
   href="https://kb.synology.com/en-global/DSM/tutorial/How_to_join_NAS_to_Azure_AD_Domain"
->joining the NAS to AADDS</a>. However, I was not willing to maintain such a big setup (virtual machine/VPN/AADDS) only that my 3 users can use the same credentials (almost) everywhere.</div>
+>joining the NAS to AADDS</a>, I preferred not to maintain such a big setup, which includes a virtual machine, VPN, and AADDS, just to allow my three users to use their credentials almost everywhere.</div>
 </blockquote>
 
 <div class="gdoc-page__anchorwrap">
@@ -1071,14 +1090,39 @@ The whole thing could probably also be achieved by <a
         </a>
     </h2>
 </div>
-<ol>
-<li>AzureAD-LDAP-wrapper starts an LDAP server</li>
-<li>On &ldquo;starting&rdquo; users and groups are fetched from Azure Active Directory</li>
-<li>On &ldquo;bind&rdquo; the user credentials are checked through Microsoft Graph API</li>
-<li>On successful &ldquo;bind&rdquo; the user password is saved as additional hash (sambaNTPassword) and sambaPwdLastSet ist set to &ldquo;now&rdquo;. This is necessary to allow access from e.g. Windows PCs to the samba shares on the NAS.</li>
-<li>Users and groups are fetched again every 30 minutes<br>
-(while keeping uid, gid, sambaNTPassword and sambaPwdLastSet)</li>
-</ol>
+
+
+  
+  <script defer src="/AzureAD-LDAP-wrapper/js/mermaid-212ad90a.bundle.min.js"></script>
+  
+
+
+
+<pre class="gdoc-mermaid mermaid text-center">sequenceDiagram
+  autonumber
+  participant LDAP client
+  participant AzureAD-LDAP-wrapper
+  participant AAD (Graph API)
+      
+  Note over AzureAD-LDAP-wrapper: start LDAP server
+  AzureAD-LDAP-wrapper-&gt;&gt;AAD (Graph API): Fetch users and groups
+  Note over AzureAD-LDAP-wrapper: cache users and groups locally
+
+  LDAP client-&gt;&gt;&#43;AzureAD-LDAP-wrapper: Attempt to bind with user credentials
+    AzureAD-LDAP-wrapper-&gt;&gt;&#43;AAD (Graph API): Check user credentials      
+    AAD (Graph API)--&gt;&gt;-AzureAD-LDAP-wrapper: Valid credentials
+
+  Note over AzureAD-LDAP-wrapper: save password hash locally in the cache
+  AzureAD-LDAP-wrapper-&gt;&gt;-LDAP client: Successful bind/authenticate
+    
+    loop every 30 minutes
+            AzureAD-LDAP-wrapper-&gt;&gt;AAD (Graph API): Fetch users and groups again
+        Note over AzureAD-LDAP-wrapper: merge and cache users and groups locally
+    end</pre>
+<p>The diagram shows the flow of communication between an LDAP client, the AzureAD-LDAP-wrapper, and the Azure Active Directory (AAD) via Graph API.</p>
+<p>First, the AzureAD-LDAP-wrapper starts an LDAP server and fetches users and groups from the AAD Graph API. These are cached and merged locally.</p>
+<p>When an LDAP client attempts to bind with user credentials, the AzureAD-LDAP-wrapper checks these credentials by communicating with the AAD Graph API. If the credentials are valid, the AAD Graph API sends a success response to the AzureAD-LDAP-wrapper, which then sends a successful bind message to the user&rsquo;s LDAP client. Additionally, the AzureAD-LDAP-wrapper saves the user&rsquo;s password hash in the sambaNTPassword attribute and sets the sambaPwdLastSet attribute to &ldquo;now&rdquo;. This allows the user to access samba shares, such as those on a NAS, from Windows PCs.</p>
+<p>The AzureAD-LDAP-wrapper periodically fetches user and group information from the AAD Graph API every 30 minutes, merging and caching the results locally. This process preserves attributes like uid, gid, sambaNTPassword, and sambaPwdLastSet.</p>
 
   </article>
 
@@ -1414,8 +1458,11 @@ The whole thing could probably also be achieved by <a
     <div>
       <section class="flex flex-wrap align-center">
         <span class="gdoc-footer__item gdoc-footer__item--row">
-          Built with <a href="https://gohugo.io/" class="gdoc-footer__link">Hugo</a> and <svg class="gdoc-icon gdoc_heart"><use xlink:href="#gdoc_heart"></use></svg>
-
+          Build with <a href="https://gohugo.io/" class="gdoc-footer__link">Hugo</a> and <svg class="gdoc-icon gdoc_heart"><use xlink:href="#gdoc_heart"></use></svg> <br> <a href="https://github.com/ahaenggli/AzureAD-LDAP-wrapper" target="_blank">
+  <img src="https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social" alt="GitHub release (latest by date)">
+</a> <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px">
+</a>
         </span>
         
         

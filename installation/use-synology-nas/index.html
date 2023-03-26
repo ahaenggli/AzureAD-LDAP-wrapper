@@ -43,6 +43,10 @@
 <meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/" />
 
 <meta property="article:section" content="Installation" />
+    <meta
+      property="article:modified_time"
+      content="2023-03-04T20:54:20+01:00"
+    />
 
 
   <meta name="twitter:card" content="summary" />
@@ -59,7 +63,7 @@
       "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/",
       "headline": "Use on a Synology NAS",
       "description": "To access a share on the NAS, for example, from a Windows PC, the credentials must be entered. These credentials are NOT sent to the LDAP-wrapper (or any other LDAP server). They are sent to samba so that it can generate a hash from the password. Afterwards samba fetches the password hash from the LDAP-wrapper and compares the two hashes. Perhaps you are now wondering why this is important to know?",
-      "wordCount" : "472",
+      "wordCount" : "567",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -70,7 +74,7 @@
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "0001-01-01T00:00:00.00Z",
+      "dateModified": "2023-03-04T20:54:20.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "AzureAD-LDAP-wrapper",
@@ -206,6 +210,33 @@
   
   
 
+  
+    
+      
+      
+      
+
+      
+      
+
+      
+
+      
+        <span>
+          <a
+            href="
+              https://www.buymeacoffee.com/ahaenggli
+            "
+            class="gdoc-header__link"
+          >
+            <svg class="gdoc-icon none">
+              <title>\&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; style=&#34;height: 20px; width: 20px;&#34; alt=&#34;Buy Me A Coffee&#34;&gt;</title>
+              <use xlink:href="#none"></use>
+            </svg>
+          </a>
+        </span>
+      
+    
   
     
       
@@ -1107,6 +1138,7 @@ Perhaps you are now wondering why this is important to know? Well, the AzureAD-L
       <nav id="TableOfContents"><ul>
         <li><a href="#connect-synology-nas-to-ldap-wrapper">Connect Synology NAS to LDAP-wrapper</a></li>
         <li><a href="#synology-sso">Synology SSO</a></li>
+        <li><a href="#update-existing-docker-container-on-a-synology-nas">Update existing Docker container on a Synology NAS</a></li>
       </ul></nav>
       <hr />
     </div>
@@ -1175,6 +1207,55 @@ Please be aware, it&rsquo;s not working on every DSM version. First tests on a S
   alt="grafik"
   
 /></li>
+</ol>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="update-existing-docker-container-on-a-synology-nas">
+        Update existing Docker container on a Synology NAS
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/#update-existing-docker-container-on-a-synology-nas" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Update existing Docker container on a Synology NAS" aria-label="Anchor to: Update existing Docker container on a Synology NAS" href="#update-existing-docker-container-on-a-synology-nas">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
+<ol>
+<li>
+<p>Redownload the latest version
+<img
+  src="../syno_docker_download.png"
+  alt="grafik"
+  
+/></p>
+</li>
+<li>
+<p>Stop your container</p>
+</li>
+<li>
+<p>Clear your container
+<img
+  src="../syno_docker_clear.png"
+  alt="grafik"
+  
+/></p>
+</li>
+<li>
+<p>Check the <a
+  class="gdoc-markdown__link"
+  href="CHANGELOG.md"
+>changelog</a> file (for breaking changes) and apply new settings</p>
+</li>
+<li>
+<p>Start your container</p>
+</li>
+<li>
+<p>Check the logs for (new) errors (right click on container and choose &ldquo;Details&rdquo;)
+<img
+  src="../syno_docker_log.png"
+  alt="grafik"
+  
+/></p>
+</li>
+<li>
+<p>Before accessing files via network/samba, each user needs to login in the dsm-web-gui or any other tool directly connected to the ldap server. It&rsquo;s the same after a password change, because the password-hash for samba is only set after a successfull login.</p>
+</li>
 </ol>
 
   </article>
@@ -1520,8 +1601,11 @@ Please be aware, it&rsquo;s not working on every DSM version. First tests on a S
     <div>
       <section class="flex flex-wrap align-center">
         <span class="gdoc-footer__item gdoc-footer__item--row">
-          Built with <a href="https://gohugo.io/" class="gdoc-footer__link">Hugo</a> and <svg class="gdoc-icon gdoc_heart"><use xlink:href="#gdoc_heart"></use></svg>
-
+          Build with <a href="https://gohugo.io/" class="gdoc-footer__link">Hugo</a> and <svg class="gdoc-icon gdoc_heart"><use xlink:href="#gdoc_heart"></use></svg> <br> <a href="https://github.com/ahaenggli/AzureAD-LDAP-wrapper" target="_blank">
+  <img src="https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social" alt="GitHub release (latest by date)">
+</a> <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px">
+</a>
         </span>
         
         

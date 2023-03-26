@@ -45,6 +45,10 @@ The API results and a local copy of the LDAP entries are stored as JSON files in
 <meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/" />
 
 <meta property="article:section" content="Installation" />
+    <meta
+      property="article:modified_time"
+      content="2023-03-26T13:44:37+02:00"
+    />
 
 
   <meta name="twitter:card" content="summary" />
@@ -62,7 +66,7 @@ The API results and a local copy of the LDAP entries are stored as JSON files in
       "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/",
       "headline": "Run the LDAP-wrapper",
       "description": "The preferred way to use the LDAP wrapper is with Docker. Alternatively, the source can be downloaded and started manually with npm\/node. As domain and basedn it is recommended to use the same as used in AzureAD tenant (e.g. @domain.tld). This way, the spelling of the users (e.g. username@domain.tld) will match at the end. Otherwise, your users will have to use username@example.com instead of the estimated username@domain.tld, for example.\nThe API results and a local copy of the LDAP entries are stored as JSON files inside the container at this path: \/app\/.",
-      "wordCount" : "641",
+      "wordCount" : "619",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -73,7 +77,7 @@ The API results and a local copy of the LDAP entries are stored as JSON files in
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "0001-01-01T00:00:00.00Z",
+      "dateModified": "2023-03-26T13:44:37.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "AzureAD-LDAP-wrapper",
@@ -209,6 +213,33 @@ The API results and a local copy of the LDAP entries are stored as JSON files in
   
   
 
+  
+    
+      
+      
+      
+
+      
+      
+
+      
+
+      
+        <span>
+          <a
+            href="
+              https://www.buymeacoffee.com/ahaenggli
+            "
+            class="gdoc-header__link"
+          >
+            <svg class="gdoc-icon none">
+              <title>\&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; style=&#34;height: 20px; width: 20px;&#34; alt=&#34;Buy Me A Coffee&#34;&gt;</title>
+              <use xlink:href="#none"></use>
+            </svg>
+          </a>
+        </span>
+      
+    
   
     
       
@@ -1119,6 +1150,108 @@ Map this folder to provide persistent storage for your users/groups (and their s
       checked="checked"
     />
     <label for="tabs-run-ldap-wrapper-0" class="gdoc-tabs__label">
+      Synology DSM Docker
+    </label>
+    <div class="gdoc-markdown--nested gdoc-tabs__content">
+      <div class="gdoc-page__anchorwrap">
+    <h2 id="install-container-on-a-synology-nas">
+        Install container on a Synology NAS
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/#install-container-on-a-synology-nas" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Install container on a Synology NAS" aria-label="Anchor to: Install container on a Synology NAS" href="#install-container-on-a-synology-nas">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
+<ol>
+<li>
+<p>Install Docker from the Synology Package Center.
+<img
+  src="../syno/syno_install_docker.png"
+  alt="package center"
+  
+/></p>
+</li>
+<li>
+<p>In Docker, go to &ldquo;Registry&rdquo; to download the latest container image.
+<img
+  src="../syno/syno_docker_download.png"
+  alt="download latest image"
+  
+/></p>
+</li>
+<li>
+<p>In Docker, go to &ldquo;Image&rdquo; to launch a new container. Use &ldquo;bridge&rdquo; as your network.
+<img
+  src="../syno/syno_docker_launch.png"
+  alt="launch image"
+  
+/>
+Use &ldquo;bridge&rdquo; as your network.</p>
+</li>
+<li>
+<p>Give your container a name and enable auto-restart.
+<img
+  src="../syno/syno_docker_name.png"
+  alt="grafik"
+  
+/></p>
+</li>
+<li>
+<p>Configure the environment variables in &ldquo;Advanced Settings&rdquo;. Be sure to double check your Azure values and define at least one binduser. The binduser (superuser like root) does not need to exist in your AzureAD. Replace example.com with your domain. Here is an example of a minimum required configuration:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">TZ: <span class="s2">&#34;Europe/Zurich&#34;</span> <span class="c1"># optional</span>
+</span></span><span class="line"><span class="cl">AZURE_TENANTID: <span class="s2">&#34;0def2345-ff01-56789-1234-ab9d6dda1e1e&#34;</span>
+</span></span><span class="line"><span class="cl">AZURE_APP_ID: <span class="s2">&#34;abc12345-ab01-0000-1111-a1e1eab9d6dd&#34;</span>
+</span></span><span class="line"><span class="cl">AZURE_APP_SECRET: <span class="s2">&#34;iamasecret~yep-reallyreallysecret&#34;</span>
+</span></span><span class="line"><span class="cl">LDAP_DOMAIN: <span class="s2">&#34;example.com&#34;</span>
+</span></span><span class="line"><span class="cl">LDAP_BASEDN: <span class="s2">&#34;dc=example,dc=com&#34;</span>
+</span></span><span class="line"><span class="cl">LDAP_BINDUSER: <span class="s2">&#34;ldapsearch|*secretldapsearch123*||root|*secretroot*&#34;</span>
+</span></span><span class="line"><span class="cl">LDAP_DEBUG: <span class="s2">&#34;false&#34;</span> <span class="c1"># set this to true for more logs</span>
+</span></span><span class="line"><span class="cl">GRAPH_IGNORE_MFA_ERRORS: <span class="s2">&#34;false&#34;</span> <span class="c1"># set this to true to bypass MFA</span>
+</span></span><span class="line"><span class="cl">DSM7: <span class="s2">&#34;true&#34;</span> <span class="c1"># set this to false if you are running DSM 6 or lower</span>
+</span></span></code></pre></div><p><img
+  src="../syno/syno_docker_env.png"
+  alt="env vars"
+  
+/>
+A full list of all environment variables can be found <a
+  class="gdoc-markdown__link"
+  href="../../configuration/settings/"
+>here</a>.</p>
+</li>
+<li>
+<p>Set local Port 389 to the Container Port 13389. If you receive the error Local port 389 conflicts with other ports used by other services, make sure that Synology Directory Service and Synology LDAP Server are not installed - they also use this port.
+<img
+  src="../syno/syno_docker_port.png"
+  alt="syno port"
+  
+/></p>
+</li>
+<li>
+<p>Add a local folder, such as docker/ldap, to the mount path /app/.cache in the volume settings. If you skip this step, your data will not be stored permanently.
+<img
+  src="../syno/syno_docker_folder.png"
+  alt="syno folder"
+  
+/></p>
+</li>
+<li>
+<p>Click &ldquo;Done&rdquo; to start the container.
+<img
+  src="../syno/syno_docker_done.png"
+  alt="done"
+  
+/></p>
+</li>
+</ol>
+
+    </div>
+    <input
+      type="radio"
+      class="gdoc-tabs__control hidden"
+      name="tabs-run-ldap-wrapper"
+      id="tabs-run-ldap-wrapper-1"
+      
+    />
+    <label for="tabs-run-ldap-wrapper-1" class="gdoc-tabs__label">
       Docker
     </label>
     <div class="gdoc-markdown--nested gdoc-tabs__content">
@@ -1139,10 +1272,10 @@ Map this folder to provide persistent storage for your users/groups (and their s
       type="radio"
       class="gdoc-tabs__control hidden"
       name="tabs-run-ldap-wrapper"
-      id="tabs-run-ldap-wrapper-1"
+      id="tabs-run-ldap-wrapper-2"
       
     />
-    <label for="tabs-run-ldap-wrapper-1" class="gdoc-tabs__label">
+    <label for="tabs-run-ldap-wrapper-2" class="gdoc-tabs__label">
       Docker compose
     </label>
     <div class="gdoc-markdown--nested gdoc-tabs__content">
@@ -1173,10 +1306,10 @@ Map this folder to provide persistent storage for your users/groups (and their s
       type="radio"
       class="gdoc-tabs__control hidden"
       name="tabs-run-ldap-wrapper"
-      id="tabs-run-ldap-wrapper-2"
+      id="tabs-run-ldap-wrapper-3"
       
     />
-    <label for="tabs-run-ldap-wrapper-2" class="gdoc-tabs__label">
+    <label for="tabs-run-ldap-wrapper-3" class="gdoc-tabs__label">
       Portainer
     </label>
     <div class="gdoc-markdown--nested gdoc-tabs__content">
@@ -1207,123 +1340,6 @@ Map this folder to provide persistent storage for your users/groups (and their s
       type="radio"
       class="gdoc-tabs__control hidden"
       name="tabs-run-ldap-wrapper"
-      id="tabs-run-ldap-wrapper-3"
-      
-    />
-    <label for="tabs-run-ldap-wrapper-3" class="gdoc-tabs__label">
-      Synology DSM Docker
-    </label>
-    <div class="gdoc-markdown--nested gdoc-tabs__content">
-      <div class="gdoc-page__anchorwrap">
-    <h2 id="install-container-on-a-synology-nas">
-        Install container on a Synology NAS
-        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/#install-container-on-a-synology-nas" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Install container on a Synology NAS" aria-label="Anchor to: Install container on a Synology NAS" href="#install-container-on-a-synology-nas">
-            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-        </a>
-    </h2>
-</div>
-<ol>
-<li>
-<p>Open Docker &gt; Registry to download the Image</p>
-</li>
-<li>
-<p>Open Docker &gt; Image to launch a new container</p>
-</li>
-<li>
-<p>Configure and start it
-<img
-  src="../syno_docker_add.png"
-  alt="grafik"
-  
-/></p>
-<ul>
-<li>
-<p>Use &ldquo;bridge&rdquo; as your network</p>
-</li>
-<li>
-<p>Give your Container a name and enable auto-restart</p>
-</li>
-<li>
-<p>In DSM 7 the environment variables are found in &ldquo;Advanced Settings&rdquo;:</p>
-<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">TZ: <span class="s2">&#34;Europe/Zurich&#34;</span> <span class="c1"># optional</span>
-</span></span><span class="line"><span class="cl">AZURE_TENANTID: <span class="s2">&#34;0def2345-ff01-56789-1234-ab9d6dda1e1e&#34;</span>
-</span></span><span class="line"><span class="cl">AZURE_APP_ID: <span class="s2">&#34;abc12345-ab01-0000-1111-a1e1eab9d6dd&#34;</span>
-</span></span><span class="line"><span class="cl">AZURE_APP_SECRET: <span class="s2">&#34;iamasecret~yep-reallyreallysecret&#34;</span>
-</span></span><span class="line"><span class="cl">LDAP_DOMAIN: <span class="s2">&#34;example.com&#34;</span>
-</span></span><span class="line"><span class="cl">LDAP_BASEDN: <span class="s2">&#34;dc=example,dc=com&#34;</span>
-</span></span><span class="line"><span class="cl">LDAP_BINDUSER: <span class="s2">&#34;ldapsearch|*secretldapsearch123*||root|*secretroot*&#34;</span>
-</span></span><span class="line"><span class="cl">LDAP_DEBUG: <span class="s2">&#34;false&#34;</span> <span class="c1"># set this to true for more logs</span>
-</span></span><span class="line"><span class="cl">GRAPH_IGNORE_MFA_ERRORS: <span class="s2">&#34;false&#34;</span> <span class="c1"># set this to true to bypass MFA</span>
-</span></span><span class="line"><span class="cl">DSM7: <span class="s2">&#34;true&#34;</span> <span class="c1"># set this to false if you are running DSM 6 or lower</span>
-</span></span></code></pre></div><p>Make sure you double check your Azure values and define at least 1 binduser. The binduser does not need to exist in your AzureAD.
-Don&rsquo;t forget to replace example.com with your domain.</p>
-</li>
-<li>
-<p>Set local Port 389 to the Container Port 13389.<br>
-If you receive the error <code>Local port 389 conflicts with other ports used by other services</code>: Please make sure that Synology Directory Service and Synology LDAP Server are not installed - they also use this port.</p>
-</li>
-<li>
-<p>Add a local folder like <code>docker/ldap</code> to the mount path <code>/app/.cache</code> in volume settings.<br>
-If you skip this step, your data will not be stored permanently.</p>
-</li>
-</ul>
-</li>
-</ol>
-<div class="gdoc-page__anchorwrap">
-    <h2 id="update-existing-docker-container-on-a-synology-nas">
-        Update existing Docker container on a Synology NAS
-        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/#update-existing-docker-container-on-a-synology-nas" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Update existing Docker container on a Synology NAS" aria-label="Anchor to: Update existing Docker container on a Synology NAS" href="#update-existing-docker-container-on-a-synology-nas">
-            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-        </a>
-    </h2>
-</div>
-<ol>
-<li>
-<p>Redownload the latest version
-<img
-  src="../syno_docker_download.png"
-  alt="grafik"
-  
-/></p>
-</li>
-<li>
-<p>Stop your container</p>
-</li>
-<li>
-<p>Clear your container
-<img
-  src="../syno_docker_clear.png"
-  alt="grafik"
-  
-/></p>
-</li>
-<li>
-<p>Check the <a
-  class="gdoc-markdown__link"
-  href="CHANGELOG.md"
->changelog</a> file (for breaking changes) and apply new settings</p>
-</li>
-<li>
-<p>Start your container</p>
-</li>
-<li>
-<p>Check the logs for (new) errors (right click on container and choose &ldquo;Details&rdquo;)
-<img
-  src="../syno_docker_log.png"
-  alt="grafik"
-  
-/></p>
-</li>
-<li>
-<p>Before accessing files via network/samba, each user needs to login in the dsm-web-gui or any other tool directly connected to the ldap server. It&rsquo;s the same after a password change, because the password-hash for samba is only set after a successfull login.</p>
-</li>
-</ol>
-
-    </div>
-    <input
-      type="radio"
-      class="gdoc-tabs__control hidden"
-      name="tabs-run-ldap-wrapper"
       id="tabs-run-ldap-wrapper-4"
       
     />
@@ -1344,10 +1360,16 @@ You can either set environment variables or create an .env file in the root dire
 </span></span><span class="line"><span class="cl"><span class="nv">LDAP_DOMAIN</span><span class="o">=</span><span class="s2">&#34;example.com&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="nv">LDAP_BASEDN</span><span class="o">=</span><span class="s2">&#34;dc=example,dc=com&#34;</span>
 </span></span><span class="line"><span class="cl"><span class="nv">LDAP_BINDUSER</span><span class="o">=</span><span class="s2">&#34;root|mystrongpw||ldapsearch|ldapsearchpw123&#34;</span>
-</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Shell" data-lang="Shell"><span class="line"><span class="cl"><span class="c1"># run with npm</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-Shell" data-lang="Shell"><span class="line"><span class="cl"><span class="c1"># clone repo and open folder</span>
+</span></span><span class="line"><span class="cl">git clone https://github.com/ahaenggli/AzureAD-LDAP-wrapper.git
+</span></span><span class="line"><span class="cl"><span class="nb">cd</span> AzureAD-LDAP-wrapper
+</span></span><span class="line"><span class="cl"><span class="c1"># install 3rd party libraries</span>
+</span></span><span class="line"><span class="cl">npm install
+</span></span><span class="line"><span class="cl"><span class="c1"># use a .env file or set your env vars</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># run with npm</span>
 </span></span><span class="line"><span class="cl">npm start
-</span></span><span class="line"><span class="cl"><span class="c1"># run directly with node (&#34;--openssl-legacy-provider&#34; is needed)</span>
-</span></span><span class="line"><span class="cl">node --openssl-legacy-provider server.js
+</span></span><span class="line"><span class="cl"><span class="c1"># or start it with node (&#34;--openssl-legacy-provider&#34; is needed)</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># node --openssl-legacy-provider index.js</span>
 </span></span></code></pre></div>
     </div>
 </div>
@@ -1707,8 +1729,11 @@ You can either set environment variables or create an .env file in the root dire
     <div>
       <section class="flex flex-wrap align-center">
         <span class="gdoc-footer__item gdoc-footer__item--row">
-          Built with <a href="https://gohugo.io/" class="gdoc-footer__link">Hugo</a> and <svg class="gdoc-icon gdoc_heart"><use xlink:href="#gdoc_heart"></use></svg>
-
+          Build with <a href="https://gohugo.io/" class="gdoc-footer__link">Hugo</a> and <svg class="gdoc-icon gdoc_heart"><use xlink:href="#gdoc_heart"></use></svg> <br> <a href="https://github.com/ahaenggli/AzureAD-LDAP-wrapper" target="_blank">
+  <img src="https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social" alt="GitHub release (latest by date)">
+</a> <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px">
+</a>
         </span>
         
         

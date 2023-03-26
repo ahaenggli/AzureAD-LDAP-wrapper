@@ -45,6 +45,10 @@ An Azure AD user account. If you don’t already have one, you can create an acc
 <meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/" />
 
 <meta property="article:section" content="Installation" />
+    <meta
+      property="article:modified_time"
+      content="2023-03-05T17:39:48+01:00"
+    />
 
 
   <meta name="twitter:card" content="summary" />
@@ -62,7 +66,7 @@ An Azure AD user account. If you don’t already have one, you can create an acc
       "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/",
       "headline": "1.1 Create an AzureAD application",
       "description": "Prerequisites Register an application with Azure AD and create a service principal Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites To register an application in your Azure AD tenant, you need:\nAn Azure AD user account. If you don’t already have one, you can create an account for free. Register an application with Azure AD and create a service principal Register a new application in your aad-portal.",
-      "wordCount" : "247",
+      "wordCount" : "268",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -73,7 +77,7 @@ An Azure AD user account. If you don’t already have one, you can create an acc
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "0001-01-01T00:00:00.00Z",
+      "dateModified": "2023-03-05T17:39:48.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "AzureAD-LDAP-wrapper",
@@ -209,6 +213,33 @@ An Azure AD user account. If you don’t already have one, you can create an acc
   
   
 
+  
+    
+      
+      
+      
+
+      
+      
+
+      
+
+      
+        <span>
+          <a
+            href="
+              https://www.buymeacoffee.com/ahaenggli
+            "
+            class="gdoc-header__link"
+          >
+            <svg class="gdoc-icon none">
+              <title>\&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; style=&#34;height: 20px; width: 20px;&#34; alt=&#34;Buy Me A Coffee&#34;&gt;</title>
+              <use xlink:href="#none"></use>
+            </svg>
+          </a>
+        </span>
+      
+    
   
     
       
@@ -1164,6 +1195,15 @@ For type <code>Delegated</code> allow <code>User.Read</code>.<br>
 /></p>
 </li>
 <li>
+<p>Click &ldquo;Grant admin consent&rdquo;. The status should be &ldquo;Granted for&rdquo;.<br>
+If you see en entry with &ldquo;Not granted for&rdquo;, click again:
+<img
+  src="../azure_permissions_notgranted.png"
+  alt="Azure wrong permissions"
+  
+/></p>
+</li>
+<li>
 <p>Set <a
   class="gdoc-markdown__link"
   href="https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Username-Password-Authentication#application-registration"
@@ -1552,8 +1592,11 @@ For type <code>Delegated</code> allow <code>User.Read</code>.<br>
     <div>
       <section class="flex flex-wrap align-center">
         <span class="gdoc-footer__item gdoc-footer__item--row">
-          Built with <a href="https://gohugo.io/" class="gdoc-footer__link">Hugo</a> and <svg class="gdoc-icon gdoc_heart"><use xlink:href="#gdoc_heart"></use></svg>
-
+          Build with <a href="https://gohugo.io/" class="gdoc-footer__link">Hugo</a> and <svg class="gdoc-icon gdoc_heart"><use xlink:href="#gdoc_heart"></use></svg> <br> <a href="https://github.com/ahaenggli/AzureAD-LDAP-wrapper" target="_blank">
+  <img src="https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social" alt="GitHub release (latest by date)">
+</a> <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px">
+</a>
         </span>
         
         

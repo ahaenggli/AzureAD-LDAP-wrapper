@@ -12,8 +12,8 @@
 <meta name="generator" content="Hugo 0.111.1">
 
 
-  <meta name="description" content="The following is a list of all possible settings. The LDAP wrapper is intended to be used with Docker. The settings must therefore be made using environment variables.
-AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET GRAPH_FILTER_USERS GRAPH_FILTER_GROUPS (optional) GRAPH_IGNORE_MFA_ERRORS (default: false) LDAP_DOMAIN LDAP_BASEDN LDAP_SAMBADOMAINNAME (optional) LDAP_BINDUSER (optional without SMB) LDAP_ANONYMOUSBIND (default: domain) LDAP_DEBUG (default: false) LDAP_PORT (default: 13389) LDAP_SECURE_ATTRIBUTES (optional) LDAP_SENSITIVE_ATTRIBUTES (optional) LDAP_ALLOWCACHEDLOGINONFAILURE (default: true) LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity) LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7) LDAPS_CERTIFICATE LDAPS_KEY LDAP_SYNC_TIME SAMBA_BASESID (optional) DSM7 LDAP_SAMBA_USEAZURESID (default: true) HTTPS_PROXY or HTTP_PROXY (optional) AZURE_APP_ID Your Application ID from azure (see #4)" />
+  <meta name="description" content="The following is a list of all possible settings. The LDAP wrapper is intended to be used with Docker. Therefore, the settings must be made using environment variables.
+Azure Settings AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET AZURE_ENDPOINT (optional) Graph API Settings GRAPH_ENDPOINT (optional) GRAPH_API_VERSION (optional) GRAPH_FILTER_USERS (optional) GRAPH_FILTER_GROUPS (optional) GRAPH_IGNORE_MFA_ERRORS (default: false) LDAP Settings LDAP_DOMAIN LDAP_BASEDN LDAP_SAMBADOMAINNAME (optional) LDAP_BINDUSER LDAP_ANONYMOUSBIND (default: domain) LDAP_DEBUG (default: false) LDAP_PORT (default: 13389) LDAP_SECURE_ATTRIBUTES (optional) LDAP_SENSITIVE_ATTRIBUTES (optional) LDAP_ALLOWCACHEDLOGINONFAILURE (default: true) LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity) LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7) LDAP_SYNC_TIME (default: 30 minutes) LDAPS LDAPS_CERTIFICATE LDAPS_KEY Samba SAMBA_BASESID (optional) LDAP_SAMBA_USEAZURESID (default: true) misc DSM7 HTTPS_PROXY or HTTP_PROXY (optional) Azure Settings AZURE_APP_ID Your Application ID from azure (see #4)" />
 
     <title>Settings | AzureAD-LDAP-wrapper</title>
 
@@ -39,18 +39,22 @@ AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET GRAPH_FILTER_USERS GRAPH_FILTER_GRO
     content="Settings"
   />
   <meta property="og:site_name" content="AzureAD-LDAP-wrapper" />
-  <meta property="og:description" content="The following is a list of all possible settings. The LDAP wrapper is intended to be used with Docker. The settings must therefore be made using environment variables.
-AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET GRAPH_FILTER_USERS GRAPH_FILTER_GROUPS (optional) GRAPH_IGNORE_MFA_ERRORS (default: false) LDAP_DOMAIN LDAP_BASEDN LDAP_SAMBADOMAINNAME (optional) LDAP_BINDUSER (optional without SMB) LDAP_ANONYMOUSBIND (default: domain) LDAP_DEBUG (default: false) LDAP_PORT (default: 13389) LDAP_SECURE_ATTRIBUTES (optional) LDAP_SENSITIVE_ATTRIBUTES (optional) LDAP_ALLOWCACHEDLOGINONFAILURE (default: true) LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity) LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7) LDAPS_CERTIFICATE LDAPS_KEY LDAP_SYNC_TIME SAMBA_BASESID (optional) DSM7 LDAP_SAMBA_USEAZURESID (default: true) HTTPS_PROXY or HTTP_PROXY (optional) AZURE_APP_ID Your Application ID from azure (see #4)" />
+  <meta property="og:description" content="The following is a list of all possible settings. The LDAP wrapper is intended to be used with Docker. Therefore, the settings must be made using environment variables.
+Azure Settings AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET AZURE_ENDPOINT (optional) Graph API Settings GRAPH_ENDPOINT (optional) GRAPH_API_VERSION (optional) GRAPH_FILTER_USERS (optional) GRAPH_FILTER_GROUPS (optional) GRAPH_IGNORE_MFA_ERRORS (default: false) LDAP Settings LDAP_DOMAIN LDAP_BASEDN LDAP_SAMBADOMAINNAME (optional) LDAP_BINDUSER LDAP_ANONYMOUSBIND (default: domain) LDAP_DEBUG (default: false) LDAP_PORT (default: 13389) LDAP_SECURE_ATTRIBUTES (optional) LDAP_SENSITIVE_ATTRIBUTES (optional) LDAP_ALLOWCACHEDLOGINONFAILURE (default: true) LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity) LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7) LDAP_SYNC_TIME (default: 30 minutes) LDAPS LDAPS_CERTIFICATE LDAPS_KEY Samba SAMBA_BASESID (optional) LDAP_SAMBA_USEAZURESID (default: true) misc DSM7 HTTPS_PROXY or HTTP_PROXY (optional) Azure Settings AZURE_APP_ID Your Application ID from azure (see #4)" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/" />
 
 <meta property="article:section" content="Configuration" />
+    <meta
+      property="article:modified_time"
+      content="2023-03-26T13:44:37+02:00"
+    />
 
 
   <meta name="twitter:card" content="summary" />
 <meta name="twitter:title" content="Settings" />
-  <meta name="twitter:description" content="The following is a list of all possible settings. The LDAP wrapper is intended to be used with Docker. The settings must therefore be made using environment variables.
-AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET GRAPH_FILTER_USERS GRAPH_FILTER_GROUPS (optional) GRAPH_IGNORE_MFA_ERRORS (default: false) LDAP_DOMAIN LDAP_BASEDN LDAP_SAMBADOMAINNAME (optional) LDAP_BINDUSER (optional without SMB) LDAP_ANONYMOUSBIND (default: domain) LDAP_DEBUG (default: false) LDAP_PORT (default: 13389) LDAP_SECURE_ATTRIBUTES (optional) LDAP_SENSITIVE_ATTRIBUTES (optional) LDAP_ALLOWCACHEDLOGINONFAILURE (default: true) LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity) LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7) LDAPS_CERTIFICATE LDAPS_KEY LDAP_SYNC_TIME SAMBA_BASESID (optional) DSM7 LDAP_SAMBA_USEAZURESID (default: true) HTTPS_PROXY or HTTP_PROXY (optional) AZURE_APP_ID Your Application ID from azure (see #4)" />
+  <meta name="twitter:description" content="The following is a list of all possible settings. The LDAP wrapper is intended to be used with Docker. Therefore, the settings must be made using environment variables.
+Azure Settings AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET AZURE_ENDPOINT (optional) Graph API Settings GRAPH_ENDPOINT (optional) GRAPH_API_VERSION (optional) GRAPH_FILTER_USERS (optional) GRAPH_FILTER_GROUPS (optional) GRAPH_IGNORE_MFA_ERRORS (default: false) LDAP Settings LDAP_DOMAIN LDAP_BASEDN LDAP_SAMBADOMAINNAME (optional) LDAP_BINDUSER LDAP_ANONYMOUSBIND (default: domain) LDAP_DEBUG (default: false) LDAP_PORT (default: 13389) LDAP_SECURE_ATTRIBUTES (optional) LDAP_SENSITIVE_ATTRIBUTES (optional) LDAP_ALLOWCACHEDLOGINONFAILURE (default: true) LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity) LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7) LDAP_SYNC_TIME (default: 30 minutes) LDAPS LDAPS_CERTIFICATE LDAPS_KEY Samba SAMBA_BASESID (optional) LDAP_SAMBA_USEAZURESID (default: true) misc DSM7 HTTPS_PROXY or HTTP_PROXY (optional) Azure Settings AZURE_APP_ID Your Application ID from azure (see #4)" />
 
 
   <script type="application/ld+json">
@@ -61,8 +65,8 @@ AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET GRAPH_FILTER_USERS GRAPH_FILTER_GRO
       "name": "Settings",
       "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/",
       "headline": "Settings",
-      "description": "The following is a list of all possible settings. The LDAP wrapper is intended to be used with Docker. The settings must therefore be made using environment variables.\nAZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET GRAPH_FILTER_USERS GRAPH_FILTER_GROUPS (optional) GRAPH_IGNORE_MFA_ERRORS (default: false) LDAP_DOMAIN LDAP_BASEDN LDAP_SAMBADOMAINNAME (optional) LDAP_BINDUSER (optional without SMB) LDAP_ANONYMOUSBIND (default: domain) LDAP_DEBUG (default: false) LDAP_PORT (default: 13389) LDAP_SECURE_ATTRIBUTES (optional) LDAP_SENSITIVE_ATTRIBUTES (optional) LDAP_ALLOWCACHEDLOGINONFAILURE (default: true) LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity) LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7) LDAPS_CERTIFICATE LDAPS_KEY LDAP_SYNC_TIME SAMBA_BASESID (optional) DSM7 LDAP_SAMBA_USEAZURESID (default: true) HTTPS_PROXY or HTTP_PROXY (optional) AZURE_APP_ID Your Application ID from azure (see #4)",
-      "wordCount" : "874",
+      "description": "The following is a list of all possible settings. The LDAP wrapper is intended to be used with Docker. Therefore, the settings must be made using environment variables.\nAzure Settings AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET AZURE_ENDPOINT (optional) Graph API Settings GRAPH_ENDPOINT (optional) GRAPH_API_VERSION (optional) GRAPH_FILTER_USERS (optional) GRAPH_FILTER_GROUPS (optional) GRAPH_IGNORE_MFA_ERRORS (default: false) LDAP Settings LDAP_DOMAIN LDAP_BASEDN LDAP_SAMBADOMAINNAME (optional) LDAP_BINDUSER LDAP_ANONYMOUSBIND (default: domain) LDAP_DEBUG (default: false) LDAP_PORT (default: 13389) LDAP_SECURE_ATTRIBUTES (optional) LDAP_SENSITIVE_ATTRIBUTES (optional) LDAP_ALLOWCACHEDLOGINONFAILURE (default: true) LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity) LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7) LDAP_SYNC_TIME (default: 30 minutes) LDAPS LDAPS_CERTIFICATE LDAPS_KEY Samba SAMBA_BASESID (optional) LDAP_SAMBA_USEAZURESID (default: true) misc DSM7 HTTPS_PROXY or HTTP_PROXY (optional) Azure Settings AZURE_APP_ID Your Application ID from azure (see #4)",
+      "wordCount" : "975",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -73,7 +77,7 @@ AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET GRAPH_FILTER_USERS GRAPH_FILTER_GRO
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "0001-01-01T00:00:00.00Z",
+      "dateModified": "2023-03-26T13:44:37.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "AzureAD-LDAP-wrapper",
@@ -209,6 +213,33 @@ AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET GRAPH_FILTER_USERS GRAPH_FILTER_GRO
   
   
 
+  
+    
+      
+      
+      
+
+      
+      
+
+      
+
+      
+        <span>
+          <a
+            href="
+              https://www.buymeacoffee.com/ahaenggli
+            "
+            class="gdoc-header__link"
+          >
+            <svg class="gdoc-icon none">
+              <title>\&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; style=&#34;height: 20px; width: 20px;&#34; alt=&#34;Buy Me A Coffee&#34;&gt;</title>
+              <use xlink:href="#none"></use>
+            </svg>
+          </a>
+        </span>
+      
+    
   
     
       
@@ -1089,22 +1120,32 @@ AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET GRAPH_FILTER_USERS GRAPH_FILTER_GRO
     class="gdoc-markdown gdoc-markdown__align--left"
   >
     <h1>Settings</h1>
-    <p>The following is a list of all possible settings.
-The LDAP wrapper is intended to be used with Docker. The settings must therefore be made using environment variables.</p>
+    <p>The following is a list of all possible settings. The LDAP wrapper is intended to be used with Docker. Therefore, the settings must be made using environment variables.</p>
 <div class="gdoc-toc gdoc-toc__level--3">
       <nav id="TableOfContents"><ul>
-        <li>
+        <li><a href="#azure-settings">Azure Settings</a>
           <ul>
             <li><a href="#azure_app_id">AZURE_APP_ID</a></li>
             <li><a href="#azure_tenantid">AZURE_TENANTID</a></li>
             <li><a href="#azure_app_secret">AZURE_APP_SECRET</a></li>
-            <li><a href="#graph_filter_users">GRAPH_FILTER_USERS</a></li>
+            <li><a href="#azure_endpoint-optional">AZURE_ENDPOINT (optional)</a></li>
+          </ul>
+        </li>
+        <li><a href="#graph-api-settings">Graph API Settings</a>
+          <ul>
+            <li><a href="#graph_endpoint-optional">GRAPH_ENDPOINT (optional)</a></li>
+            <li><a href="#graph_api_version-optional">GRAPH_API_VERSION (optional)</a></li>
+            <li><a href="#graph_filter_users-optional">GRAPH_FILTER_USERS (optional)</a></li>
             <li><a href="#graph_filter_groups-optional">GRAPH_FILTER_GROUPS (optional)</a></li>
             <li><a href="#graph_ignore_mfa_errors-default-false">GRAPH_IGNORE_MFA_ERRORS (default: false)</a></li>
+          </ul>
+        </li>
+        <li><a href="#ldap-settings">LDAP Settings</a>
+          <ul>
             <li><a href="#ldap_domain">LDAP_DOMAIN</a></li>
             <li><a href="#ldap_basedn">LDAP_BASEDN</a></li>
             <li><a href="#ldap_sambadomainname-optional">LDAP_SAMBADOMAINNAME (optional)</a></li>
-            <li><a href="#ldap_binduser-optional-without-smb">LDAP_BINDUSER (optional without SMB)</a></li>
+            <li><a href="#ldap_binduser">LDAP_BINDUSER</a></li>
             <li><a href="#ldap_anonymousbind-default-domain">LDAP_ANONYMOUSBIND (default: domain)</a></li>
             <li><a href="#ldap_debug-default-false">LDAP_DEBUG (default: false)</a></li>
             <li><a href="#ldap_port-default-13389">LDAP_PORT (default: 13389)</a></li>
@@ -1113,18 +1154,38 @@ The LDAP wrapper is intended to be used with Docker. The settings must therefore
             <li><a href="#ldap_allowcachedloginonfailure-default-true">LDAP_ALLOWCACHEDLOGINONFAILURE (default: true)</a></li>
             <li><a href="#ldap_sambantpwd_maxcachetime-optional-default-infinity">LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity)</a></li>
             <li><a href="#ldap_daystokeepdeletedusers-optional-default-7">LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7)</a></li>
+            <li><a href="#ldap_sync_time-default-30-minutes">LDAP_SYNC_TIME (default: 30 minutes)</a></li>
+          </ul>
+        </li>
+        <li><a href="#ldaps">LDAPS</a>
+          <ul>
             <li><a href="#ldaps_certificate">LDAPS_CERTIFICATE</a></li>
             <li><a href="#ldaps_key">LDAPS_KEY</a></li>
-            <li><a href="#ldap_sync_time">LDAP_SYNC_TIME</a></li>
+          </ul>
+        </li>
+        <li><a href="#samba">Samba</a>
+          <ul>
             <li><a href="#samba_basesid-optional">SAMBA_BASESID (optional)</a></li>
-            <li><a href="#dsm7">DSM7</a></li>
             <li><a href="#ldap_samba_useazuresid-default-true">LDAP_SAMBA_USEAZURESID (default: true)</a></li>
+          </ul>
+        </li>
+        <li><a href="#misc">misc</a>
+          <ul>
+            <li><a href="#dsm7">DSM7</a></li>
             <li><a href="#https_proxy-or-http_proxy-optional">HTTPS_PROXY or HTTP_PROXY (optional)</a></li>
           </ul>
         </li>
       </ul></nav>
       <hr />
     </div>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="azure-settings">
+        Azure Settings
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#azure-settings" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Azure Settings" aria-label="Anchor to: Azure Settings" href="#azure-settings">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
 <div class="gdoc-page__anchorwrap">
     <h3 id="azure_app_id">
         AZURE_APP_ID
@@ -1162,9 +1223,50 @@ The LDAP wrapper is intended to be used with Docker. The settings must therefore
   href="https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret"
 >azure</a></p>
 <div class="gdoc-page__anchorwrap">
-    <h3 id="graph_filter_users">
-        GRAPH_FILTER_USERS
-        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#graph_filter_users" class="gdoc-page__anchor clip flex align-center" title="Anchor to: GRAPH_FILTER_USERS" aria-label="Anchor to: GRAPH_FILTER_USERS" href="#graph_filter_users">
+    <h3 id="azure_endpoint-optional">
+        AZURE_ENDPOINT (optional)
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#azure_endpoint-optional" class="gdoc-page__anchor clip flex align-center" title="Anchor to: AZURE_ENDPOINT (optional)" aria-label="Anchor to: AZURE_ENDPOINT (optional)" href="#azure_endpoint-optional">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h3>
+</div>
+<p>By default, the Azure AD global service endpoint (<a
+  class="gdoc-markdown__link"
+  href="https://login.microsoftonline.com"
+>https://login.microsoftonline.com</a>) is used. If you prefer to use a different endpoint, you can specify it here.</p>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="graph-api-settings">
+        Graph API Settings
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#graph-api-settings" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Graph API Settings" aria-label="Anchor to: Graph API Settings" href="#graph-api-settings">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
+<div class="gdoc-page__anchorwrap">
+    <h3 id="graph_endpoint-optional">
+        GRAPH_ENDPOINT (optional)
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#graph_endpoint-optional" class="gdoc-page__anchor clip flex align-center" title="Anchor to: GRAPH_ENDPOINT (optional)" aria-label="Anchor to: GRAPH_ENDPOINT (optional)" href="#graph_endpoint-optional">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h3>
+</div>
+<p>By default, the Microsoft Graph global service endpoint (<a
+  class="gdoc-markdown__link"
+  href="https://graph.microsoft.com"
+>https://graph.microsoft.com</a>) is used. If you prefer to use a different endpoint, you can specify it here.</p>
+<div class="gdoc-page__anchorwrap">
+    <h3 id="graph_api_version-optional">
+        GRAPH_API_VERSION (optional)
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#graph_api_version-optional" class="gdoc-page__anchor clip flex align-center" title="Anchor to: GRAPH_API_VERSION (optional)" aria-label="Anchor to: GRAPH_API_VERSION (optional)" href="#graph_api_version-optional">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h3>
+</div>
+<p>By default, the v1.0 API version is used for the Microsoft Graph endpoint. To use the beta API version instead, specify it here.</p>
+<div class="gdoc-page__anchorwrap">
+    <h3 id="graph_filter_users-optional">
+        GRAPH_FILTER_USERS (optional)
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#graph_filter_users-optional" class="gdoc-page__anchor clip flex align-center" title="Anchor to: GRAPH_FILTER_USERS (optional)" aria-label="Anchor to: GRAPH_FILTER_USERS (optional)" href="#graph_filter_users-optional">
             <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
         </a>
     </h3>
@@ -1173,7 +1275,7 @@ The LDAP wrapper is intended to be used with Docker. The settings must therefore
   class="gdoc-markdown__link"
   href="https://docs.microsoft.com/en-us/graph/query-parameters#filter-parameter"
 >$filter</a> query parameter.<br>
-The default filter is set to <code>userType eq 'Member'</code>. That&rsquo;s why external users (guests) will not be synced automatically by default.</p>
+The default filter is set to <code>userType eq 'Member'</code>. That&rsquo;s why external users (guests) will not be synced automatically by default in a Docker container.</p>
 <div class="gdoc-page__anchorwrap">
     <h3 id="graph_filter_groups-optional">
         GRAPH_FILTER_GROUPS (optional)
@@ -1185,7 +1287,7 @@ The default filter is set to <code>userType eq 'Member'</code>. That&rsquo;s why
 <p>This allows you to filter the groups in the graph api using the <a
   class="gdoc-markdown__link"
   href="https://docs.microsoft.com/en-us/graph/query-parameters#filter-parameter"
->$filter</a> query parameter. The default filter is empty, so all groups are synchronized. For example, you can set it to <code>securityEnabled eq true</code> so that only security groups are synchronized and not every single Teams group. More properties to filter are documented <a
+>$filter</a> query parameter. The default filter is set in the Docker container to <code>securityEnabled eq true</code>, so only security groups are synchronized and not every single Teams group. More properties to filter are documented <a
   class="gdoc-markdown__link"
   href="https://docs.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties"
 >here</a>.</p>
@@ -1199,6 +1301,14 @@ The default filter is set to <code>userType eq 'Member'</code>. That&rsquo;s why
 </div>
 <p>When set to true, some MFA/2FA-related error codes are treated as successful logins. So, it allows logins despite required MFA/2FA. MFA/2FA is thus bypassed.</p>
 <p>Warning: This feature is only experimental and may not work in all cases. Please open an issue if you encounter any problems.</p>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="ldap-settings">
+        LDAP Settings
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#ldap-settings" class="gdoc-page__anchor clip flex align-center" title="Anchor to: LDAP Settings" aria-label="Anchor to: LDAP Settings" href="#ldap-settings">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
 <div class="gdoc-page__anchorwrap">
     <h3 id="ldap_domain">
         LDAP_DOMAIN
@@ -1225,11 +1335,11 @@ The default filter is set to <code>userType eq 'Member'</code>. That&rsquo;s why
         </a>
     </h3>
 </div>
-<p>Default is the first part of your baseDN, for <code>dc=example,dc=net</code> it would be <code>EXAMPLE</code>. For any other value, just set it manually with this env ar.</p>
+<p>Default is the first part of your baseDN, for <code>dc=example,dc=net</code> it would be <code>EXAMPLE</code>. For any other value, just set it manually with this env var.</p>
 <div class="gdoc-page__anchorwrap">
-    <h3 id="ldap_binduser-optional-without-smb">
-        LDAP_BINDUSER (optional without SMB)
-        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#ldap_binduser-optional-without-smb" class="gdoc-page__anchor clip flex align-center" title="Anchor to: LDAP_BINDUSER (optional without SMB)" aria-label="Anchor to: LDAP_BINDUSER (optional without SMB)" href="#ldap_binduser-optional-without-smb">
+    <h3 id="ldap_binduser">
+        LDAP_BINDUSER
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#ldap_binduser" class="gdoc-page__anchor clip flex align-center" title="Anchor to: LDAP_BINDUSER" aria-label="Anchor to: LDAP_BINDUSER" href="#ldap_binduser">
             <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
         </a>
     </h3>
@@ -1325,6 +1435,23 @@ If this time limit is set to 0, no samba access is possible and therefore no pas
 <p>Defines the number of days after deletion in Azure after which an entry is also removed in the wrapper. By default, te deletion in the wrapper takes place about 7 days later. The reason for the  delay is simple: A user could also no longer be in the wrapper due to a misconfigured filter (env var). But just because of such an error, users (and their cached password hashes) should not be deleted immediately.
 However, you can set the value to 0 to delete a user/group immediately. Use a negative value like -1 to keep everything in the wrapper and not delete anything.</p>
 <div class="gdoc-page__anchorwrap">
+    <h3 id="ldap_sync_time-default-30-minutes">
+        LDAP_SYNC_TIME (default: 30 minutes)
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#ldap_sync_time-default-30-minutes" class="gdoc-page__anchor clip flex align-center" title="Anchor to: LDAP_SYNC_TIME (default: 30 minutes)" aria-label="Anchor to: LDAP_SYNC_TIME (default: 30 minutes)" href="#ldap_sync_time-default-30-minutes">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h3>
+</div>
+<p>The interval in minutes for fetching users/groups from azure. The default is 30 minutes.</p>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="ldaps">
+        LDAPS
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#ldaps" class="gdoc-page__anchor clip flex align-center" title="Anchor to: LDAPS" aria-label="Anchor to: LDAPS" href="#ldaps">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
+<div class="gdoc-page__anchorwrap">
     <h3 id="ldaps_certificate">
         LDAPS_CERTIFICATE
         <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#ldaps_certificate" class="gdoc-page__anchor clip flex align-center" title="Anchor to: LDAPS_CERTIFICATE" aria-label="Anchor to: LDAPS_CERTIFICATE" href="#ldaps_certificate">
@@ -1347,14 +1474,13 @@ You may also need to set <code>LDAP_PORT</code> to 636.</p>
 You also have to set <code>LDAPS_CERTIFICATE</code> to run LDAP over SSL.
 You may also need to set <code>LDAP_PORT</code> to 636.</p>
 <div class="gdoc-page__anchorwrap">
-    <h3 id="ldap_sync_time">
-        LDAP_SYNC_TIME
-        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#ldap_sync_time" class="gdoc-page__anchor clip flex align-center" title="Anchor to: LDAP_SYNC_TIME" aria-label="Anchor to: LDAP_SYNC_TIME" href="#ldap_sync_time">
+    <h2 id="samba">
+        Samba
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#samba" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Samba" aria-label="Anchor to: Samba" href="#samba">
             <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
         </a>
-    </h3>
+    </h2>
 </div>
-<p>The interval in minutes for fetching users/groups from azure. The default is 30 minutes.</p>
 <div class="gdoc-page__anchorwrap">
     <h3 id="samba_basesid-optional">
         SAMBA_BASESID (optional)
@@ -1364,6 +1490,23 @@ You may also need to set <code>LDAP_PORT</code> to 636.</p>
     </h3>
 </div>
 <p>Base SID for all sambaSIDs generated for sambaDomainName, groups and users. Default is <code>S-1-5-21-2475342291-1480345137-508597502</code>.</p>
+<div class="gdoc-page__anchorwrap">
+    <h3 id="ldap_samba_useazuresid-default-true">
+        LDAP_SAMBA_USEAZURESID (default: true)
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#ldap_samba_useazuresid-default-true" class="gdoc-page__anchor clip flex align-center" title="Anchor to: LDAP_SAMBA_USEAZURESID (default: true)" aria-label="Anchor to: LDAP_SAMBA_USEAZURESID (default: true)" href="#ldap_samba_useazuresid-default-true">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h3>
+</div>
+<p>Use the calculated SIDs for users/groups from AzureAD (GUID/ObjectId) instead of a &ldquo;randomly&rdquo; generated one. You can enable the old handling by setting the env var <code>false</code>.</p>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="misc">
+        misc
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#misc" class="gdoc-page__anchor clip flex align-center" title="Anchor to: misc" aria-label="Anchor to: misc" href="#misc">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
 <div class="gdoc-page__anchorwrap">
     <h3 id="dsm7">
         DSM7
@@ -1375,15 +1518,6 @@ You may also need to set <code>LDAP_PORT</code> to 636.</p>
 <p>If set to <code>true</code> the ldap attributes uidNumber and gidNumber are converted from strings to numbers.
 Somehow this seems to be necessary to work with DSM 7.0. The default value is <code>false</code>.</p>
 <div class="gdoc-page__anchorwrap">
-    <h3 id="ldap_samba_useazuresid-default-true">
-        LDAP_SAMBA_USEAZURESID (default: true)
-        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#ldap_samba_useazuresid-default-true" class="gdoc-page__anchor clip flex align-center" title="Anchor to: LDAP_SAMBA_USEAZURESID (default: true)" aria-label="Anchor to: LDAP_SAMBA_USEAZURESID (default: true)" href="#ldap_samba_useazuresid-default-true">
-            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-        </a>
-    </h3>
-</div>
-<p>Use the calculated SIDs for users/groups from AzureAD (GUID/ObjectId) instead of a &ldquo;randomly&rdquo; generated one. You can enable the old handling by setting the env var <code>false</code>.</p>
-<div class="gdoc-page__anchorwrap">
     <h3 id="https_proxy-or-http_proxy-optional">
         HTTPS_PROXY or HTTP_PROXY (optional)
         <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/#https_proxy-or-http_proxy-optional" class="gdoc-page__anchor clip flex align-center" title="Anchor to: HTTPS_PROXY or HTTP_PROXY (optional)" aria-label="Anchor to: HTTPS_PROXY or HTTP_PROXY (optional)" href="#https_proxy-or-http_proxy-optional">
@@ -1391,7 +1525,10 @@ Somehow this seems to be necessary to work with DSM 7.0. The default value is <c
         </a>
     </h3>
 </div>
-<p>URL to your proxy, e.g. http://192.168.1.2:3128</p>
+<p>URL to your proxy, e.g. <a
+  class="gdoc-markdown__link"
+  href="http://192.168.1.2:3128"
+>http://192.168.1.2:3128</a></p>
 
   </article>
 
@@ -1736,8 +1873,11 @@ Somehow this seems to be necessary to work with DSM 7.0. The default value is <c
     <div>
       <section class="flex flex-wrap align-center">
         <span class="gdoc-footer__item gdoc-footer__item--row">
-          Built with <a href="https://gohugo.io/" class="gdoc-footer__link">Hugo</a> and <svg class="gdoc-icon gdoc_heart"><use xlink:href="#gdoc_heart"></use></svg>
-
+          Build with <a href="https://gohugo.io/" class="gdoc-footer__link">Hugo</a> and <svg class="gdoc-icon gdoc_heart"><use xlink:href="#gdoc_heart"></use></svg> <br> <a href="https://github.com/ahaenggli/AzureAD-LDAP-wrapper" target="_blank">
+  <img src="https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social" alt="GitHub release (latest by date)">
+</a> <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px">
+</a>
         </span>
         
         
