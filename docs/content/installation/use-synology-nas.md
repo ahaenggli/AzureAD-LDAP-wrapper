@@ -16,18 +16,27 @@ Only after that the login in samba can work. The same applies after a password c
 
 ## Connect Synology NAS to LDAP-wrapper
 
-If you connect your Synology NAS to the LDAP-wrapper, users can login with their azure credentials.
+To enable users to log in to Synology NAS with their Azure credentials, you need to connect the NAS to the AzureAD-LDAP-wrapper. Here are the steps:
 
-1. Enable ldap-client and connect it to your docker container
-![grafik](../syno_ldap_enable.png)
+1. Go to Control Panel > Domain/LDAP and click "Join".
+![ldap join](../use/syno_ldap_join.png)
 
-2. Users that exist in the AAD cannot see or change other users password hashes. 
-   So, if you'd like to use samba, please join/bind with a (not in AzureAD existing) superuser from the previously defined env var `LDAP_BINDUSER`: ![grafik](../syno_ldap_join.png)\
-The warning "a local group has the same name as a synchronized group" can be skipped. Should your BINDUSER not be found, try writing "uid=ldapsearch" or the full name "uid=ldapsearch,cn=users,dc=domain,dc=tld" instead of just "ldapsearch".
+2. Enter the IP address (e.g., 127.0.0.1) of your NAS as the server address.
+![server address](../use/syno_ldap_serveraddress.png)
 
-3. Give your synchronized groups the desired permissions and log in with your synchronized users.
+3. Enter the credentials of your previously defined superuser (environment variable `LDAP_BINDUSER`) as Bind DN. Should your user not be found, try writing "uid=root" or the full name "uid=root,cn=users,dc=domain,dc=tld" instead of just "root". Select your domain in Base DN.
+![enter ldap infos](../use/syno_ldap_infos.png)
 
-4. Before accessing shared folders/files via network/samba, each user must log in to dsm-web-gui or another tool directly connected to the ldap server. This also applies after a password change, since the password hash for samba is only set after a successful login.
+4. If you see a warning about a local group having the same name as a synchronized group, you can ignore it and skip the warning in "Details".
+![skip warning](../use/syno_ldap_skipwarning.png)
+
+5. Your NAS should now be connected successfully to the Azure AD LDAP-wrapper.
+![nas connected](../use/syno_ldap_connected.png)
+
+6. Check the "LDAP User" and "LDAP Group" tabs to ensure that all entries are fully synced. Assign the desired permissions to your synchronized users and groups. You can now log in with your Azure AD credentials.
+![check users](../use/syno_ldap_check.png)
+
+7. Note that before accessing shared folders or files via network or Samba, each user must log in to DSM web GUI or another tool directly connected to the LDAP server. This step is also required after a password change, as the password hash for Samba is only set after a successful login.
 
 ## Synology SSO
 
@@ -43,3 +52,21 @@ Please be aware, it's not working on every DSM version. First tests on a Synolog
 5. You should now see 'Azure SSO Authentication' on your DSM login screen
 ![grafik](../sso_dsm.png)
 
+## Update existing Docker container on a Synology NAS
+
+1. Redownload the latest version
+![grafik](../syno_docker_download.png)
+
+2. Stop your container
+
+3. Clear your container
+![grafik](../syno_docker_clear.png)
+
+4. Check the [changelog](CHANGELOG.md) file (for breaking changes) and apply new settings
+
+5. Start your container
+
+6. Check the logs for (new) errors (right click on container and choose "Details")
+![grafik](../syno_docker_logs.png)
+
+7. Before accessing files via network/samba, each user needs to login in the dsm-web-gui or any other tool directly connected to the ldap server. It's the same after a password change, because the password-hash for samba is only set after a successfull login.

@@ -1,45 +1,30 @@
 {
     "env": {
-        "browser": true,
-        "es2021": true,
-        "node": true
+      "browser": true,
+      "es2021": true,
+      "jest/globals": true,
+      "node": true
     },
     "extends": [
-        "eslint:recommended",
-        "plugin:node/recommended"
-        //"plugin:security/recommended"
+      "eslint:recommended",
+      "plugin:node/recommended",
+      "plugin:jest/recommended"
     ],
     "parserOptions": {
-        // Only ESLint 6.2.0 and later support ES2020.
-        "ecmaVersion": 2020
+      "ecmaVersion": 2020,
+      "sourceType": "module"
     },
+    "plugins": [
+      "jest"
+    ],
     "rules": {
-        "no-prototype-builtins": 0,
-        "semi": ["error", "always"]
-        //"node/exports-style": ["error", "module.exports"],
-        //"node/file-extension-in-import": ["error", "always"],
-        //"node/prefer-global/buffer": ["error", "always"],
-        //"node/prefer-global/console": ["error", "always"],
-        //"node/prefer-global/process": ["error", "always"],
-        //"node/prefer-global/url-search-params": ["error", "always"],
-        //"node/prefer-global/url": ["error", "always"],
-        //"node/prefer-promises/dns": "error",
-        //"node/prefer-promises/fs": "error",
-        //// new ones
-        //"node/no-exports-assign": "error",
-        //"node/no-extraneous-import": "error"
-        //'semi': [
-        //    'error',
-        //    'never'
-        //  ],
-        //  'linebreak-style': [
-        //    'error',
-        //    'unix'
-        //  ],
-        //  'quotes': [
-        //    'error',
-        //    'single'
-        //  ],
-        //  'no-trailing-spaces': 1,
+      "no-console": "off",
+      "no-prototype-builtins": 0,
+      "semi": ["error", "always"],
+      "jest/no-disabled-tests": "warn",
+      "jest/no-focused-tests": "error",
+      "jest/no-identical-title": "error",
+      "jest/prefer-to-have-length": "warn",
+      "jest/valid-expect": "error"
     }
-}
+  }

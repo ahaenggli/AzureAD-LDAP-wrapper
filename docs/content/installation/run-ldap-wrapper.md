@@ -16,8 +16,53 @@ Be aware that other users in the file system may also be able to read the JSON f
 
 {{< /hint >}}
 
-
 {{< tabs "run-ldap-wrapper" >}}
+
+{{< tab "Synology DSM Docker" >}}
+
+## Install container on a Synology NAS
+
+1. Install Docker from the Synology Package Center.
+![package center](../syno/syno_install_docker.png)
+
+2. In Docker, go to "Registry" to download the latest container image.
+![download latest image](../syno/syno_docker_download.png)
+
+3. In Docker, go to "Image" to launch a new container. Use "bridge" as your network.
+![launch image](../syno/syno_docker_launch.png)
+Use "bridge" as your network.
+
+4. Give your container a name and enable auto-restart.
+![grafik](../syno/syno_docker_name.png)
+
+5. Configure the environment variables in "Advanced Settings". Be sure to double check your Azure values and define at least one binduser. The binduser (superuser like root) does not need to exist in your AzureAD. Replace example.com with your domain. Here is an example of a minimum required configuration:
+
+    ```bash
+    TZ: "Europe/Zurich" # optional
+    AZURE_TENANTID: "0def2345-ff01-56789-1234-ab9d6dda1e1e"
+    AZURE_APP_ID: "abc12345-ab01-0000-1111-a1e1eab9d6dd"
+    AZURE_APP_SECRET: "iamasecret~yep-reallyreallysecret"
+    LDAP_DOMAIN: "example.com"
+    LDAP_BASEDN: "dc=example,dc=com"
+    LDAP_BINDUSER: "ldapsearch|*secretldapsearch123*||root|*secretroot*"
+    LDAP_DEBUG: "false" # set this to true for more logs
+    GRAPH_IGNORE_MFA_ERRORS: "false" # set this to true to bypass MFA
+    DSM7: "true" # set this to false if you are running DSM 6 or lower
+    ```
+
+    ![env vars](../syno/syno_docker_env.png)
+    A full list of all environment variables can be found [here](../../configuration/settings/).
+
+6. Set local Port 389 to the Container Port 13389. If you receive the error Local port 389 conflicts with other ports used by other services, make sure that Synology Directory Service and Synology LDAP Server are not installed - they also use this port.
+![syno port](../syno/syno_docker_port.png)
+
+7. Add a local folder, such as docker/ldap, to the mount path /app/.cache in the volume settings. If you skip this step, your data will not be stored permanently.
+![syno folder](../syno/syno_docker_folder.png)
+
+8. Click "Done" to start the container.
+![done](../syno/syno_docker_done.png)
+
+{{< /tab >}}
 
 {{< tab "Docker" >}}
 
@@ -93,61 +138,6 @@ services:
 
 {{< /tab >}}
 
-{{< tab "Synology DSM Docker" >}}
-
-## Install container on a Synology NAS
-
-1. Open Docker > Registry to download the Image  
-2. Open Docker > Image to launch a new container  
-3. Configure and start it
-![grafik](../syno_docker_add.png)
-
-   - Use "bridge" as your network
-   - Give your Container a name and enable auto-restart
-   - In DSM 7 the environment variables are found in "Advanced Settings":
-
-      ```bash
-      TZ: "Europe/Zurich" # optional
-      AZURE_TENANTID: "0def2345-ff01-56789-1234-ab9d6dda1e1e"
-      AZURE_APP_ID: "abc12345-ab01-0000-1111-a1e1eab9d6dd"
-      AZURE_APP_SECRET: "iamasecret~yep-reallyreallysecret"
-      LDAP_DOMAIN: "example.com"
-      LDAP_BASEDN: "dc=example,dc=com"
-      LDAP_BINDUSER: "ldapsearch|*secretldapsearch123*||root|*secretroot*"
-      LDAP_DEBUG: "false" # set this to true for more logs
-      GRAPH_IGNORE_MFA_ERRORS: "false" # set this to true to bypass MFA
-      DSM7: "true" # set this to false if you are running DSM 6 or lower
-      ```
-
-     Make sure you double check your Azure values and define at least 1 binduser. The binduser does not need to exist in your AzureAD. 
-     Don't forget to replace example.com with your domain. 
-
-   - Set local Port 389 to the Container Port 13389.\
-     If you receive the error `Local port 389 conflicts with other ports used by other services`: Please make sure that Synology Directory Service and Synology LDAP Server are not installed - they also use this port.
-   - Add a local folder like `docker/ldap` to the mount path `/app/.cache` in volume settings.\
-     If you skip this step, your data will not be stored permanently.
-
-## Update existing Docker container on a Synology NAS
-
-1. Redownload the latest version
-![grafik](../syno_docker_download.png)
-
-2. Stop your container
-
-3. Clear your container
-![grafik](../syno_docker_clear.png)
-
-4. Check the [changelog](CHANGELOG.md) file (for breaking changes) and apply new settings
-
-5. Start your container
-
-6. Check the logs for (new) errors (right click on container and choose "Details")
-![grafik](../syno_docker_log.png)
-
-7. Before accessing files via network/samba, each user needs to login in the dsm-web-gui or any other tool directly connected to the ldap server. It's the same after a password change, because the password-hash for samba is only set after a successfull login.
-
-{{< /tab >}}
-
 {{< tab "npm/node" >}}
 
 This is a minimal example for a running configuration.\
@@ -168,10 +158,16 @@ LDAP_BINDUSER="root|mystrongpw||ldapsearch|ldapsearchpw123"
 ```
 
 ```Shell
+# clone repo and open folder
+git clone https://github.com/ahaenggli/AzureAD-LDAP-wrapper.git
+cd AzureAD-LDAP-wrapper
+# install 3rd party libraries
+npm install
+# use a .env file or set your env vars
 # run with npm
 npm start
-# run directly with node ("--openssl-legacy-provider" is needed)
-node --openssl-legacy-provider server.js
+# or start it with node ("--openssl-legacy-provider" is needed)
+# node --openssl-legacy-provider index.js
 ```
 
 {{< /tab >}}

@@ -1,5 +1,9 @@
 ---
 header:
+  - name: "\\<img src=\"https://cdn.buymeacoffee.com/buttons/default-orange.png\" style=\"height: 20px; width: 20px;\" alt=\"Buy Me A Coffee\">"
+    ref: https://www.buymeacoffee.com/ahaenggli
+    icon: none
+    external: true
   - name: GitHub
     ref: https://github.com/ahaenggli/AzureAD-LDAP-wrapper
     icon: gdoc_github

@@ -1,263 +1,173 @@
 # LDAP-wrapper for AzureAD users/groups [![GitHub release (latest by date)](https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social)](https://github.com/ahaenggli/AzureAD-LDAP-wrapper) <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px"></a>
 
-AzureAD-LDAP-wrapper is a nodejs ldap server ([ldapjs](https://github.com/ldapjs/node-ldapjs)) that provides AzureAD users and groups via LDAP protocol. User authentication is done each time through Microsoft Graph Api. As a result, other applications can connect to the LDAP server, allowing users to use their familiar AzureAD login information. This is especially useful for (older) applications that do not (yet) support AzureAD and for which you do not want to maintain a local AD controller.
+AzureAD-LDAP-wrapper is a Node.js LDAP server built on top of ([ldapjs](https://github.com/ldapjs/node-ldapjs)) that allows users and groups from Azure Active Directory to be accessed through the LDAP protocol. User authentication is performed using Microsoft Graph API on every login attempt. This enables other applications to connect to the LDAP server and utilize AzureAD login credentials, making it a possible solution for older applications that lack AzureAD support or for scenarios where managing a local AD controller is undesirable.
 
 ## Table of Contents
 
-* [Motivation and background information](#motivation-and-background-information)
-  * [How the server works](#how-the-server-works)
-  * [Important information about samba](#important-information-about-samba)
-* [Installation](#installation)
-  * [Required settings in AzureAD](#required-settings-in-azuread)
-  * [Docker container - general settings](#docker-container---general-settings)
-  * [Setup on a Synology NAS](#setup-on-a-synology-nas)
-  * [Update Docker container on a Synology NAS](#update-docker-container-on-a-synology-nas)
-  * [Synology SSO](#synology-sso)  
-* [Security](#security)
+* [Background](#background)
+* [Getting Started](#getting-started)
+  * [Requirements](#requirements)
+  * [Run the LDAP-wrapper](#run-the-ldap-wrapper)
+  * [Usage](#usage)
+  * [Settings](#settings)
 * [Troubleshooting](#troubleshooting)
-* [environment variables](#environment-variables)
+* [Security](#security)
+* [Contributing](#contributing)
+* [Support this project](#support-this-project)
+* [License](#license)
 
-## Motivation and background information
+## Background
 
-I personally run the project in a Docker container on my Synology NAS. The NAS and some intranet web applications are connected to the ldap server. This way my users can log in to the NAS, the web applications and of course office.com with the same credentials.
-The whole thing could probably also be achieved by [joining the NAS to AADDS](https://kb.synology.com/en-global/DSM/tutorial/How_to_join_NAS_to_Azure_AD_Domain). However, I was not willing to maintain such a big setup (virtual machine/VPN/AADDS) only that my 3 users can use the same credentials (almost) everywhere.
+```mermaid
+sequenceDiagram
+  autonumber
+  participant LDAP client
+  participant AzureAD-LDAP-wrapper
+  participant AAD (Graph API)
 
-### How the server works
+  Note over AzureAD-LDAP-wrapper: start LDAP server
+  AzureAD-LDAP-wrapper->>AAD (Graph API): Fetch users and groups
+  Note over AzureAD-LDAP-wrapper: cache users and groups locally
 
-1. AzureAD-LDAP-wrapper starts an LDAP server
-2. On "starting" users and groups are fetched from Azure Active Directory
-3. On "bind" the user credentials are checked through Microsoft Graph API
-4. On successful "bind" the user password is saved as additional hash (sambaNTPassword) and sambaPwdLastSet ist set to "now". This is necessary to allow access from e.g. Windows PCs to the samba shares on the NAS.
-5. Users and groups are fetched again every 30 minutes  
-(while keeping uid, gid, sambaNTPassword and sambaPwdLastSet)
+  LDAP client->>+AzureAD-LDAP-wrapper: Attempt to bind with user credentials
+    AzureAD-LDAP-wrapper->>+AAD (Graph API): Check user credentials
+    AAD (Graph API)-->>-AzureAD-LDAP-wrapper: Valid credentials
 
-### Important information about samba
+  Note over AzureAD-LDAP-wrapper: save password hash locally in the cache
+  AzureAD-LDAP-wrapper->>-LDAP client: Successful bind/authenticate
 
-To access a share on the NAS, for example, from a Windows PC, the credentials must be entered. These credentials are NOT sent to the LDAP-wrapper (or any other LDAP server). They are sent to samba so that it can generate a hash from the password. Afterwards samba fetches the password hash from the LDAP-wrapper and compares the two hashes.  
-Perhaps you are now wondering why this is important to know?
-Well, the AzureAD-LDAP-wrapper must have this hash before you access a shared folder. Otherwise, you will get an error due to invalid credentials. Maybe you are now wondering how the LDAP-wrapper can obtain the necessary hash? The answer is simple: The user MUST first log in to a service (DSM, web application, etc.) that is directly connected to the LDAP-wrapper. Only after that the login in samba can work. The same applies after a password change. The new password has a new hash, so the user must first log in again via another service. This restriction cannot be circumvented. And last but not least: MFA/2FA (multi-factor authentication or two-factor authentication) is also not supported by this method.
+    loop every 30 minutes
+            AzureAD-LDAP-wrapper->>AAD (Graph API): Fetch users and groups again
+        Note over AzureAD-LDAP-wrapper: merge and cache users and groups locally
+    end
 
-## Installation
-
-### Required settings in AzureAD
-
-1. Register a new App in your [aad-portal](https://aad.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps) as described [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal).
-2. Set the following Graph-API Application permissions:  
-![Azure Permissions](.github/media/azure_permissions.png)
-For type `Application`  allow `User.Read.All` and `Group.Read.All`.  
-For type `Delegated` allow `User.Read`.
-3. Set [Treat application as a public client](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Username-Password-Authentication#application-registration) to `Yes`  
-(former "Allow public client flows")![Azure ROPC](.github/media/azure_ROPC.png)
-4. Copy and save those values for the later use as environment variables in the Docker container.
-   - Directory (tenant) ID from the page "overview" as `AZURE_TENANTID`.  
-   A description with printscreen can be found [here in #3](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-tenant-and-app-id-values-for-signing-in).
-   - Application (client) ID from the page "overview" as `AZURE_APP_ID`.  
-   A description with printscreen can be found [here in #4](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-tenant-and-app-id-values-for-signing-in).
-   - Value of a (new) client secret from the page "Certificates & secrets" as `AZURE_APP_SECRET`.  
-   A description with printscreen can be found [here in #5](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret).
-5. Use a [docker container](https://hub.docker.com/r/ahaen/azuread-ldap-wrapper) (or any other method to run this LDAP-wrapper) and start it with the correct environment variables.
-
-### Docker container - general settings
-
-This is a minimal example for a running configuration.
-
-```bash
-AZURE_APP_ID="abc12345-ab01-0000-1111-a1e1eab9d6dd"
-AZURE_TENANTID="0def2345-ff01-56789-1234-ab9d6dda1e1e"
-AZURE_APP_SECRET="iamasecret~yep-reallyreallysecret"
-LDAP_DOMAIN="example.com"
-LDAP_BASEDN="dc=example,dc=com"
-LDAP_BINDUSER="root|mystrongpw||ldapsearch|ldapsearchpw123"
 ```
 
-As domain and basedn it is recommended to use the same as used in AzureAD tenant (e.g. `@domain.tld`). This way, the spelling of the users (e.g. `username@domain.tld`) will match at the end. Otherwise, your users will have to use `username@example.com` instead of the estimated `username@domain.tld`, for example.
+The AzureAD-LDAP-wrapper starts an LDAP server and fetches users and groups from the AAD Graph API. These are cached and merged locally.
 
-The API results and a local copy of the LDAP entries are stored as JSON files inside the container at this path: `/app/.cache`  
-Map this folder to provide persistent storage for your users/groups (and their Samba password hashes). Be aware that other users in the file system may also be able to read the JSON files and thus get access to the cached sambaNTPassword attribute.
+When an LDAP client attempts to bind with user credentials, the AzureAD-LDAP-wrapper checks these credentials by communicating with the AAD Graph API. If the credentials are valid, the AAD Graph API sends a success response to the AzureAD-LDAP-wrapper, which then sends a successful bind message to the user's LDAP client. Additionally, the AzureAD-LDAP-wrapper saves the user's password hash in the sambaNTPassword attribute and sets the sambaPwdLastSet attribute to "now". This allows the user to access samba shares, such as those on a NAS, from Windows PCs.
 
-For local testing you could create a .env file with your environment variables in there and pass it to docker run like that:
+The AzureAD-LDAP-wrapper periodically fetches user and group information from the AAD Graph API every 30 minutes, merging and caching the results locally. This process preserves attributes like uid, gid, sambaNTPassword, and sambaPwdLastSet.
 
-```bash
-docker run -d -p 389:13389 --volume /home/mydata:/app/.cache --env-file .env ahaen/azuread-ldap-wrapper:latest
-```
+## Getting Started
 
-### Setup on a Synology NAS
+### Requirements
 
-1. Open Docker > Registry to download the Image  
-Open Docker > Image to launch a new container  
-Configure and start it
-![grafik](.github/media/syno_docker_add.png)
-For the network use bridge as we have to map the local Port 389 to the container. Make sure you double check your Azure values and define at least 1 binduser. The binduser does not need to exist in your AzureAD. Don't forget to replace example.com with your domain. Map the `/app/.cache` folder in Volume. If you receive the error `Local port 389 conflicts with other ports used by other services`: Please make sure that Synology Directory Service and Synology LDAP Server are not installed - they also use this port.
+To use the AzureAD-LDAP-wrapper, you will need:
 
-2. Enable ldap-client and connect it to your docker container
-![grafik](.github/media/syno_ldap_enable.png)
+* An Azure Active Directory (AD) tenant with at least one registered user.
+* An Azure AD application registered in your tenant, with the following permissions:
+  * For type `Application` grant `User.Read.All` and `Group.Read.All`.
+  * For type `Delegated` grant `User.Read`.
 
-3. Users that exist in the AAD cannot see or change other users password hashes. So, if you'd like to use samba, please join/bind with a (not in AzureAD existing) user from the previously defined env var `LDAP_BINDUSER`: ![grafik](.github/media/syno_ldap_join.png)
-The warning "a local group has the same name as a synchronized group" can be skipped. Should your BINDUSER not be found, try writing "uid=ldapsearch" or the full name "uid=ldapsearch,cn=users,dc=domain,dc=tld" instead of "ldapsearch".
+  You can follow the instructions in the [installation guide](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application) to set up your application.
 
-4. Give your synchronized groups the desired permissions and log in with your synchronized users :)
+To run the AzureAD-LDAP-wrapper, you'll need to have your Tenant ID, Application ID, and Application Secret available. These values are required to authenticate and authorize the application to access your Azure AD resources. You can find these values in the Azure portal.
 
-5. Before accessing shared folders/files via network/samba, each user must log in to dsm-web-gui or another tool directly connected to the ldap server. This also applies after a password change, since the password hash for samba is only set after a successful login.
+Once you have created your Azure AD application, you can run the LDAP wrapper on your local machine, on a server or even a Synology NAS. Depending on your setup you will either need:
 
-### Update Docker container on a Synology NAS
+* Node.js version 17 or higher, which can be downloaded from the official [Node.js website](https://nodejs.org/en/download/).
 
-1. Redownload the latest version
-![grafik](.github/media/syno_docker_download.png)
-2. Stop your container
-3. Clear your container
-![grafik](.github/media/syno_docker_clear.png)
-4. Check the [changelog](CHANGELOG.md) file (for breaking changes) and apply new settings
-5. Start your container
-6. Check the logs for (new) errors (right click on container and choose "Details")
-![grafik](.github/media/syno_docker_log.png)
-7. Before accessing files via network/samba, each user needs to login in the dsm-web-gui or any other tool directly connected to the ldap server. It's the same after a password change, because the password-hash for samba is only set after a successfull login.
+or
 
-### Synology SSO
+* Docker, which can be downloaded from the official [Docker website](https://www.docker.com/products/docker-desktop).
 
-If you don't need samba (network access for shared folders) you can try enabling the Synology OpenID Connect SSO service.
-Please be aware, it's not working on every DSM version. First tests on a Synology Live Demo with DSM 7.1-42661 were successfull. Unfortunately it didn't work locally on my personal NAS, probably because it'ss behind a Firewall/Proxy.
+Note that some features of the wrapper may require additional configuration or dependencies, such as a  NAS for network storage access.
 
-1. Add your URL to access the NAS in Azure
-![grafik](.github/media/sso_azure.png)
-2. Go to Domain/LDAP > SSO Client and  Tick Enable OpenID Connect SSO service
-3. Select azure as the profile and set the same appid, tenant and secret you used for the docker container. The redirect URI is again your URL to access the NAS.
-![grafik](.github/media/sso_syno.png)
-4. Save everything
-5. You should now see 'Azure SSO Authentication' on your DSM login screen
-![grafik](.github/media/sso_dsm.png)
+### Run the LDAP-wrapper
 
-## Security
+There are multiple ways to run the LDAP-wrapper. For more information, please consult the [documentation](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/) to get started.
 
-Unfortunately, an LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all. Since this wrapper is originally only meant to use the same credentials as in Azure on a NAS, this is the default behaviour. Therefore, some queries may be run as anonymous by default. You can change this via the env var [LDAP_ANONYMOUSBIND](#ldap_anonymousbind-default-domain) if required.
+One way to run the LDAP-wrapper is, to start a Docker container on a Synolog NAS like this:
 
-Another way to make the LDAP-wrapper more secure would be to restrict access through a firewall and thus not allow access to everyone and anyone on the network.
+1. Install Docker from the Synology Package Center.
+![package center](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/syno/syno_install_docker.png)
+
+2. In Docker, go to "Registry" to download the latest container image.
+![download latest image](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/syno/syno_docker_download.png)
+
+3. In Docker, go to "Image" to launch a new container. Use "bridge" as your network.
+![launch image](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/syno/syno_docker_launch.png)
+Use "bridge" as your network.
+
+4. Give your container a name and enable auto-restart.
+![grafik](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/syno/syno_docker_name.png)
+
+5. Configure the environment variables in "Advanced Settings". Be sure to double check your Azure values and define at least one binduser. The binduser (superuser like root) does not need to exist in your AzureAD. Replace example.com with your domain. Here is an example of a minimum required configuration:
+
+    ```bash
+    TZ: "Europe/Zurich" # optional
+    AZURE_TENANTID: "0def2345-ff01-56789-1234-ab9d6dda1e1e"
+    AZURE_APP_ID: "abc12345-ab01-0000-1111-a1e1eab9d6dd"
+    AZURE_APP_SECRET: "iamasecret~yep-reallyreallysecret"
+    LDAP_DOMAIN: "example.com"
+    LDAP_BASEDN: "dc=example,dc=com"
+    LDAP_BINDUSER: "ldapsearch|*secretldapsearch123*||root|*secretroot*"
+    LDAP_DEBUG: "false" # set this to true for more logs
+    GRAPH_IGNORE_MFA_ERRORS: "false" # set this to true to bypass MFA
+    DSM7: "true" # set this to false if you are running DSM 6 or lower
+    ```
+
+    ![env vars](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/syno/syno_docker_env.png)
+    A full list of all environment variables can be found [here](../../configuration/settings/).
+
+6. Set local Port 389 to the Container Port 13389. If you receive the error Local port 389 conflicts with other ports used by other services, make sure that Synology Directory Service and Synology LDAP Server are not installed - they also use this port.
+![syno port](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/syno/syno_docker_port.png)
+
+7. Add a local folder, such as docker/ldap, to the mount path /app/.cache in the volume settings. If you skip this step, your data will not be stored permanently.
+![syno folder](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/syno/syno_docker_folder.png)
+
+8. Click "Done" to start the container.
+![done](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/syno/syno_docker_done.png)
+
+### Usage
+
+To enable users to log in to Synology NAS with their Azure credentials, you need to connect the NAS to the AzureAD-LDAP-wrapper. Here are the steps:
+
+1. Go to Control Panel > Domain/LDAP and click "Join".
+![ldap join](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use/syno_ldap_join.png)
+
+2. Enter the IP address (e.g., 127.0.0.1) of your NAS as the server address.
+![server address](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use/syno_ldap_serveraddress.png)
+
+3. Enter the credentials of your previously defined superuser (environment variable `LDAP_BINDUSER`) as Bind DN. Should your user not be found, try writing "uid=root" or the full name "uid=root,cn=users,dc=domain,dc=tld" instead of just "root". Select your domain in Base DN.
+![enter ldap infos](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use/syno_ldap_infos.png)
+
+4. If you see a warning about a local group having the same name as a synchronized group, you can ignore it and skip the warning in "Details".
+![skip warning](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use/syno_ldap_skipwarning.png)
+
+5. Your NAS should now be connected successfully to the Azure AD LDAP-wrapper.
+![nas connected](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use/syno_ldap_connected.png)
+
+6. Check the "LDAP User" and "LDAP Group" tabs to ensure that all entries are fully synced. Assign the desired permissions to your synchronized users and groups. You can now log in with your Azure AD credentials.
+![check users](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use/syno_ldap_check.png)
+
+7. Note that before accessing shared folders or files via network or Samba, each user must log in to DSM web GUI or another tool directly connected to the LDAP server. This step is also required after a password change, as the password hash for Samba is only set after a successful login.
+
+### Settings
+
+To configure the LDAP-wrapper, you can use environment variables as it is intended to be used with Docker. A complete list of available variables can be found in the [configuration settings page](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings) of the documentation.
 
 ## Troubleshooting
 
-The first step is always to look at the Docker log. Many errors are handled there. For further steps, e.g. Samba debugging, read the [FAQ](./FAQ.md). If you get stuck, feel free to open an issue - but please add the log files, maybe others will be able to read more from them than you.
+If you encounter any issues, start by checking the Docker log. Many errors are logged there, and this can help you identify the root cause of the problem. Additionally, the [troubleshooting page](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/troubleshooting/) in the documentation provides further guidance on debugging common issues, including Samba-related ones. If you're still stuck, don't hesitate to open an issue, but be sure to attach relevant log files to help others diagnose the issue.
 
-## environment variables
+## Security
 
-The following is a list of all possible environment variables and settings.
+It's important to note that the AzureAD-LDAP-wrapper involves transferring sensitive user information, so it's essential to ensure that it's used securely. There are several potential security risks to be aware of when using this wrapper. For more information on these risks and how to mitigate them, please read the [security page](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/) in the documentation.
 
-### AZURE_APP_ID
+If you discover any security vulnerabilities, please refer to the instructions in [SECURITY.md](SECURITY.md) on how to report them.
 
-Your `Application ID` from [azure](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-tenant-and-app-id-values-for-signing-in) (see #4)
+## Contributing
 
-### AZURE_TENANTID
+Contributions to the AzureAD-LDAP-wrapper are always welcome! If you have any suggestions, bug reports, or pull requests, please feel free to open an issue or a pull request on the project's GitHub repository.
 
-Your `Tenant ID` from [azure](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#get-tenant-and-app-id-values-for-signing-in) (see #3)
+## Support this project
 
-### AZURE_APP_SECRET
+If you find this project helpful or saved you time and effort, please consider giving it a star and/or making a donation.
 
-A `Client secret`-value from [azure](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret)
+Your support helps me maintain and improve this project. Thank you!
 
-### GRAPH_FILTER_USERS
+## License
 
-This allows you to filter the users in the graph api using the [$filter](https://docs.microsoft.com/en-us/graph/query-parameters#filter-parameter) query parameter.  
-The default filter is set to `userType eq 'Member'`. That's why external users (guests) will not be synced automatically by default.
-
-### GRAPH_FILTER_GROUPS (optional)
-
-This allows you to filter the groups in the graph api using the [$filter](https://docs.microsoft.com/en-us/graph/query-parameters#filter-parameter) query parameter. The default filter is empty, so all groups are synchronized. For example, you can set it to `securityEnabled eq true` so that only security groups are synchronized and not every single Teams group. More properties to filter are documented [here](https://docs.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties).
-
-### GRAPH_IGNORE_MFA_ERRORS (default: false)
-
-When set to true, some MFA/2FA-related error codes are treated as successful logins. So, it allows logins despite required MFA/2FA. MFA/2FA is thus bypassed.
-
-Warning: This feature is only experimental and may not work in all cases. Please open an issue if you encounter any problems.
-
-### LDAP_DOMAIN
-
-main domain
-
-### LDAP_BASEDN
-
-basedn
-
-### LDAP_SAMBADOMAINNAME (optional)
-
-Default is the first part of your baseDN, for `dc=example,dc=net` it would be `EXAMPLE`. For any other value, just set it manually with this env ar.
-
-### LDAP_BINDUSER (optional without SMB)
-
-Every AzureAD-user can bind (and auth) in this LDAP-Server.
-This parameter allows you to add additional - NOT in AzureAD existing - users.
-Format: "username|password". This can be useful to "join" a device (e.g. NAS).
-Multiple users can be split by "||". (e.g. `ldapsearch1|mysecret||searchy2|othersecret`).
-Those users are superusers (e.g. root, admin, ...) and have full read and modify permissions and can also see the sambaNTPassword-hash.
-
-### LDAP_ANONYMOUSBIND (default: domain)
-
-Depending on the value, anonymous binding is handelt differently
-
-* none: no ldap query allowed without binding
-* all: all ldap query are allowed without binding
-* domain: only the domain entry is visible without binding
-
-### LDAP_DEBUG (default: false)
-
-If set to true there are more detailed logs in the console output.
-
-### LDAP_PORT (default: 13389)
-
-Sets the port for the listener. The wrapper listens on port 13389 by default.
-However, if you are running a Docker container directly on the host network, you may want to change the port to 389.
-
-### LDAP_SECURE_ATTRIBUTES (optional)
-
-Allows to define secure attributes. Onlye superusers can see them all.
-Multiple attributes can be split by "|". (e.g. `customSecurityAttributes_*|PlannedDischargeDate`).
-
-### LDAP_SENSITIVE_ATTRIBUTES (optional)
-
-Allows to define sensitive attributes. Each user can see his own values, but not those of another user.
-Additionally, superusers can see them all, too.
-Multiple attributes can be split by "|". (e.g. `middlename|PrivatePhoneNumber`).
-
-### LDAP_ALLOWCACHEDLOGINONFAILURE (default: true)
-
-allows login from cached sambaNTPassword.
-If set to true, the login has failed and the error does NOT say "wrong credentials", the password is checked against the cached sambaNTPassword. If it matches, the authentification is successfull.
-
-### LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity)
-
-Maximum time in minutes that defines how long a cached sambaNTPassword hash can be used (for login and samba access).
-After that time, a user has to login 'normal' via the bind method (e.g. dsm-web-gui) to reset the cached value. As default there is no time limit (-1=infinity).
-If this time limit is set to 0, no samba access is possible and therefore no password hash is cached.
-
-### LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7)
-
-Defines the number of days after deletion in Azure after which an entry is also removed in the wrapper. By default, te deletion in the wrapper takes place about 7 days later. The reason for the  delay is simple: A user could also no longer be in the wrapper due to a misconfigured filter (env var). But just because of such an error, users (and their cached password hashes) should not be deleted immediately.
-However, you can set the value to 0 to delete a user/group immediately. Use a negative value like -1 to keep everything in the wrapper and not delete anything.
-
-### LDAPS_CERTIFICATE
-
-Path to your certificate.pem file.
-You also have to set `LDAPS_KEY` to run LDAP over SSL.
-You may also need to set `LDAP_PORT` to 636.
-
-### LDAPS_KEY
-
-Path to private key file.
-You also have to set `LDAPS_CERTIFICATE` to run LDAP over SSL.
-You may also need to set `LDAP_PORT` to 636.
-
-### LDAP_SYNC_TIME
-
-The interval in minutes for fetching users/groups from azure. The default is 30 minutes.
-
-### SAMBA_BASESID (optional)
-
-Base SID for all sambaSIDs generated for sambaDomainName, groups and users. Default is `S-1-5-21-2475342291-1480345137-508597502`.
-
-### DSM7
-
-If set to `true` the ldap attributes uidNumber and gidNumber are converted from strings to numbers.
-Somehow this seems to be necessary to work with DSM 7.0. The default value is `false`.
-
-### LDAP_SAMBA_USEAZURESID (default: true)
-Use the calculated SIDs for users/groups from AzureAD (GUID/ObjectId) instead of a "randomly" generated one. You can enable the old handling by setting the env var `false`.
-
-### HTTPS_PROXY or HTTP_PROXY (optional)
-URL to your proxy, e.g. http://192.168.1.2:3128
+The AzureAD-LDAP-wrapper is licensed under the [MIT License](LICENSE).

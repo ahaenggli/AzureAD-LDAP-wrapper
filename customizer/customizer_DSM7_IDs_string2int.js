@@ -1,7 +1,7 @@
 'use strict';
 
-const config = require('../config');
-const helper = require('../helper');
+const config = require('../src/config');
+const helper = require('../src/helper');
 
 var customizer = {};
 

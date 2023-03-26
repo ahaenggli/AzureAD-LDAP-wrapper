@@ -2,10 +2,11 @@
 title: Settings
 ---
 
-The following is a list of all possible settings.
-The LDAP wrapper is intended to be used with Docker. The settings must therefore be made using environment variables.
+The following is a list of all possible settings. The LDAP wrapper is intended to be used with Docker. Therefore, the settings must be made using environment variables.
 
 {{< toc format=html >}}
+
+## Azure Settings
 
 ### AZURE_APP_ID
 
@@ -19,20 +20,36 @@ Your `Tenant ID` from [azure](https://docs.microsoft.com/en-us/azure/active-dire
 
 A `Client secret`-value from [azure](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret)
 
-### GRAPH_FILTER_USERS
+### AZURE_ENDPOINT (optional)
+
+By default, the Azure AD global service endpoint (<https://login.microsoftonline.com>) is used. If you prefer to use a different endpoint, you can specify it here.
+
+## Graph API Settings
+
+### GRAPH_ENDPOINT (optional)
+
+By default, the Microsoft Graph global service endpoint (<https://graph.microsoft.com>) is used. If you prefer to use a different endpoint, you can specify it here.
+
+### GRAPH_API_VERSION (optional)
+
+By default, the v1.0 API version is used for the Microsoft Graph endpoint. To use the beta API version instead, specify it here.
+
+### GRAPH_FILTER_USERS (optional)
 
 This allows you to filter the users in the graph api using the [$filter](https://docs.microsoft.com/en-us/graph/query-parameters#filter-parameter) query parameter.  
-The default filter is set to `userType eq 'Member'`. That's why external users (guests) will not be synced automatically by default.
+The default filter is set to `userType eq 'Member'`. That's why external users (guests) will not be synced automatically by default in a Docker container.
 
 ### GRAPH_FILTER_GROUPS (optional)
 
-This allows you to filter the groups in the graph api using the [$filter](https://docs.microsoft.com/en-us/graph/query-parameters#filter-parameter) query parameter. The default filter is empty, so all groups are synchronized. For example, you can set it to `securityEnabled eq true` so that only security groups are synchronized and not every single Teams group. More properties to filter are documented [here](https://docs.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties).
+This allows you to filter the groups in the graph api using the [$filter](https://docs.microsoft.com/en-us/graph/query-parameters#filter-parameter) query parameter. The default filter is set in the Docker container to `securityEnabled eq true`, so only security groups are synchronized and not every single Teams group. More properties to filter are documented [here](https://docs.microsoft.com/en-us/graph/api/resources/group?view=graph-rest-1.0#properties).
 
 ### GRAPH_IGNORE_MFA_ERRORS (default: false)
 
 When set to true, some MFA/2FA-related error codes are treated as successful logins. So, it allows logins despite required MFA/2FA. MFA/2FA is thus bypassed.
 
 Warning: This feature is only experimental and may not work in all cases. Please open an issue if you encounter any problems.
+
+## LDAP Settings
 
 ### LDAP_DOMAIN
 
@@ -44,9 +61,9 @@ basedn
 
 ### LDAP_SAMBADOMAINNAME (optional)
 
-Default is the first part of your baseDN, for `dc=example,dc=net` it would be `EXAMPLE`. For any other value, just set it manually with this env ar.
+Default is the first part of your baseDN, for `dc=example,dc=net` it would be `EXAMPLE`. For any other value, just set it manually with this env var.
 
-### LDAP_BINDUSER (optional without SMB)
+### LDAP_BINDUSER
 
 Every AzureAD-user can bind (and auth) in this LDAP-Server.
 This parameter allows you to add additional - NOT in AzureAD existing - users.
@@ -98,6 +115,12 @@ If this time limit is set to 0, no samba access is possible and therefore no pas
 Defines the number of days after deletion in Azure after which an entry is also removed in the wrapper. By default, te deletion in the wrapper takes place about 7 days later. The reason for the  delay is simple: A user could also no longer be in the wrapper due to a misconfigured filter (env var). But just because of such an error, users (and their cached password hashes) should not be deleted immediately.
 However, you can set the value to 0 to delete a user/group immediately. Use a negative value like -1 to keep everything in the wrapper and not delete anything.
 
+### LDAP_SYNC_TIME (default: 30 minutes)
+
+The interval in minutes for fetching users/groups from azure. The default is 30 minutes.
+
+## LDAPS
+
 ### LDAPS_CERTIFICATE
 
 Path to your certificate.pem file.
@@ -110,21 +133,23 @@ Path to private key file.
 You also have to set `LDAPS_CERTIFICATE` to run LDAP over SSL.
 You may also need to set `LDAP_PORT` to 636.
 
-### LDAP_SYNC_TIME
-
-The interval in minutes for fetching users/groups from azure. The default is 30 minutes.
+## Samba
 
 ### SAMBA_BASESID (optional)
 
 Base SID for all sambaSIDs generated for sambaDomainName, groups and users. Default is `S-1-5-21-2475342291-1480345137-508597502`.
+
+### LDAP_SAMBA_USEAZURESID (default: true)
+
+Use the calculated SIDs for users/groups from AzureAD (GUID/ObjectId) instead of a "randomly" generated one. You can enable the old handling by setting the env var `false`.
+
+## misc
 
 ### DSM7
 
 If set to `true` the ldap attributes uidNumber and gidNumber are converted from strings to numbers.
 Somehow this seems to be necessary to work with DSM 7.0. The default value is `false`.
 
-### LDAP_SAMBA_USEAZURESID (default: true)
-Use the calculated SIDs for users/groups from AzureAD (GUID/ObjectId) instead of a "randomly" generated one. You can enable the old handling by setting the env var `false`.
-
 ### HTTPS_PROXY or HTTP_PROXY (optional)
-URL to your proxy, e.g. http://192.168.1.2:3128
+
+URL to your proxy, e.g. <http://192.168.1.2:3128>

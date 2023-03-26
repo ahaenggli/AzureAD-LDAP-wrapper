@@ -1,0 +1,11 @@
+---
+footer_build_with: >
+  Build with <a href="https://gohugo.io/" class="gdoc-footer__link">Hugo</a> and
+  <svg class="gdoc-icon gdoc_heart"><use xlink:href="#gdoc_heart"></use></svg>
+  <br>
+  <a href="https://github.com/ahaenggli/AzureAD-LDAP-wrapper" target="_blank">
+    <img src="https://img.shields.io/github/v/release/ahaenggli/AzureAD-LDAP-wrapper?style=social" alt="GitHub release (latest by date)">
+  </a>
+  <a href="https://www.buymeacoffee.com/ahaenggli" target="_blank">
+    <img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" width="90px">
+  </a>
