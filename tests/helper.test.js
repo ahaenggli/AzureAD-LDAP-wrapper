@@ -16,7 +16,7 @@ describe('helper tests debug = true', () => {
     jest.spyOn(console, 'warn').mockImplementation(() => { });
     jest.spyOn(console, 'error').mockImplementation(() => { });
     process.env.LDAP_DEBUG = "true";
-    helper = require('../helper');
+    helper = require('../src/helper');
   });
 
   afterEach(() => {
@@ -131,7 +131,7 @@ describe('helper tests debug = false', () => {
     jest.spyOn(console, 'warn').mockImplementation(() => { });
     jest.spyOn(console, 'error').mockImplementation(() => { });
     process.env.LDAP_DEBUG = "false";
-    helper = require('../helper');
+    helper = require('../src/helper');
   });
 
   afterEach(() => {

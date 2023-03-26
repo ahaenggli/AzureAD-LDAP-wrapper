@@ -35,7 +35,7 @@ describe('config tests', () => {
             jest.spyOn(console, 'error').mockImplementation(() => { });
             process.env = originalEnv;
             dotenv.config({ path: expectedPath + nodeEnv + '.env', override: true });
-            config = require('../config');
+            config = require('../src/config');
         });
 
         afterEach(() => {

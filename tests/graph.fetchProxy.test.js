@@ -8,7 +8,7 @@ process.env["HTTP_PROXY"] = "http://127.0.0.1:3128";
 process.env["GRAPH_FILTER_GROUPS"] = "SecurityEnabled eq true";
 process.env["SKIP_DOTENV"] = "true";
 
-const fetch = require('../graph.fetch');
+const fetch = require('../src/graph.fetch');
 
 describe('Graph API Fetch with proxy', () => {
 

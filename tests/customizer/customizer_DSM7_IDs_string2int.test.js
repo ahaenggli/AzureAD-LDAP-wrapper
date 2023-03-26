@@ -85,7 +85,7 @@ describe('DSM7 customizer tests', () => {
     test('missing numbers', () => {
         // Run your test here        
 
-        const user = {  "creatorsName": "none" };
+        const user = { "creatorsName": "none" };
         const group = { "creatorsName": "none" };
         const all = { "user": user, "group": group, "samba": { "sambaDomainName": "SAMBA" } };
 

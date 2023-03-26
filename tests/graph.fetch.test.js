@@ -12,7 +12,7 @@ dotenv.config({ path: `.env`, override: true });
 process.env['GRAPH_FILTER_USERS'] = '';
 process.env['GRAPH_FILTER_GROUPS'] = '';
 
-const fetch = require('../graph.fetch');
+const fetch = require('../src/graph.fetch');
 
 describe('Graph API Fetch without access token', () => {
 

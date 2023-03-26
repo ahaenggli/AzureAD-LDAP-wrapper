@@ -35,7 +35,7 @@ ${'everything2'} | ${'okay2'} | ${true}| ${''}
         process.env = originalEnv;
         dotenv.config({ path: `.env${envSuffix}`, override: true });
         process.env[EnvName] = EnvVal;
-        checkVars = require('../graph.checkVars');
+        checkVars = require('../src/graph.checkVars');
     });
 
     afterEach(() => {

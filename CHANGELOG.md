@@ -13,7 +13,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced use of smbhash with crypto.createHash
 - Replaced usage of @azure/identity with @azure/msal-node
 - Updated ldapjs to v3.0.1
-- Refactored codebase to improve maintainability, including restructuring the project into multiple files for better organization and readability
+- Refactored codebase to improve maintainability, including restructuring the project into multiple files for better organization and readability.
+As a result, existing customizers (mapped `./customizer/ldap_customizer.js`) must be modified to use the following paths:
+
+    ```js
+  const config = require('../src/config');
+  const helper = require('../src/helper');
+  ```
 
 ### Fixed
 
@@ -260,4 +266,3 @@ if set to true and the login is failed, the login is retried against the sambaNT
 [1.0.2]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.0.2
 [1.0.1]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.0.1
 [1.0.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.0.0
-[0.2.0-beta]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v0.2.0-beta

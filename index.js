@@ -1,20 +1,20 @@
 'use strict';
 
-const config = require('./config');
-const helper = require('./helper');
+const config = require('./src/config');
+const helper = require('./src/helper');
 
 if (config.VARS_VALIDATED) {
-    const checkVars = require('./graph.checkVars');
+    const checkVars = require('./src/graph.checkVars');
     (async () => {
         const cv = await checkVars();
 
         if (cv) {
-            const server = require('./server');
+            const server = require('./src/server');
             server.listen(config.LDAP_PORT, "0.0.0.0", function () {
                 var packagejson = require('./package.json');
                 console.log("server.js", ' ---->', packagejson.name, '@', packagejson.version);
                 console.log("server.js", ' ---->', 'LDAP server up', '@', server.url);
-                server.init();
+                server.init(() => { });
             });
         }
     })();

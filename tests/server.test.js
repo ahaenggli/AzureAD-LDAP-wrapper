@@ -49,7 +49,7 @@ describe('check server with LDAP_ANONYMOUSBIND=domain', () => {
 
     beforeAll((done) => {
         process.env['LDAP_ANONYMOUSBIND'] = 'domain';
-        server = require('../server');
+        server = require('../src/server');
         server.listen(13389, "127.0.0.1", function () {
             done();
         });

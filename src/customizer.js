@@ -1,9 +1,9 @@
 'use strict';
 
-const helper = require('../helper');
-const config = require('../config');
+const helper = require('./helper');
+const config = require('./config');
 const fs = require('fs');
-const DSM7 = require('./customizer_DSM7_IDs_string2int');
+const DSM7 = require('../customizer/customizer_DSM7_IDs_string2int');
 
 // *** all possible funcitons *** /
 // ** modify the api endpoints, like e.g. switch from v1.0 to beta ** //
@@ -22,12 +22,12 @@ const DSM7 = require('./customizer_DSM7_IDs_string2int');
 var customizer = {};
 
 if (fs.existsSync('./customizer/ldap_customizer.js')) {
-    customizer = require('./ldap_customizer.js');
-    helper.log("customizer.js", "ldap_customizer loaded");  
-} else if (config.DSM7){
+    customizer = require('../customizer/ldap_customizer.js');
+    helper.log("customizer.js", "ldap_customizer loaded");
+} else if (config.DSM7) {
     customizer = DSM7;
-    helper.log("customizer.js", "DSM7 customizer loaded");    
-}  
+    helper.log("customizer.js", "DSM7 customizer loaded");
+}
 
 
 if (typeof customizer.modifyGraphApiConfig === "undefined") customizer.modifyGraphApiConfig = function (apiConfig, MS_GRAPH_SCOPE) { return apiConfig; };

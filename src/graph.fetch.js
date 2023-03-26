@@ -5,7 +5,7 @@ const proxyUrl = (process.env.HTTPS_PROXY || process.env.HTTP_PROXY || "");
 
 const config = require('./config');
 const helper = require('./helper');
-const customizer = require('./customizer/customizer');
+const customizer = require('./customizer');
 
 const auth = require('./graph.auth');
 

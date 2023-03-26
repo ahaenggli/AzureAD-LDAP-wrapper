@@ -38,7 +38,7 @@ ${'Test3'} | ${'./tests/'} | ${1} | ${'SOME-Info'}
         if (nodeEnv === 'Test3') {
             process.env['HTTP_PROXY'] = 'http://127.0.0.1:3128';
         }
-        graph_auth = require('../graph.auth');
+        graph_auth = require('../src/graph.auth');
     });
 
     afterEach(() => {
@@ -60,7 +60,7 @@ ${'Test3'} | ${'./tests/'} | ${1} | ${'SOME-Info'}
     test('should get configs', async () => {
 
         expect(graph_auth.tokenRequest).toStrictEqual({ "scopes": ["https://graph.microsoft.com/.default"] });
-        
+
         const clientApp = new msal.ConfidentialClientApplication(graph_auth.msalConfig);
         const getCCA = graph_auth.getCCA();
         expect(getCCA).not.toBe(clientApp);
@@ -70,7 +70,7 @@ ${'Test3'} | ${'./tests/'} | ${1} | ${'SOME-Info'}
         expect(console.error).toHaveBeenCalled();
         expect(console.error).toHaveBeenCalledTimes(1);
         expect(console.error.mock.calls.toString()).toMatch(/(SOME-ERROR)/i);
-    
+
         console.warn.mockClear();
         graph_auth.msalConfig.system.loggerOptions.loggerCallback(msal.LogLevel.Warning, 'SOME-Warning', false);
         expect(console.warn).toHaveBeenCalled();

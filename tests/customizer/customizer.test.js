@@ -35,20 +35,20 @@ describe('customizer tests', () => {
     });
 
 
-test('DSM7 = false', () => {
-    // Run your test here
-    customizer = require('../../customizer/customizer');
+    test('DSM7 = false', () => {
+        // Run your test here
+        customizer = require('../../src/customizer');
 
-    const data = { gidNumber: "123", creatorsName: "none" };
+        const data = { gidNumber: "123", creatorsName: "none" };
 
-    expect(customizer.modifyGraphApiConfig(data)).toStrictEqual(data);
-    expect(customizer.ModifyAzureGroups(data, {})).toStrictEqual(data);
-    expect(customizer.ModifyLDAPGroup(data, {})).toStrictEqual(data);
-    expect(customizer.ModifyAzureUsers(data, {})).toStrictEqual(data);
-    expect(customizer.ModifyLDAPUser(data, {})).toStrictEqual(data);
-    expect(customizer.ModifyLDAPGlobal(data)).toStrictEqual(data);
+        expect(customizer.modifyGraphApiConfig(data)).toStrictEqual(data);
+        expect(customizer.ModifyAzureGroups(data, {})).toStrictEqual(data);
+        expect(customizer.ModifyLDAPGroup(data, {})).toStrictEqual(data);
+        expect(customizer.ModifyAzureUsers(data, {})).toStrictEqual(data);
+        expect(customizer.ModifyLDAPUser(data, {})).toStrictEqual(data);
+        expect(customizer.ModifyLDAPGlobal(data)).toStrictEqual(data);
 
-});
+    });
 });
 
 describe('customizer tests #2', () => {
@@ -82,7 +82,7 @@ describe('customizer tests #2', () => {
 
     test('DSM7 = true', () => {
         // Run your test here
-        customizer = require('../../customizer/customizer');
+        customizer = require('../../src/customizer');
 
         const user = { "gidNumber": "123", "uidNumber": "456", "creatorsName": "none" };
         const group = { "gidNumber": "123", "creatorsName": "none" };
@@ -117,7 +117,7 @@ describe('customizer tests #2', () => {
         // Run your test here
         process.env = originalEnv;
         process.env.DSM7 = "true";
-        customizer = require('../../customizer/customizer');
+        customizer = require('../../src/customizer');
 
         /* copy/paste tests from customizer_add_customSecurityAttributes.test.js: START */
 

@@ -3,7 +3,7 @@
 const config = require('./config');
 const helper = require('./helper');
 const encode = require('hashcode').hashCode;
-const customizer = require('./customizer/customizer');
+const customizer = require('./customizer');
 const fetch = require('./graph.fetch');
 
 const database = {};
@@ -464,7 +464,7 @@ async function mergeAzureGroupEntries(db) {
         const members = await fetch.getMembers(group); // await graph_azure.callApi(graph_azure.apiConfig.mri, graph_azureResponse.accessToken, { id: group.id });
 
         if (members.length > 0) {
-            members.sort((a, b) => a.userPrincipalName.localeCompare(b.userPrincipalName));
+            // members.sort((a, b) => a.userPrincipalName.localeCompare(b.userPrincipalName));
             helper.SaveJSONtoFile(members, './.cache/members_' + groupDisplayName + '.json');
             helper.log("database.js", 'members_' + groupDisplayName + '.json' + " saved.");
         }
@@ -487,7 +487,7 @@ async function mergeAzureUserEntries(db) {
     const users = await fetch.getUsers(); // await graph_azure.callApi(graph_azure.apiConfig.uri, graph_azureResponse.accessToken);
 
     if (users.length > 0) {
-        users.sort((a, b) => a.userPrincipalName.localeCompare(b.userPrincipalName));
+        // users.sort((a, b) => a.userPrincipalName.localeCompare(b.userPrincipalName));
         helper.SaveJSONtoFile(users, './.cache/users.json');
         helper.log("database.js", 'users.json' + " saved.");
     }

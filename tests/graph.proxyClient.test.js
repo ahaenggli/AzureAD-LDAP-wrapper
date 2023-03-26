@@ -3,7 +3,7 @@
 process.env["SKIP_DOTENV"] = "true";
 const originalEnv = process.env;
 
-const proxyClient = require('../graph.proxyClient');
+const proxyClient = require('../src/graph.proxyClient');
 const axios = require('axios');
 const HttpsProxyAgent = require('https-proxy-agent');
 jest.mock('axios');

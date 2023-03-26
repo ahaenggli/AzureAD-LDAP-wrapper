@@ -42,7 +42,7 @@ ${'everything2'} | ${'okay2'} | ${true}| ${''}| ${'1'}
         process.env['LDAP_SYNC_TIME'] = syncTime;
         process.env[EnvName] = EnvVal;
 
-        database = require('../database');
+        database = require('../src/database');
         jest.useFakeTimers();
         jest.spyOn(global, 'setInterval');
     });
