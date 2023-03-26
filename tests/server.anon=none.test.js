@@ -152,6 +152,14 @@ describe('check server with LDAP_ANONYMOUSBIND=none', () => {
                 expect(err.lde_message).toBe('Protocol Error');
             });
 
+            clientSearch(client, baseDN, {
+                filter: '(&(objectClass=*)(cn=abc102))',
+                scope: 'sub',
+                attributes: ['sambaNTPassword']
+            }, (entry) => {
+                expect(entry.attributes[0].values[0]).not.toEqual('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+            });
+
             // slowest thing in the end
             server.init(() => {
                 client.unbind();
@@ -222,7 +230,7 @@ describe('check server with LDAP_ANONYMOUSBIND=none', () => {
                 scope: 'sub',
                 attributes: ['sambaNTPassword']
             }, (entry) => {
-                expect(entry.attributes[0].values[0]).toEqual('xxx');
+                expect(entry.attributes[0].values[0]).toEqual('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
             });
 
             // slowest thing in the end

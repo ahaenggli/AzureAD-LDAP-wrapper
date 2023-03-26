@@ -10,4 +10,4 @@ else
   su_exec_cmd="su-exec root:root"
 fi
 
-$su_exec_cmd /sbin/tini -s -- $node_path --openssl-legacy-provider server.js
+$su_exec_cmd /sbin/tini -s -- $node_path --openssl-legacy-provider index.js

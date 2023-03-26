@@ -9,22 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Node v17 (or newer) needed (--openssl-legacy-provider for md4 in sambaNTPassword)
+- Updated minimum required Node version to v17 (--openssl-legacy-provider for md4 in sambaNTPassword)
 - Replaced use of smbhash with crypto.createHash
 - Replaced usage of @azure/identity with @azure/msal-node
 - Updated ldapjs to v3.0.1
+- Refactored codebase to improve maintainability, including restructuring the project into multiple files for better organization and readability
 
 ### Fixed
 
-- Usernames should be case-insensitive (issue #40)
-- Searches should generally be case-insensitive, while results are fine with CamelCase.
-- searches for 'one' (singleLevel/singleLevel) shold not return the base entry itself
+- Usernames are now case-insensitive (issue #40)
+- Searches are generally case-insensitive, while results are returned in CamelCase.
+- Searches for 'one' (singleLevel/singleLevel) no longer return the base entry itself.
 
 ### Added
 
-- Multi-arch build and images for Docker
-- Documentation with GitHub Pages
-- Check TenantId, AppId, AppSecret and AppPermissions at startup
+- Multi-arch build and Docker images
+- Documentation now available with GitHub Pages: <https://ahaenggli.github.io/AzureAD-LDAP-wrapper>
+- Environment variables now checked at startup
+- TenantId, AppId, AppSecret, and AppPermissions in Graph API are now checked at startup
+- Added ability to specify AZURE_ENDPOINT, GRAPH_ENDPOINT, and GRAPH_API_VERSION variables
 
 ## [1.8.2] - 2022-09-25
 

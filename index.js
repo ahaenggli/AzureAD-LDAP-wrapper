@@ -14,6 +14,7 @@ if (config.VARS_VALIDATED) {
                 var packagejson = require('./package.json');
                 console.log("server.js", ' ---->', packagejson.name, '@', packagejson.version);
                 console.log("server.js", ' ---->', 'LDAP server up', '@', server.url);
+                server.init();
             });
         }
     })();

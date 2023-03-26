@@ -46,9 +46,6 @@ function authorize(req, res, next) {
 
     const isSearch = (req instanceof ldap.SearchRequest);
     const isAnonymous = req.connection.ldap.bindDN.equals('cn=anonymous');
-    console.log(req.connection.ldap.bindDN.toString());
-    console.log(isAnonymous);
-    console.log(config.LDAP_ANONYMOUSBIND);
 
     if (config.LDAP_ANONYMOUSBIND == "none" && isAnonymous) {
         helper.error("server.js", "authorize - denied because of env var `LDAP_ANONYMOUSBIND` ", bindi);
@@ -320,7 +317,6 @@ server.search(SUFFIX, authorize, (req, res, next) => {
                     const parent = ldap.parseDN(k).parent();
                     return (parent ? parent.equals(req.dn) : false);
                 };
-                console.log('single!!');
                 break;
 
             // wholeSubtree(2)
@@ -348,7 +344,6 @@ server.search(SUFFIX, authorize, (req, res, next) => {
                 continue;
 
             // filter searchableEntries, everything lowercase (case-insensitive)
-            console.log('found something!!');
             if (req.filter.matches(removeSensitiveAttributes(bindDN, key, searchableEntries[key]))) {
                 res.send(
                     {

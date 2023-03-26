@@ -1,13 +1,13 @@
 {
   "name": "AzureAD-LDAP-wrapper",
-  "version": "1.8.2",
+  "version": "2.0.0-dev",
   "type": "commonjs",
   "engines": {
     "node": ">=17"
   },
   "description": "LDAP-Wrapper for 'microsoft 365' users (former 'office 365' - via AzureAD without AADDS)",
   "author": "Adriano Hänggli <adriano@haenggli.net>",
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
     "start": "node --openssl-legacy-provider index.js",
     "lint": "npm exec --no -- eslint *.js",

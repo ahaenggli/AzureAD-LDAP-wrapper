@@ -332,11 +332,11 @@ function cleanUpOldEntries(db, compDate) {
         for (const [key, value] of Object.entries(db)) {
             if (value.hasOwnProperty('sAMAccountName') && (!value.hasOwnProperty('modifyTimestamp') ||
                 (value.hasOwnProperty('modifyTimestamp') && helper.ldap_now_2_date(value.modifyTimestamp) < compDate))) {
-                helper.forceLog('ldapwrapper.js', 'do', 'deleted user:', { entryDN: value.entryDN, modifyTimestamp: helper.ldap_now_2_date(value.modifyTimestamp), compDate: compDate });
+                helper.forceLog('database.js', 'cleanUpOldEntries', 'deleted user:', { entryDN: value.entryDN, modifyTimestamp: helper.ldap_now_2_date(value.modifyTimestamp), compDate: compDate });
                 delete db[key];
             } else if (value.hasOwnProperty('sambaGroupType') && (!value.hasOwnProperty('modifyTimestamp') ||
                 (value.hasOwnProperty('modifyTimestamp') && helper.ldap_now_2_date(value.modifyTimestamp) < compDate))) {
-                helper.forceLog('ldapwrapper.js', 'do', 'deleted group:', { entryDN: value.entryDN, modifyTimestamp: helper.ldap_now_2_date(value.modifyTimestamp), compDate: compDate });
+                helper.forceLog('database.js', 'cleanUpOldEntries', 'deleted group:', { entryDN: value.entryDN, modifyTimestamp: helper.ldap_now_2_date(value.modifyTimestamp), compDate: compDate });
                 delete db[key];
             }
         }
@@ -353,7 +353,7 @@ function cleanUpOldEntries(db, compDate) {
  */
 async function refreshDBentries() {
     if (Date.now() > lastRefresh + refreshInterval) {
-        helper.log("database.js", "refresh dbEntries()");
+        helper.log("database.js", "refreshDBentries", "refresh dbEntries()");
 
         // init newDbEntries from file or empty
         let newDbEntries = helper.ReadJSONfile(config.LDAP_DATAFILE);
@@ -377,7 +377,7 @@ async function refreshDBentries() {
         // save the data file
         newDbEntries = customizer.ModifyLDAPGlobal(newDbEntries);
         helper.SaveJSONtoFile(newDbEntries, config.LDAP_DATAFILE);
-        helper.log("datbase.js", "end");
+        helper.log("database.js", "refreshDBentries", "end");
 
         // overwrite dbEntries with newDbEntries
         dbEntries = newDbEntries;
@@ -395,7 +395,7 @@ async function mergeAzureGroupEntries(db) {
 
     if (groups.length > 0) {
         helper.SaveJSONtoFile(groups, './.cache/groups.json');
-        helper.log("ldapwrapper.js", "groups.json saved.");
+        helper.log("database.js", "groups.json saved.");
     }
 
     db['tmp_user_to_groups'] = [];
@@ -406,7 +406,7 @@ async function mergeAzureGroupEntries(db) {
         let groupDisplayNameClean = removeSpecialChars(groupDisplayName);
 
         if (groupDisplayName !== groupDisplayNameClean) {
-            helper.warn("ldapwrapper.js", 'group names may not contain any special chars. We are using ', groupDisplayNameClean, 'instead of', groupDisplayName);
+            helper.warn("database.js", 'group names may not contain any special chars. We are using ', groupDisplayNameClean, 'instead of', groupDisplayName);
         }
 
         let gpName = "cn=" + groupDisplayNameClean + "," + config.LDAP_GROUPSDN;
@@ -460,13 +460,13 @@ async function mergeAzureGroupEntries(db) {
 
         db[gpName] = customizer.ModifyLDAPGroup(db[gpName], group);
 
-        helper.log("ldapwrapper.js", "try fetching the members for group: ", group.displayName);
+        helper.log("database.js", "try fetching the members for group: ", group.displayName);
         const members = await fetch.getMembers(group); // await graph_azure.callApi(graph_azure.apiConfig.mri, graph_azureResponse.accessToken, { id: group.id });
 
         if (members.length > 0) {
             members.sort((a, b) => a.userPrincipalName.localeCompare(b.userPrincipalName));
             helper.SaveJSONtoFile(members, './.cache/members_' + groupDisplayName + '.json');
-            helper.log("ldapwrapper.js", 'members_' + groupDisplayName + '.json' + " saved.");
+            helper.log("database.js", 'members_' + groupDisplayName + '.json' + " saved.");
         }
 
         for (let t = 0, tlen = members.length; t < tlen; t++) {
@@ -483,13 +483,13 @@ async function mergeAzureGroupEntries(db) {
  */
 async function mergeAzureUserEntries(db) {
 
-    helper.log("ldapwrapper.js", "try fetching the users");
+    helper.log("database.js", "mergeAzureUserEntries", "try fetching the users");
     const users = await fetch.getUsers(); // await graph_azure.callApi(graph_azure.apiConfig.uri, graph_azureResponse.accessToken);
 
     if (users.length > 0) {
         users.sort((a, b) => a.userPrincipalName.localeCompare(b.userPrincipalName));
         helper.SaveJSONtoFile(users, './.cache/users.json');
-        helper.log("ldapwrapper.js", 'users.json' + " saved.");
+        helper.log("database.js", 'users.json' + " saved.");
     }
 
     for (let i = 0, len = users.length; i < len; i++) {
@@ -505,7 +505,7 @@ async function mergeAzureUserEntries(db) {
 
         // guest has not joined (yet) - so we cannot know if the user has a login for MicrosoftAccount or ExternalAzureAD 
         if (isGuestUser && !isExternalUserStateAccepted) {
-            helper.warn("ldapwrapper.js", 'Guest user (#EXT#) has not yet accepted invitation',
+            helper.warn("database.js", "mergeAzureUserEntries", 'Guest user (#EXT#) has not yet accepted invitation',
                 {
                     mail: user.mail,
                     userPrincipalName: user.userPrincipalName,
@@ -514,7 +514,7 @@ async function mergeAzureUserEntries(db) {
         }
         // ignore personal microsoft accounts, because RPOC is not possible 
         else if (isMicrosoftAccount) {
-            helper.warn("ldapwrapper.js", 'Guest user (#EXT#) ignored',
+            helper.warn("database.js", "mergeAzureUserEntries", 'Guest user (#EXT#) ignored',
                 {
                     mail: user.mail,
                     userPrincipalName: user.userPrincipalName,
@@ -538,7 +538,7 @@ async function mergeAzureUserEntries(db) {
 
                 AzureADuserExternal = 1;
 
-                helper.log("ldapwrapper.js", '#EXT#-user special treatment',
+                helper.log("database.js", "mergeAzureUserEntries", '#EXT#-user special treatment',
                     {
                         old_userPrincipalName: old_userPrincipalName,
                         new_userPrincipalName: user.mail,
@@ -555,7 +555,7 @@ async function mergeAzureUserEntries(db) {
 
             let userPrincipalNameClean = removeSpecialChars(userPrincipalName);
             if (userPrincipalName !== userPrincipalNameClean) {
-                helper.warn("ldapwrapper.js", 'userPrincipalNames may not contain any special chars. In a future version we are maybe using ', userPrincipalNameClean, 'instead of', userPrincipalName);
+                helper.warn("database.js", "mergeAzureUserEntries", 'userPrincipalNames may not contain any special chars. In a future version we are maybe using ', userPrincipalNameClean, 'instead of', userPrincipalName);
                 // userPrincipalName = userPrincipalNameClean;
             }
 
@@ -572,7 +572,7 @@ async function mergeAzureUserEntries(db) {
             let sambaPwdLastSet = (db[upName] && db[upName].hasOwnProperty('sambaPwdLastSet')) ? db[upName].sambaPwdLastSet : 0;
 
             if (typeof db['tmp_user_to_groups'][user.id] === 'undefined' || !db['tmp_user_to_groups'][user.id]) {
-                helper.log("ldapwrapper.js", "no groups found for user", upName);
+                helper.log("database.js", "no groups found for user", upName);
                 db['tmp_user_to_groups'][user.id] = [];
             }
 
@@ -702,8 +702,7 @@ database.init = async function (callback) {
         callback();
     };
 
-    helper.log("database.js", "every", config.LDAP_SYNC_TIME, "minutes refreshDBentries()");
-    helper.error("database.js", "every", refreshInterval, "ms");
+    helper.forceLog("database.js", "every", refreshInterval, "ms refreshDBentries()");
 
     if (refreshInterval > 0)
         return setInterval(interval_func, refreshInterval);
