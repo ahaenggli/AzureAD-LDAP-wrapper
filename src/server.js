@@ -5,12 +5,18 @@ const helper = require('./helper');
 const auth = require('./graph.auth');
 const ldap = require('ldapjs');
 
-var tlsOptions = {};
+const srvOptions = {};
+
+if (config.LDAP_DEBUG) {
+    srvOptions.log = helper;
+}
 
 //TODO: add tls
-//if(config.LDAPS_CERTIFICATE && config.LDAPS_KEY)
-//tlsOptions = { certificate: helper.ReadFile(config.LDAPS_CERTIFICATE), key: helper.ReadFile(config.LDAPS_KEY) };
-const server = ldap.createServer(tlsOptions);
+if (config.LDAPS_CERTIFICATE && config.LDAPS_KEY) {
+    srvOptions.certificate = helper.ReadFile(config.LDAPS_CERTIFICATE);
+    srvOptions.key = helper.ReadFile(config.LDAPS_KEY);
+}
+const server = ldap.createServer(srvOptions);
 
 const database = require('./database');
 

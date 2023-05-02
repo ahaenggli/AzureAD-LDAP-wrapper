@@ -133,3 +133,4 @@ dist
 # custom
 /test/*.json
 /tests/*.json
+/certs/*

@@ -20,3 +20,4 @@ docs
 *.env-*
 coverage
 *.md
+certs

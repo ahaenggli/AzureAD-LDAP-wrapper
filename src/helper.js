@@ -28,7 +28,18 @@ helper.warn = function () {
     var parameters = Array.prototype.slice.call(arguments);
     warn.apply(console, ['WARN: ' + new Date().toISOString() + ": "].concat(parameters));
 };
-
+helper.trace = function () {
+    //if (config.LDAP_DEBUG) {
+    var parameters = Array.prototype.slice.call(arguments);
+    log.apply(console, ['TRACE: ' + new Date().toISOString() + ": "].concat(parameters));
+    //}
+};
+helper.debug = function () {
+    //if (config.LDAP_DEBUG) {
+    var parameters = Array.prototype.slice.call(arguments);
+    log.apply(console, ['DEBUG: ' + new Date().toISOString() + ": "].concat(parameters));
+    //}
+};
 helper.SaveJSONtoFile = function (content, file, encoding = 'utf8') {
     delete content["cn=subschema"];
     content = JSON.stringify(content, null, 2);
@@ -67,10 +78,10 @@ helper.ReadCSVfile = function (file, func = null, encoding = 'utf8', ignorelines
     return result;
 };
 
-// helper.ReadFile = function (file, encoding = 'utf8') {
-//     if (fs.existsSync(file)) return fs.readFileSync(file, encoding);
-//     else return "";
-// };
+helper.ReadFile = function (file, encoding = 'utf8') {
+    if (fs.existsSync(file)) return fs.readFileSync(file, encoding);
+    else return "";
+};
 
 helper.escapeLDAPspecialChars = function escapeLDAPspecialChars(str) {
     return str.replace(/[,=+<>#;\\]/g, '\\$&');

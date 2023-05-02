@@ -451,6 +451,8 @@ async function mergeAzureGroupEntries(db) {
             // overwrite values from before
             "cn": groupDisplayNameClean.toLowerCase(),
             "entryDN": gpName,
+            "member": [],
+            "memberUid": [],
             "displayName": groupDisplayName,
             "description": (group.description || ""),
             "sambaSID": generateSID(config.LDAP_SAMBA_USEAZURESID, 0, config.LDAP_SAMBASIDBASE, group_hash, group.securityIdentifier),
