@@ -399,6 +399,7 @@ async function mergeAzureGroupEntries(db) {
     }
 
     db['tmp_user_to_groups'] = [];
+    db['tmp_nested_groups'] = [];
 
     for (let i = 0, len = groups.length; i < len; i++) {
         let group = groups[i];
@@ -473,10 +474,31 @@ async function mergeAzureGroupEntries(db) {
 
         for (let t = 0, tlen = members.length; t < tlen; t++) {
             let member = members[t];
-            db['tmp_user_to_groups'][member.id] = db['tmp_user_to_groups'][member.id] || [];
-            db['tmp_user_to_groups'][member.id].push(gpName);
+            if (member['@odata.type'] == '#microsoft.graph.user') {
+                db['tmp_user_to_groups'][member.id] = db['tmp_user_to_groups'][member.id] || [];
+                db['tmp_user_to_groups'][member.id].push(gpName);
+            }
+            if (member['@odata.type'] == '#microsoft.graph.group') {
+                db['tmp_nested_groups'][member.id] = db['tmp_nested_groups'][member.id] || [];
+                db['tmp_nested_groups'][member.id].push(gpName);
+            }
         }
     }
+
+    for (let i = 0, len = groups.length; i < len; i++) {
+        let group = groups[i];
+        if (typeof db['tmp_nested_groups'][group.id] === 'undefined' || !db['tmp_nested_groups'][group.id]) {            
+            db['tmp_nested_groups'][group.id] = [];
+        }
+
+        for (let j = 0, jlen = db['tmp_nested_groups'][group.id].length; j < jlen; j++) {
+            let g = db['tmp_nested_groups'][group.id][j];
+            let gpName = Object.values(db).find(g => g.entryUUID === group.id && g.objectClass.includes('posixGroup')).entryDN;
+            if (db[g].member.indexOf(gpName) < 0) { db[g].member.push(gpName); }            
+        }
+    }
+
+    delete db['tmp_nested_groups'];
 }
 
 /**

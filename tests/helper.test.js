@@ -93,6 +93,18 @@ describe('helper tests debug = true', () => {
     expect(console.log).toHaveBeenCalled();
     expect(console.log).toHaveBeenCalledTimes(1);
     expect(console.log.mock.calls.toString()).toMatch(/(HELPER-FORCELOG)/i);
+
+    console.log.mockClear();
+    helper.trace("HELPER-TRACE");
+    expect(console.log).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.log.mock.calls.toString()).toMatch(/(HELPER-TRACE)/i);
+
+    console.log.mockClear();
+    helper.debug("HELPER-DEBUG");
+    expect(console.log).toHaveBeenCalled();
+    expect(console.log).toHaveBeenCalledTimes(1);
+    expect(console.log.mock.calls.toString()).toMatch(/(HELPER-DEBUG)/i);
   });
 
   test('misc', () => {
@@ -153,6 +165,14 @@ describe('helper tests debug = false', () => {
     helper.log("HELPER-LOG");
     expect(console.log).not.toHaveBeenCalled();
     expect(console.log).toHaveBeenCalledTimes(0);
+  });
+
+  test('readfile', () => {
+    expect(helper.ReadFile('nonExistent', 'ascii')).toBe('');
+    expect(helper.ReadFile('nonExistent')).toBe('');
+    expect(helper.ReadFile('./tests/azure.test.json', 'ascii')).not.toBe('');
+    expect(helper.ReadFile('./tests/azure.test.json')).not.toBe('');
+    
   });
 
   test('csv files without function', () => {

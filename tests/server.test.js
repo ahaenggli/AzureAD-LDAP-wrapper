@@ -96,6 +96,16 @@ describe('check server with LDAP_ANONYMOUSBIND=domain', () => {
             expect(entry.attributes).toEqual([{ "type": "namingContexts", "values": ["dc=domain,dc=tld"] }]);
         });
 
+        // ToDo: implement search for nested groups
+        // clientSearch(client, baseDN, {
+        //     filter: '&(uid=*)(memberOf:1.2.840.113556.1.4.1941:=cn=groupofothergroups,cn=groups,dc=domain,dc=tld)',
+        //     scope: 'sub',
+        //     attributes: ['dn', 'namingContexts']
+        // }, (entry) => {
+        //     console.log(entry);
+        //     // expect(entry.attributes).toEqual([{ "type": "namingContexts", "values": ["dc=domain,dc=tld"] }]);
+        // });
+        
         clientSearch(client, 'dc=domain,dc=net', {
             filter: '(&(objectClass=*))',
             scope: 'sub',
