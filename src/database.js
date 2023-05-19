@@ -135,7 +135,17 @@ function mergeDnBase(db) {
     renameEntryByUUID(db, 'e927be8d-aab8-42f2-80c3-b2762415aed1', config.LDAP_BASEDN);
 
     db[config.LDAP_BASEDN] = {
-        // default values
+        // default values     
+        "objectClass": "domain",
+        "dc": config.LDAP_BASEDN.replace('dc=', '').split(",")[0],
+        "entryDN": config.LDAP_BASEDN,
+        "entryUUID": "e927be8d-aab8-42f2-80c3-b2762415aed1",
+        "namingContexts": config.LDAP_BASEDN,
+        "structuralObjectClass": "domain",
+        "hasSubordinates": "TRUE",
+        "subschemaSubentry": "cn=subschema",
+        "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
+        "modifyTimestamp": helper.ldap_now() + "Z",
         "createTimestamp": helper.ldap_now() + "Z",
 
         // merge existing values
@@ -487,14 +497,12 @@ async function mergeAzureGroupEntries(db) {
 
     for (let i = 0, len = groups.length; i < len; i++) {
         let group = groups[i];
-        if (typeof db['tmp_nested_groups'][group.id] === 'undefined' || !db['tmp_nested_groups'][group.id]) {            
-            db['tmp_nested_groups'][group.id] = [];
-        }
-
-        for (let j = 0, jlen = db['tmp_nested_groups'][group.id].length; j < jlen; j++) {
-            let g = db['tmp_nested_groups'][group.id][j];
-            let gpName = Object.values(db).find(g => g.entryUUID === group.id && g.objectClass.includes('posixGroup')).entryDN;
-            if (db[g].member.indexOf(gpName) < 0) { db[g].member.push(gpName); }            
+        if (db['tmp_nested_groups'][group.id]) {
+            for (let j = 0, jlen = db['tmp_nested_groups'][group.id].length; j < jlen; j++) {
+                let g = db['tmp_nested_groups'][group.id][j];
+                let gpName = Object.values(db).find(g => g.entryUUID === group.id && g.objectClass.includes('posixGroup')).entryDN;
+                if (gpName && g !== gpName) { db[g].member.push(gpName); }
+            }
         }
     }
 
@@ -600,15 +608,13 @@ async function mergeAzureUserEntries(db) {
                 db['tmp_user_to_groups'][user.id] = [];
             }
 
-            // default `users`-group (may)
-            if (db['tmp_user_to_groups'][user.id].indexOf(config.LDAP_USERSGROUPSBASEDN) < 0) {
-                db['tmp_user_to_groups'][user.id].push(config.LDAP_USERSGROUPSBASEDN);
-            }
+            // add default `users`-group
+            db['tmp_user_to_groups'][user.id].push(config.LDAP_USERSGROUPSBASEDN);           
 
             for (let j = 0, jlen = db['tmp_user_to_groups'][user.id].length; j < jlen; j++) {
                 let g = db['tmp_user_to_groups'][user.id][j];
-                if (db[g].member.indexOf(upName) < 0) { db[g].member.push(upName); }
-                if (db[g].memberUid.indexOf(userPrincipalName) < 0) { db[g].memberUid.push(userPrincipalName); }
+                db[g].member.push(upName);
+                db[g].memberUid.push(userPrincipalName);
             }
 
             db[upName] = {

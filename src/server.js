@@ -4,6 +4,7 @@ const config = require('./config');
 const helper = require('./helper');
 const auth = require('./graph.auth');
 const ldap = require('ldapjs');
+// const Attribute = require('@ldapjs/attribute');
 
 const srvOptions = {};
 
@@ -367,6 +368,9 @@ server.search(SUFFIX, authorize, (req, res, next) => {
     }
     catch (error) {
         helper.error("server.js", "server.search", error);
+        // res.end();
+        // return next(new ldap.InvalidAttriubteSyntaxError());
+        return next(new ldap.ProtocolError('maybe invalid search syntax?'));
     }
 });
 
@@ -387,8 +391,9 @@ server.compare(SUFFIX, authorize, (req, res, next) => {
         return next(new ldap.NoSuchAttributeError(req.attribute));
 
     var matches = false;
-    const vals = db[dn][req.attribute];
-    for (const value of vals) {
+    const vals = Array.isArray(db[dn][req.attribute]) ? db[dn][req.attribute] : [db[dn][req.attribute]];
+    
+    for (const value of vals) {        
         if (value === req.value) {
             matches = true;
             break;
@@ -407,14 +412,18 @@ server.add(SUFFIX, authorize, (req, res, next) => {
         helper.error("server.js", "add", "EntryAlreadyExistsError", dn);
         return next(new ldap.EntryAlreadyExistsError(dn));
     }
+    
+    const attributes = req.pojo.attributes;    
+    db[dn] = {};
 
-    db[dn] = Object.assign({}, req.toObject().attributes);
-    for (var key in db[dn]) {
-        if (['objectclass', 'memberuid', 'member', 'memberof'].indexOf(key.toLowerCase()) === -1 && db[dn][key].length == 1) {
-            db[dn][key] = db[dn][key][0];
-        }
+    for (var att of attributes) {             
+        db[dn][att.type] = att.values;
+
+        if (['objectclass', 'memberuid', 'member', 'memberof'].indexOf(att.type.toLowerCase()) === -1 && db[dn][att.type].length == 1) {
+            db[dn][att.type] = db[dn][att.type][0];
+         }
     }
-
+    
     helper.SaveJSONtoFile(db, config.LDAP_DATAFILE);
     res.end();
     return next();
@@ -547,10 +556,12 @@ server.modify(SUFFIX, authorize, (req, res, next) => {
 
 /* ldapjs modify entries: ENDE */
 
+/* istanbul ignore next */
 server.on("error", (error) => {
     helper.error("server.js", "!!! error !!!", error);
 });
 
+/* istanbul ignore next */
 server.on("uncaughtException", (error) => {
     helper.error("server.js", "!!! uncaughtException !!!", error);
 });

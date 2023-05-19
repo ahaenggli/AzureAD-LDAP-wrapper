@@ -168,9 +168,6 @@ describe('check server with LDAP_ANONYMOUSBIND=none', () => {
         }
     });
 
-
-
-
     test('bind someone wrong', (done) => {
         const client = ldap.createClient({ url: ['ldap://127.0.0.1:13388'] });
         const baseDN = 'dc=domain,dc=tld';

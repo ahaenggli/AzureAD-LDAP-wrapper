@@ -34,6 +34,7 @@ As a result, existing customizers (mapped `/app/customizer/ldap_customizer.js`) 
 - Environment variables now checked at startup
 - TenantId, AppId, AppSecret, and AppPermissions in Graph API are now checked at startup
 - Added ability to specify AZURE_ENDPOINT, GRAPH_ENDPOINT, and GRAPH_API_VERSION variables
+- Nested groups are partially supported. They are added as members of other groups, but no filter query like `:1.2.840.113556.1.4.1941:` is implemented yet.
 
 ## [1.8.2] - 2022-09-25
 
