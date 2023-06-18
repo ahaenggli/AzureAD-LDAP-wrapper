@@ -36,5 +36,5 @@ WORKDIR /app
 COPY --chown=node:node --from=build /app /app
 
 EXPOSE 13389
-RUN ["chmod", "+x", "./entrypoint.sh"]
-ENTRYPOINT ["./entrypoint.sh"]
+RUN ["chmod", "+x", "/app/entrypoint.sh"]
+ENTRYPOINT ["/app/entrypoint.sh"]

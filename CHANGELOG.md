@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+## [2.0.0] - 2023-06-18
+
 ### Changed
 
 - Updated minimum required Node version to v17 (--openssl-legacy-provider for md4 in sambaNTPassword)
@@ -253,6 +255,7 @@ if set to true and the login is failed, the login is retried against the sambaNT
 - Container on hub.docker.cm
 
 [Unreleased]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/projects/1
+[2.0.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v2.0.0
 [1.8.2]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.8.2
 [1.8.1]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.8.1
 [1.8.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.8.0
