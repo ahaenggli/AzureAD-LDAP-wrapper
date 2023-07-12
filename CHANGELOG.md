@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+### Changed
+
+- Set ConsistencyLevel to eventual to enable the use of advanced queries and filters.
+- Set $count parameter to to true for fetching users and groups, allowing the use of advanced queries and filters.
+
+### Fixed
+
+- Include specific error from the Graph API as graphErrorDetail instead of displaying only 'Request failed with status code 400' to failing fetching requests.
+
 ## [2.0.0] - 2023-06-18
 
 ### Changed

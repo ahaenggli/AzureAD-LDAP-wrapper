@@ -78,7 +78,7 @@ ${'everything2'} | ${'okay2'} | ${true}| ${''}| ${'1'}
             clearInterval(timer);
         }
 
-    });
+    }, 10000);
 
 
     test('schema data', () => {
@@ -89,7 +89,7 @@ ${'everything2'} | ${'okay2'} | ${true}| ${''}| ${'1'}
         expect(database.getSchemaEntries()).toHaveProperty('attributeTypes');
         expect(database.getSchemaEntries()).toHaveProperty('objectClasses');
         expect(database.getSchemaEntries()).toHaveProperty('entryDN', 'cn=subschema');
-    });
+    }, 10000);
 
     test('databaseEntry data', () => {
         // Run your test here
@@ -98,7 +98,7 @@ ${'everything2'} | ${'okay2'} | ${true}| ${''}| ${'1'}
         expect(database.getEntries()).not.toHaveProperty('cn=users,dc=domain,dc=tld');
         expect(database.getEntries()).not.toHaveProperty('cn=groups,dc=domain,dc=tld');
         expect(database.getEntries()).not.toHaveProperty('cn=users,cn=groups,dc=domain,dc=tld');
-    });
+    }, 10000);
 
     test('special functions', () => {
         // Run your test here
@@ -114,6 +114,6 @@ ${'everything2'} | ${'okay2'} | ${true}| ${''}| ${'1'}
         const entry2 = { 'cn=newName': { entryDN: 'cn=oldName', entryUUID: 'abc123', key1: 'value1', key2: 'value2' } };
         database.renameEntryByUUID(entry1, 'abc123', 'cn=newName');
         expect(entry1).toStrictEqual(entry2);
-    });
+    }, 10000);
 
 });

@@ -100,7 +100,7 @@ async function checkApp() {
 async function checkPermissions(token) {
     let cPermissions = true;
 
-    const groupCount = await fetch.callApi(fetch.apiConfig.gri + "&$count=true", token, {}, false);
+    const groupCount = await fetch.callApi(fetch.apiConfig.gri, token, {}, false);
     const errGroup = groupCount.response || { status: null, statusText: null, data: groupCount };
     if (errGroup.data.hasOwnProperty("error")) {
         cPermissions = false;
@@ -110,7 +110,7 @@ async function checkPermissions(token) {
         );
     }
 
-    const userCount = await fetch.callApi(fetch.apiConfig.uri + "&$count=true", token, {}, false);
+    const userCount = await fetch.callApi(fetch.apiConfig.uri, token, {}, false);
     const errUser = userCount.response || { status: null, statusText: null, data: userCount };
     if (errUser.data.hasOwnProperty("error")) {
         cPermissions = false;
