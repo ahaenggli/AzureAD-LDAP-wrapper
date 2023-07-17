@@ -27,7 +27,7 @@ fetch.apiConfig = customizer.modifyGraphApiConfig(fetch.apiConfig, config.GRAPH_
 
 
 if (proxyUrl != "") {
-    const HttpsProxyAgent = require('https-proxy-agent');
+    const HttpsProxyAgent = require('https-proxy-agent').HttpsProxyAgent;
     axios.defaults.proxy = false;
     axios.defaults.httpsAgent = new HttpsProxyAgent(proxyUrl);
 }

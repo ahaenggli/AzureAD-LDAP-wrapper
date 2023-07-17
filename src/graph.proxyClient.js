@@ -7,7 +7,7 @@
 
 const helper = require('./helper');
 const axios = require('axios');
-const HttpsProxyAgent = require('https-proxy-agent');
+const HttpsProxyAgent = require('https-proxy-agent').HttpsProxyAgent;
 
 const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY;
 

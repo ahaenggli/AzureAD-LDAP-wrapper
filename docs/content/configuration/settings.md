@@ -53,11 +53,15 @@ Warning: This feature is only experimental and may not work in all cases. Please
 
 ### LDAP_DOMAIN
 
-main domain
+Your domain, for example `domain.tld`
 
-### LDAP_BASEDN
+### LDAP_BASEDN (optional)
 
-basedn
+The LDAP_BASEDN parameter allows you to specify the base DN (Distinguished Name) for your LDAP server. If this parameter is not provided, the base DN is automatically generated based on the LDAP_DOMAIN value.
+
+For example, if your LDAP_DOMAIN is domain.tld, the generated base DN would be dc=domain,dc=tld. Similarly, if your LDAP_DOMAIN is intra.domain.tld, the generated base DN would be dc=intra,dc=domain,dc=tld.
+
+By specifying the LDAP_BASEDN, you have the flexibility to customize the base DN according to your LDAP server configuration and organizational structure.
 
 ### LDAP_SAMBADOMAINNAME (optional)
 

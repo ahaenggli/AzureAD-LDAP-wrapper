@@ -4,7 +4,7 @@ title: Run the LDAP-wrapper
 
 
 The preferred way to use the LDAP wrapper is with Docker. Alternatively, the source can be downloaded and started manually with npm/node.
-As domain and basedn it is recommended to use the same as used in AzureAD tenant (e.g. `@domain.tld`). This way, the spelling of the users (e.g. `username@domain.tld`) will match at the end. Otherwise, your users will have to use `username@example.com` instead of the estimated `username@domain.tld`, for example.
+As domain (and basedn, if manually specified) it is recommended to use the same as used in AzureAD tenant (e.g. `@domain.tld`). This way, the spelling of the users (e.g. `username@domain.tld`) will match at the end. Otherwise, your users will have to use `username@example.com` instead of the estimated `username@domain.tld`, for example.
 
 {{< hint type=note >}}
 The API results and a local copy of the LDAP entries are stored as JSON files inside the container at this path: `/app/.cache`  
@@ -43,7 +43,6 @@ Use "bridge" as your network.
     AZURE_APP_ID: "abc12345-ab01-0000-1111-a1e1eab9d6dd"
     AZURE_APP_SECRET: "iamasecret~yep-reallyreallysecret"
     LDAP_DOMAIN: "example.com"
-    LDAP_BASEDN: "dc=example,dc=com"
     LDAP_BINDUSER: "ldapsearch|*secretldapsearch123*||root|*secretroot*"
     LDAP_DEBUG: "false" # set this to true for more logs
     GRAPH_IGNORE_MFA_ERRORS: "false" # set this to true to bypass MFA
@@ -75,7 +74,6 @@ docker run -d `
 -e AZURE_APP_SECRET="iamasecret~yep-reallyreallysecret" `
 -e GRAPH_IGNORE_MFA_ERRORS="false" `
 -e LDAP_DOMAIN="example.com" `
--e LDAP_BASEDN="dc=example,dc=com" `
 -e LDAP_BINDUSER="root|mystrongpw||ldapsearch|ldapsearchpw123" `
 ahaen/azuread-ldap-wrapper:latest
 ```
@@ -96,7 +94,6 @@ services:
       AZURE_APP_ID: "abc12345-ab01-0000-1111-a1e1eab9d6dd"
       AZURE_APP_SECRET: "iamasecret~yep-reallyreallysecret"
       LDAP_DOMAIN: "example.com"
-      LDAP_BASEDN: "dc=example,dc=com"
       LDAP_BINDUSER: "ldapsearch|ldapsearch123"
       # LDAP_DEBUG: "true"
       # GRAPH_IGNORE_MFA_ERRORS: "true"
@@ -129,7 +126,6 @@ services:
       AZURE_APP_ID: "abc12345-ab01-0000-1111-a1e1eab9d6dd"
       AZURE_APP_SECRET: "iamasecret~yep-reallyreallysecret"
       LDAP_DOMAIN: "example.com"
-      LDAP_BASEDN: "dc=example,dc=com"
       LDAP_BINDUSER: "root|root123||ldapsearch|ldapsearch123"
       # LDAP_DEBUG: "true"
       # GRAPH_IGNORE_MFA_ERRORS: "true"
@@ -153,7 +149,6 @@ AZURE_APP_SECRET="iamasecret~yep-reallyreallysecret"
 # GRAPH_IGNORE_MFA_ERRORS="false"
 # Settings for your LDAP server
 LDAP_DOMAIN="example.com"
-LDAP_BASEDN="dc=example,dc=com"
 LDAP_BINDUSER="root|mystrongpw||ldapsearch|ldapsearchpw123"
 ```
 

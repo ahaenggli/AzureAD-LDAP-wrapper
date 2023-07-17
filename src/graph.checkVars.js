@@ -6,7 +6,7 @@ const axios = require('axios');
 const proxyUrl = (process.env.HTTPS_PROXY || process.env.HTTP_PROXY || "");
 
 if (proxyUrl != "") {
-    const HttpsProxyAgent = require('https-proxy-agent');
+    const HttpsProxyAgent = require('https-proxy-agent').HttpsProxyAgent;
     axios.defaults.proxy = false;
     axios.defaults.httpsAgent = new HttpsProxyAgent(proxyUrl);
 }
