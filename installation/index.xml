@@ -22,8 +22,7 @@ An Azure AD user account. If you don&amp;rsquo;t already have one, you can creat
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/</guid>
-      <description>The preferred way to use the LDAP wrapper is with Docker. Alternatively, the source can be downloaded and started manually with npm/node. As domain and basedn it is recommended to use the same as used in AzureAD tenant (e.g. @domain.tld). This way, the spelling of the users (e.g. username@domain.tld) will match at the end. Otherwise, your users will have to use username@example.com instead of the estimated username@domain.tld, for example.
-The API results and a local copy of the LDAP entries are stored as JSON files inside the container at this path: /app/.</description>
+      <description>The preferred way to use the LDAP wrapper is with Docker. Alternatively, the source can be downloaded and started manually with npm/node. As domain (and basedn, if manually specified) it is recommended to use the same as used in AzureAD tenant (e.g. @domain.tld). This way, the spelling of the users (e.g. username@domain.tld) will match at the end. Otherwise, your users will have to use username@example.com instead of the estimated username@domain.tld, for example.</description>
     </item>
     
     <item>
