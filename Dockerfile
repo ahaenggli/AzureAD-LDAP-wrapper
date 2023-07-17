@@ -13,7 +13,6 @@ RUN apk add --no-cache tini su-exec
 
 ENV NODE_ENV "production"
 ENV LDAP_DOMAIN "example.com"
-ENV LDAP_BASEDN "dc=example,dc=com"
 ENV LDAP_BINDUSER "username|password"
 ENV LDAP_PORT "13389"
 ENV LDAP_DEBUG "false"
