@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Include specific error from the Graph API as graphErrorDetail instead of displaying only 'Request failed with status code 400' to failing fetching requests.
+- Detection of external users (#61)
 
 ## [2.0.0] - 2023-06-18
 
