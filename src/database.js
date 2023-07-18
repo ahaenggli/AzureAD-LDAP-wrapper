@@ -529,14 +529,14 @@ async function mergeAzureUserEntries(db) {
         let userPrincipalName = user.userPrincipalName;
         let AzureADuserExternal = 0;
 
-        let isGuestUser = (user.userType == "Guest");
+        let isGuestOrExternalUser = (user.userType == "Guest") || user.identities.filter(x => x.hasOwnProperty('issuer') && x.issuer == 'ExternalAzureAD').length > 0;
         let isExternalUserStateAccepted = (user.externalUserState == "Accepted");
-        let isMicrosoftAccount = (isGuestUser && user.hasOwnProperty('identities') &&
+        let isMicrosoftAccount = (isGuestOrExternalUser && user.hasOwnProperty('identities') &&
             user.identities.filter(x => x.hasOwnProperty('issuer') && x.issuer == 'ExternalAzureAD')
                 .length == 0);
 
         // guest has not joined (yet) - so we cannot know if the user has a login for MicrosoftAccount or ExternalAzureAD 
-        if (isGuestUser && !isExternalUserStateAccepted) {
+        if (isGuestOrExternalUser && !isExternalUserStateAccepted) {
             helper.warn("database.js", "mergeAzureUserEntries", 'Guest user (#EXT#) has not yet accepted invitation',
                 {
                     mail: user.mail,
@@ -556,7 +556,7 @@ async function mergeAzureUserEntries(db) {
         else {
 
             // try handling "#EXT#"-user
-            if (isGuestUser && user.hasOwnProperty('mail')) {
+            if (isGuestOrExternalUser && user.hasOwnProperty('mail')) {
                 let old_userPrincipalName = user.userPrincipalName;
                 user.userPrincipalName = user.mail;
                 if (userPrincipalName.indexOf("#EXT#") > -1) {
