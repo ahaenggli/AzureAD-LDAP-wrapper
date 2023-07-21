@@ -49,7 +49,7 @@ There are several ways to define MFA, but only some of them allows you to disabl
 <meta property="article:section" content="Configuration" />
     <meta
       property="article:modified_time"
-      content="2023-03-04T20:54:20+01:00"
+      content="2023-07-21T12:16:16+02:00"
     />
 
 
@@ -69,7 +69,7 @@ There are several ways to define MFA, but only some of them allows you to disabl
       "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/bypass-mfa/",
       "headline": "Bypass MFA",
       "description": "Officially MFA is not supported by this LDAP-wrapper. The login for users with activated MFA simply fails, as mentioned here and here. There is no interactive window to enter another factor, and LDAP does not support this either. If you need to use this LDAP-wrapper despite of activated MFA, there are two options:\nDisable MFA for this application in AzureAD (preferred).\nThere are several ways to define MFA, but only some of them allows you to disable MFA.",
-      "wordCount" : "350",
+      "wordCount" : "359",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -80,7 +80,7 @@ There are several ways to define MFA, but only some of them allows you to disabl
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2023-03-04T20:54:20.00Z",
+      "dateModified": "2023-07-21T12:16:16.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "AzureAD-LDAP-wrapper",
@@ -1159,7 +1159,7 @@ If a login fails due to this MFA method, the error code is AADSTS50076.</li>
 <a
   class="gdoc-markdown__link"
   href="https://learn.microsoft.com/en-us/azure/active-directory/conditional-access/howto-conditional-access-policy-all-users-mfa"
->Conditional Access</a> can be used to require MFA for some or all the users. This is the most flexible way to activate MFA, but it is a premium feature. The settings allows to exclude certain apps. If a login fails due to this MFA method, the error code is AADSTS50079, too. As a simple workaround, the app used by the LDAP-wrapper can be excluded:
+>Conditional Access</a> can be used to require MFA for some or all the users. This is the most flexible way to activate MFA, but it is a premium feature. The settings allows to exclude certain apps. If a login fails due to this MFA method, the error codea are either AADSTS50158 (for external MFA like Duo) or also AADSTS50079. As a simple workaround, the app used by the LDAP-wrapper can be excluded:
 <ul>
 <li>Add a URL in the app (e.g. &ldquo;https://localhost&rdquo;)
 <img
@@ -1180,7 +1180,7 @@ If a login fails due to this MFA method, the error code is AADSTS50076.</li>
 <li>
 <p>Let the LDAP-wrapper internally treat some MFA/2FA related error codes as a successful login.<br>
 There is an experimental feature to <em><strong>bypass</strong></em> MFA/2FA. It must be manually enabled by setting the the env var <code>GRAPH_IGNORE_MFA_ERRORS</code> to true.<br>
-Even if the env var is set to true, the login attempt appears as &ldquo;Failure&rdquo; in the AzureAD sign-in logs due to MFA/2FA. Only the LDAP wrapper internally treats some MFA/2FA-related error codes as successful logins. Specifically, these are the error codes AADSTS50076 and AADSTS50079, as mentioned above.</p>
+Even if the env var is set to true, the login attempt appears as &ldquo;Failure&rdquo; in the AzureAD sign-in logs due to MFA/2FA. Only the LDAP wrapper internally treats some MFA/2FA-related error codes as successful logins. Specifically, these are the error codes AADSTS50076, AADSTS50079 and AADSTS50158, as mentioned above.</p>
 </li>
 </ol>
 
