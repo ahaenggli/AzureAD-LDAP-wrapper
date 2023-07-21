@@ -541,7 +541,7 @@ async function mergeAzureUserEntries(db) {
                 {
                     mail: user.mail,
                     userPrincipalName: user.userPrincipalName,
-                    info: 'RPOC is not possible for Guest usery without accepted invitation'
+                    info: 'RPOC is not possible for Guest user without accepted invitation'
                 });
         }
         // ignore personal microsoft accounts, because RPOC is not possible 

@@ -123,7 +123,7 @@ auth.loginWithUsernamePassword = async function loginWithUsernamePassword(userna
             helper.error('graph_azuread.js', "loginWithUsernamePassword", error);
         }
         // if MFA-related errors can be ignored, handle AADSTS50076 (Security defaults) and AADSTS50079 (Per-user MFA, Conditional Access) as successful logins
-        else if (config.GRAPH_IGNORE_MFA_ERRORS && (error.toString().includes("AADSTS50076") || error.toString().includes("AADSTS50079"))) {
+        else if (config.GRAPH_IGNORE_MFA_ERRORS && (error.toString().includes("AADSTS50076") || error.toString().includes("AADSTS50079") || error.toString().includes("AADSTS50158"))) {
             helper.log('graph_azuread.js', "loginWithUsernamePassword", { info: "MFA ignored", username: username, details: error });
             checkCredentials = 1;
         }
