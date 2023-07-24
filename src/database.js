@@ -600,8 +600,17 @@ async function mergeAzureUserEntries(db) {
             renameEntryByUUID(db, user.id, upName);
 
             let user_hash = (db[upName] && db[upName].hasOwnProperty('uidNumber')) ? (db[upName].uidNumber.toString()) : Math.abs(encode().value(user.id)).toString();
-            let sambaNTPassword = (db[upName] && db[upName].hasOwnProperty('sambaNTPassword')) ? db[upName].sambaNTPassword : "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
-            let sambaPwdLastSet = (db[upName] && db[upName].hasOwnProperty('sambaPwdLastSet')) ? db[upName].sambaPwdLastSet : 0;
+
+            let sambaNTPassword = (
+                db[upName] &&
+                db[upName].hasOwnProperty('sambaNTPassword') &&
+                user.accountEnabled
+            ) ? db[upName].sambaNTPassword : "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+            let sambaPwdLastSet = (
+                db[upName] &&
+                db[upName].hasOwnProperty('sambaPwdLastSet') &&
+                user.accountEnabled
+            ) ? db[upName].sambaPwdLastSet : 0;
 
             if (typeof db['tmp_user_to_groups'][user.id] === 'undefined' || !db['tmp_user_to_groups'][user.id]) {
                 helper.log("database.js", "no groups found for user", upName);
@@ -647,9 +656,7 @@ async function mergeAzureUserEntries(db) {
                 "memberOf": db['tmp_user_to_groups'][user.id],
                 "sambaAcctFlags": "[U          ]",
                 "sambaLMPassword": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-                "sambaNTPassword": sambaNTPassword,
                 "sambaPasswordHistory": "0000000000000000000000000000000000000000000000000000000000000000",
-                "sambaPwdLastSet": sambaPwdLastSet,
                 //"sambaSID": "S-1-5-21-" + user_hash + "-" + user_hash + "-" + user_hash,
                 "sambaSID": generateSID(config.LDAP_SAMBA_USEAZURESID, 1, config.LDAP_SAMBASIDBASE, user_hash, user.id),
                 "sambaPrimaryGroupSID": db[config.LDAP_USERSGROUPSBASEDN].sambaSID,
@@ -682,6 +689,8 @@ async function mergeAzureUserEntries(db) {
                 "uid": userPrincipalName,
                 "displayName": user.displayName,
                 "sambaSID": generateSID(config.LDAP_SAMBA_USEAZURESID, 1, config.LDAP_SAMBASIDBASE, user_hash, user.id),
+                "sambaNTPassword": sambaNTPassword,
+                "sambaPwdLastSet": sambaPwdLastSet,
                 "sAMAccountName": userPrincipalName,
                 "givenName": user.givenName,
                 "sn": user.surname,
