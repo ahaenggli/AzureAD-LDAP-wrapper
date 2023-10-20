@@ -156,7 +156,7 @@ describe('check server with LDAP_ANONYMOUSBIND=none', () => {
                 filter: '(&(objectClass=*)(cn=abc102))',
                 scope: 'sub',
                 attributes: ['sambaNTPassword']
-            }, (entry) => {
+            }, (entry) => {                
                 expect(entry.attributes[0].values[0]).not.toEqual('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
             });
 

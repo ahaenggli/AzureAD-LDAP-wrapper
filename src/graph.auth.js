@@ -10,6 +10,15 @@ const TOKEN_ENDPOINT = `${config.AZURE_ENDPOINT}/${config.AZURE_TENANTID}/`;
 
 const auth = {};
 
+if (msal.LogLevel == undefined) {
+    msal.LogLevel = {
+        Error: 0,
+        Warning: 1,
+        Info: 2,
+        Verbose: 3,
+        Trace: 4,
+    };
+}
 // Scope to get a ConfidentialClientApplication Token 
 auth.tokenRequest = {
     scopes: [`${config.GRAPH_ENDPOINT}/.default`],

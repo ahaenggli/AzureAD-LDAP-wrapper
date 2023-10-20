@@ -10,6 +10,14 @@ const originalEnv = process.env;
 const msal = require('@azure/msal-node');
 jest.mock('@azure/msal-node');
 
+msal.LogLevel = {
+    Error: 0,
+    Warning: 1,
+    Info: 2,
+    Verbose: 3,
+    Trace: 4,
+};
+
 var graph_auth;
 
 const usernamePasswordRequest = {
