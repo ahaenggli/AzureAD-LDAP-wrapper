@@ -12,12 +12,11 @@
 <meta name="generator" content="Hugo 0.111.1">
 
 
-  <meta name="description" content="There are a few things you should definitely keep in mind:
-Restrict access through a firewall. Do NOT allow everyone in your network access to the LDAP-wrapper.
-Only your (local hosted) applications or your NAS should have access.
-An LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all. Therefore, some queries can be run as anonymous by default." />
+  <meta name="description" content="Portainer supports LDAP authentication, allowing users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication over LDAP-wrapper with Portainer.
+Prerequisites Settings for Portainer LDAP Authentication with LDAP-wrapper LDAP Configuration LDAP Security User Search Configurations Prerequisites Before configuring LDAP authentication for Portainer, ensure the following prerequisites are met:
+LDAP-wrapper: Make sure you have a working LDAP-wrapper. Portainer: Install and set up a working instance of Portainer." />
 
-    <title>3. Security | AzureAD-LDAP-wrapper</title>
+    <title>6.1 Portainer | AzureAD-LDAP-wrapper</title>
 
     <link rel="icon" type="image/svg+xml" href="/AzureAD-LDAP-wrapper/favicon/favicon.svg" />
 <link
@@ -38,17 +37,16 @@ An LDAP search on the NAS must be possible without any authentication in order t
     
   <meta
     property="og:title"
-    content="3. Security"
+    content="6.1 Portainer"
   />
   <meta property="og:site_name" content="AzureAD-LDAP-wrapper" />
-  <meta property="og:description" content="There are a few things you should definitely keep in mind:
-Restrict access through a firewall. Do NOT allow everyone in your network access to the LDAP-wrapper.
-Only your (local hosted) applications or your NAS should have access.
-An LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all. Therefore, some queries can be run as anonymous by default." />
+  <meta property="og:description" content="Portainer supports LDAP authentication, allowing users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication over LDAP-wrapper with Portainer.
+Prerequisites Settings for Portainer LDAP Authentication with LDAP-wrapper LDAP Configuration LDAP Security User Search Configurations Prerequisites Before configuring LDAP authentication for Portainer, ensure the following prerequisites are met:
+LDAP-wrapper: Make sure you have a working LDAP-wrapper. Portainer: Install and set up a working instance of Portainer." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/" />
+<meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/" />
 
-<meta property="article:section" content="Security" />
+<meta property="article:section" content="Usage" />
     <meta
       property="article:modified_time"
       content="2024-01-11T15:18:30+01:00"
@@ -56,28 +54,27 @@ An LDAP search on the NAS must be possible without any authentication in order t
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="3. Security" />
-  <meta name="twitter:description" content="There are a few things you should definitely keep in mind:
-Restrict access through a firewall. Do NOT allow everyone in your network access to the LDAP-wrapper.
-Only your (local hosted) applications or your NAS should have access.
-An LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all. Therefore, some queries can be run as anonymous by default." />
+<meta name="twitter:title" content="6.1 Portainer" />
+  <meta name="twitter:description" content="Portainer supports LDAP authentication, allowing users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication over LDAP-wrapper with Portainer.
+Prerequisites Settings for Portainer LDAP Authentication with LDAP-wrapper LDAP Configuration LDAP Security User Search Configurations Prerequisites Before configuring LDAP authentication for Portainer, ensure the following prerequisites are met:
+LDAP-wrapper: Make sure you have a working LDAP-wrapper. Portainer: Install and set up a working instance of Portainer." />
 
 
   <script type="application/ld+json">
   {
       "@context": "http://schema.org",
       "@type": "TechArticle",
-      "articleSection": "Security",
-      "name": "3. Security",
-      "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/",
-      "headline": "3. Security",
-      "description": "There are a few things you should definitely keep in mind:\nRestrict access through a firewall. Do NOT allow everyone in your network access to the LDAP-wrapper.\nOnly your (local hosted) applications or your NAS should have access.\nAn LDAP search on the NAS must be possible without any authentication in order to be able to select the domain\/baseDN at all. Therefore, some queries can be run as anonymous by default.",
-      "wordCount" : "396",
+      "articleSection": "Usage",
+      "name": "6.1 Portainer",
+      "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/",
+      "headline": "6.1 Portainer",
+      "description": "Portainer supports LDAP authentication, allowing users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication over LDAP-wrapper with Portainer.\nPrerequisites Settings for Portainer LDAP Authentication with LDAP-wrapper LDAP Configuration LDAP Security User Search Configurations Prerequisites Before configuring LDAP authentication for Portainer, ensure the following prerequisites are met:\nLDAP-wrapper: Make sure you have a working LDAP-wrapper. Portainer: Install and set up a working instance of Portainer.",
+      "wordCount" : "223",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/"
+          "@id": "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/"
       },
       "copyrightHolder" : "AzureAD-LDAP-wrapper",
       "copyrightYear" : "0001",
@@ -161,7 +158,7 @@ An LDAP search on the NAS must be possible without any authentication in order t
   href="/AzureAD-LDAP-wrapper/custom.css"
   media="all"
 />
-  <link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/" rel="canonical" type="text/html" />
+  <link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/" rel="canonical" type="text/html" />
 
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -823,7 +820,7 @@ An LDAP search on the NAS must be possible without any authentication in order t
                 
                 <a
                   href="/AzureAD-LDAP-wrapper/security"
-                  class="gdoc-nav__entry is-active"
+                  class="gdoc-nav__entry"
                 >
                   4. Security
                 </a>
@@ -963,7 +960,7 @@ An LDAP search on the NAS must be possible without any authentication in order t
                 
                 <a
                   href="/AzureAD-LDAP-wrapper/usage/portainer"
-                  class="gdoc-nav__entry"
+                  class="gdoc-nav__entry is-active"
                 >
                   6.1 Portainer
                 </a>
@@ -1291,7 +1288,15 @@ An LDAP search on the NAS must be possible without any authentication in order t
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/' href='/AzureAD-LDAP-wrapper/'><span itemprop='name'>LDAP-wrapper for Microsoft Entra ID</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>3. Security</span><meta itemprop='position' content='3' /></li>
+    
+    
+    
+    
+  
+  
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/' href='/AzureAD-LDAP-wrapper/'><span itemprop='name'>LDAP-wrapper for Microsoft Entra ID</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/usage/' href='/AzureAD-LDAP-wrapper/usage/'><span itemprop='name'>Usage examples</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>6.1 Portainer</span><meta itemprop='position' content='4' /></li>
+  
+
   
 
   
@@ -1307,50 +1312,92 @@ An LDAP search on the NAS must be possible without any authentication in order t
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    <h1>3. Security</h1>
-    <p><strong>There are a few things you should definitely keep in mind:</strong></p>
+    <h1>6.1 Portainer</h1>
+    <p>Portainer supports LDAP authentication, allowing users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication over LDAP-wrapper with Portainer.</p>
+<nav id="TableOfContents"><ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#settings-for-portainer-ldap-authentication-with-ldap-wrapper">Settings for Portainer LDAP Authentication with LDAP-wrapper</a>
+          <ul>
+            <li><a href="#ldap-configuration">LDAP Configuration</a></li>
+            <li><a href="#ldap-security">LDAP Security</a></li>
+            <li><a href="#user-search-configurations">User Search Configurations</a></li>
+          </ul>
+        </li>
+      </ul></nav>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="prerequisites">
+        Prerequisites
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/#prerequisites" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Prerequisites" aria-label="Anchor to: Prerequisites" href="#prerequisites">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
+<p>Before configuring LDAP authentication for Portainer, ensure the following prerequisites are met:</p>
+<ul>
+<li><strong>LDAP-wrapper</strong>: Make sure you have a working <a
+  class="gdoc-markdown__link"
+  href="https://github.com/ahaenggli/AzureAD-LDAP-wrapper/"
+>LDAP-wrapper</a>.</li>
+<li><strong>Portainer</strong>: Install and set up a working instance of <a
+  class="gdoc-markdown__link"
+  href="https://docs.portainer.io/start/install-ce"
+>Portainer</a>.</li>
+</ul>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="settings-for-portainer-ldap-authentication-with-ldap-wrapper">
+        Settings for Portainer LDAP Authentication with LDAP-wrapper
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/#settings-for-portainer-ldap-authentication-with-ldap-wrapper" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Settings for Portainer LDAP Authentication with LDAP-wrapper" aria-label="Anchor to: Settings for Portainer LDAP Authentication with LDAP-wrapper" href="#settings-for-portainer-ldap-authentication-with-ldap-wrapper">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
+<div class="gdoc-page__anchorwrap">
+    <h3 id="ldap-configuration">
+        LDAP Configuration
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/#ldap-configuration" class="gdoc-page__anchor clip flex align-center" title="Anchor to: LDAP Configuration" aria-label="Anchor to: LDAP Configuration" href="#ldap-configuration">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h3>
+</div>
+<ul>
+<li><strong>LDAP Server</strong>: Specify the IP or name of your NAS with Port 389.<br>
+Example: <code>192.168.1.2:389</code> or <code>my-nas-name.local:389</code></li>
+<li><strong>Reader DN</strong>: Set it to <code>uid=root</code>, matching an entry of your LDAP-wrapper environment variable <code>LDAP_BINDUSER</code>.</li>
+<li><strong>Password</strong>: Set it to the password corresponding to the entry in your LDAP-wrapper environment variable <code>LDAP_BINDUSER</code>.</li>
+</ul>
+<div class="gdoc-page__anchorwrap">
+    <h3 id="ldap-security">
+        LDAP Security
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/#ldap-security" class="gdoc-page__anchor clip flex align-center" title="Anchor to: LDAP Security" aria-label="Anchor to: LDAP Security" href="#ldap-security">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h3>
+</div>
+<ul>
+<li>Ensure that <code>StartTLS</code>, <code>Use TLS</code>, and <code>Skip verification</code> are set to off.</li>
+</ul>
+<div class="gdoc-page__anchorwrap">
+    <h3 id="user-search-configurations">
+        User Search Configurations
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/#user-search-configurations" class="gdoc-page__anchor clip flex align-center" title="Anchor to: User Search Configurations" aria-label="Anchor to: User Search Configurations" href="#user-search-configurations">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h3>
+</div>
 <ul>
 <li>
-<p>Restrict access through a firewall. Do <strong>NOT</strong> allow everyone in your network access to the LDAP-wrapper.<br>
-Only your (local hosted) applications or your NAS should have access.</p>
+<p><strong>Base DN</strong>: Define the base DN as <code>cn=users,dc=domain,dc=tld</code>.</p>
 </li>
 <li>
-<p>An LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all.
-Therefore, some queries can be run as anonymous by default. Data like domain/baseDN or schema can be fetched without authentication.
-Since this LDAP-wrapper is originally only meant to use my work account (Microsoft Entra Account) on a NAS, this is the default behaviour.
-You can change this via the env var <code>LDAP_ANONYMOUSBIND</code> if required.</p>
+<p><strong>Username Attribute</strong>: Specify <code>mail</code>.</p>
 </li>
 <li>
-<p>In order to use samba, the user credentials hashes are cached in the ldap attribute sambaNTPassword.<br>
-If you don&rsquo;t need samba, the cache can be disabled by setting <code>LDAP_SAMBANTPWD_MAXCACHETIME</code> to 0.<br>
-However, if you do not disable the cache, there is a special treatment for these hashed credentials. This handling can not be disabled.</p>
-<ul>
-<li>Superusers, as defined in <code>LDAP_BINDUSER</code>, can get all cached credentials.</li>
-<li>Each user has access to his own cached credential hash.</li>
-<li>In all other cases the attribute is returned with XXXX instead of the hash value.</li>
-</ul>
-</li>
-<li>
-<p>In cases such as network/internet issues or Microsoft Graph API / Entra ID not being reachable, the cached hash is used for authentication.<br>
-This can be a problem if the user has been deactivated in the meantime or the password would be invalid.
-The use of the cached password during authentication can be disabled by setting the <code>LDAP_ALLOWCACHEDLOGINONFAILURE</code> parameter to false.</p>
-</li>
-<li>
-<p>Using the experimental feature to bypass MFA/2FA<br>
-Officially MFA is not supported by this LDAP-wrapper. The login for users with activated MFA simply fails, as mentioned  <a
-  class="gdoc-markdown__link"
-  href="https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth-ropc"
->here</a> and <a
-  class="gdoc-markdown__link"
-  href="https://github.com/Azure/ms-rest-nodeauth/issues/93"
->here</a>.
-There is an experimental feature to <strong>bypass</strong> MFA/2FA. It must be manually enabled by setting the the env var <code>GRAPH_IGNORE_MFA_ERRORS</code> to true. Even if the env var is set to true, the login attempt appears as &ldquo;Failure&rdquo; in the Microsoft Entra ID sign-in logs due to MFA/2FA. It is only the LDAP-wrapper that internally treats some MFA/2FA related error codes as a successful login.</p>
-</li>
-<li>
-<p>Mapped docker volume<br>
-Be aware that other users with access on your file system may also be able to read the JSON files in the mounted docker path (/app/.cache) and thus get access to the cached sambaNTPassword attribute.</p>
+<p><strong>Filter</strong>: Use the following filter to restrict access:</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-plaintext" data-lang="plaintext"><span class="line"><span class="cl">(|(&amp;(uid=*)(memberOf=cn=users,cn=groups,dc=domain,dc=tld))(&amp;(cn=administrators)))
+</span></span></code></pre></div><p>This filter ensures that only users within the administrators group can log into Portainer.</p>
 </li>
 </ul>
+<p>Don&rsquo;t forget to save your LDAP-wrapper configuration. Now, users attempting to log into Portainer will be authenticated against your LDAP directory. Only users within the administrators group, as specified in the LDAP filter, will be allowed access to Portainer.</p>
 
   </article>
 
@@ -1617,9 +1664,6 @@ Be aware that other users with access on your file system may also be able to re
       
 
       
-        
-        
-      
 
       
     
@@ -1641,9 +1685,6 @@ Be aware that other users with access on your file system may also be able to re
       
       
 
-      
-        
-        
       
 
       
@@ -1699,6 +1740,9 @@ Be aware that other users with access on your file system may also be able to re
       
 
       
+        
+        
+      
 
       
     
@@ -1720,6 +1764,9 @@ Be aware that other users with access on your file system may also be able to re
       
       
 
+      
+        
+        
       
 
       
@@ -1767,11 +1814,11 @@ Be aware that other users with access on your file system may also be able to re
     
       <a
         class="gdoc-page__nav--prev flex align-center"
-        href="/AzureAD-LDAP-wrapper/configuration/customize-attributes/"
-        title="2.3 Customize attributes"
+        href="/AzureAD-LDAP-wrapper/usage/"
+        title="6. Usage examples"
       >
         <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-        2.3 Customize attributes
+        6. Usage examples
       </a>
     
   </span>
@@ -1779,10 +1826,10 @@ Be aware that other users with access on your file system may also be able to re
     
       <a
         class="gdoc-page__nav--next flex align-center"
-        href="/AzureAD-LDAP-wrapper/troubleshooting/"
-        title="5. Troubleshooting"
+        href="/AzureAD-LDAP-wrapper/usage/authelia/"
+        title="6.2 Authelia"
       >
-        5. Troubleshooting
+        6.2 Authelia
         <i class="gdoc-icon">gdoc_arrow_right_alt</i>
       </a>
     

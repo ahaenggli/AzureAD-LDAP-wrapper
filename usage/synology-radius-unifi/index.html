@@ -12,12 +12,14 @@
 <meta name="generator" content="Hugo 0.111.1">
 
 
-  <meta name="description" content="There are a few things you should definitely keep in mind:
-Restrict access through a firewall. Do NOT allow everyone in your network access to the LDAP-wrapper.
-Only your (local hosted) applications or your NAS should have access.
-An LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all. Therefore, some queries can be run as anonymous by default." />
+  <meta name="description" content="UniFi allows you to use a custom Radius server like the default package from Synology. Combined with the LDAP-wrapper, this creates a powerful setup for your users.
+DSM 7.2.1-69057 Update 3
+LDAP-wrapper v2.0.2
+RADIUS Server Package 3.0.25-0515
+UniFi Network Application 8.0.24 Prerequisites Settings in Synology RADIUS Server Settings in UniFi Controller Prerequisites Before configuring Synology Radius and UniFi, ensure the following prerequisites are met:
+Synology NAS: Ensure you are up to date with your DSM, and install the current RADIUS Server package." />
 
-    <title>3. Security | AzureAD-LDAP-wrapper</title>
+    <title>6.3 Synology Radius with UniFi | AzureAD-LDAP-wrapper</title>
 
     <link rel="icon" type="image/svg+xml" href="/AzureAD-LDAP-wrapper/favicon/favicon.svg" />
 <link
@@ -38,17 +40,19 @@ An LDAP search on the NAS must be possible without any authentication in order t
     
   <meta
     property="og:title"
-    content="3. Security"
+    content="6.3 Synology Radius with UniFi"
   />
   <meta property="og:site_name" content="AzureAD-LDAP-wrapper" />
-  <meta property="og:description" content="There are a few things you should definitely keep in mind:
-Restrict access through a firewall. Do NOT allow everyone in your network access to the LDAP-wrapper.
-Only your (local hosted) applications or your NAS should have access.
-An LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all. Therefore, some queries can be run as anonymous by default." />
+  <meta property="og:description" content="UniFi allows you to use a custom Radius server like the default package from Synology. Combined with the LDAP-wrapper, this creates a powerful setup for your users.
+DSM 7.2.1-69057 Update 3
+LDAP-wrapper v2.0.2
+RADIUS Server Package 3.0.25-0515
+UniFi Network Application 8.0.24 Prerequisites Settings in Synology RADIUS Server Settings in UniFi Controller Prerequisites Before configuring Synology Radius and UniFi, ensure the following prerequisites are met:
+Synology NAS: Ensure you are up to date with your DSM, and install the current RADIUS Server package." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/" />
+<meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/" />
 
-<meta property="article:section" content="Security" />
+<meta property="article:section" content="Usage" />
     <meta
       property="article:modified_time"
       content="2024-01-11T15:18:30+01:00"
@@ -56,28 +60,30 @@ An LDAP search on the NAS must be possible without any authentication in order t
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="3. Security" />
-  <meta name="twitter:description" content="There are a few things you should definitely keep in mind:
-Restrict access through a firewall. Do NOT allow everyone in your network access to the LDAP-wrapper.
-Only your (local hosted) applications or your NAS should have access.
-An LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all. Therefore, some queries can be run as anonymous by default." />
+<meta name="twitter:title" content="6.3 Synology Radius with UniFi" />
+  <meta name="twitter:description" content="UniFi allows you to use a custom Radius server like the default package from Synology. Combined with the LDAP-wrapper, this creates a powerful setup for your users.
+DSM 7.2.1-69057 Update 3
+LDAP-wrapper v2.0.2
+RADIUS Server Package 3.0.25-0515
+UniFi Network Application 8.0.24 Prerequisites Settings in Synology RADIUS Server Settings in UniFi Controller Prerequisites Before configuring Synology Radius and UniFi, ensure the following prerequisites are met:
+Synology NAS: Ensure you are up to date with your DSM, and install the current RADIUS Server package." />
 
 
   <script type="application/ld+json">
   {
       "@context": "http://schema.org",
       "@type": "TechArticle",
-      "articleSection": "Security",
-      "name": "3. Security",
-      "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/",
-      "headline": "3. Security",
-      "description": "There are a few things you should definitely keep in mind:\nRestrict access through a firewall. Do NOT allow everyone in your network access to the LDAP-wrapper.\nOnly your (local hosted) applications or your NAS should have access.\nAn LDAP search on the NAS must be possible without any authentication in order to be able to select the domain\/baseDN at all. Therefore, some queries can be run as anonymous by default.",
-      "wordCount" : "396",
+      "articleSection": "Usage",
+      "name": "6.3 Synology Radius with UniFi",
+      "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/",
+      "headline": "6.3 Synology Radius with UniFi",
+      "description": "UniFi allows you to use a custom Radius server like the default package from Synology. Combined with the LDAP-wrapper, this creates a powerful setup for your users.\nDSM 7.2.1-69057 Update 3\nLDAP-wrapper v2.0.2\nRADIUS Server Package 3.0.25-0515\nUniFi Network Application 8.0.24 Prerequisites Settings in Synology RADIUS Server Settings in UniFi Controller Prerequisites Before configuring Synology Radius and UniFi, ensure the following prerequisites are met:\nSynology NAS: Ensure you are up to date with your DSM, and install the current RADIUS Server package.",
+      "wordCount" : "489",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/"
+          "@id": "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/"
       },
       "copyrightHolder" : "AzureAD-LDAP-wrapper",
       "copyrightYear" : "0001",
@@ -161,7 +167,7 @@ An LDAP search on the NAS must be possible without any authentication in order t
   href="/AzureAD-LDAP-wrapper/custom.css"
   media="all"
 />
-  <link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/" rel="canonical" type="text/html" />
+  <link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/" rel="canonical" type="text/html" />
 
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -823,7 +829,7 @@ An LDAP search on the NAS must be possible without any authentication in order t
                 
                 <a
                   href="/AzureAD-LDAP-wrapper/security"
-                  class="gdoc-nav__entry is-active"
+                  class="gdoc-nav__entry"
                 >
                   4. Security
                 </a>
@@ -1053,7 +1059,7 @@ An LDAP search on the NAS must be possible without any authentication in order t
                 
                 <a
                   href="/AzureAD-LDAP-wrapper/usage/synology-radius-unifi"
-                  class="gdoc-nav__entry"
+                  class="gdoc-nav__entry is-active"
                 >
                   6.3 Synology Radius with UniFi
                 </a>
@@ -1291,7 +1297,15 @@ An LDAP search on the NAS must be possible without any authentication in order t
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/' href='/AzureAD-LDAP-wrapper/'><span itemprop='name'>LDAP-wrapper for Microsoft Entra ID</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>3. Security</span><meta itemprop='position' content='3' /></li>
+    
+    
+    
+    
+  
+  
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/' href='/AzureAD-LDAP-wrapper/'><span itemprop='name'>LDAP-wrapper for Microsoft Entra ID</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/usage/' href='/AzureAD-LDAP-wrapper/usage/'><span itemprop='name'>Usage examples</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>6.3 Synology Radius with UniFi</span><meta itemprop='position' content='4' /></li>
+  
+
   
 
   
@@ -1307,50 +1321,169 @@ An LDAP search on the NAS must be possible without any authentication in order t
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    <h1>3. Security</h1>
-    <p><strong>There are a few things you should definitely keep in mind:</strong></p>
+    <h1>6.3 Synology Radius with UniFi</h1>
+    <p>UniFi allows you to use a custom Radius server like the default package from Synology. Combined with the LDAP-wrapper, this creates a powerful setup for your users.</p>
+
+
+
+
+
+<blockquote class="gdoc-hint tip">
+  <div class="gdoc-hint__title flex align-center"><i class="fa tip" title="This setup was successfully tested with these versions"></i></div>
+  <div class="gdoc-hint__text">DSM 7.2.1-69057 Update 3<br>
+LDAP-wrapper v2.0.2<br>
+RADIUS Server Package 3.0.25-0515<br>
+UniFi Network Application 8.0.24</div>
+</blockquote>
+
+<nav id="TableOfContents"><ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#settings-in-synology-radius-server">Settings in Synology RADIUS Server</a></li>
+        <li><a href="#settings-in-unifi-controller">Settings in UniFi Controller</a></li>
+      </ul></nav>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="prerequisites">
+        Prerequisites
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/#prerequisites" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Prerequisites" aria-label="Anchor to: Prerequisites" href="#prerequisites">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
+<p>Before configuring Synology Radius and UniFi, ensure the following prerequisites are met:</p>
+<ul>
+<li><strong>Synology NAS</strong>: Ensure you are up to date with your DSM, and install the current RADIUS Server package.</li>
+<li><strong>LDAP-wrapper</strong>: Ensure you have a functioning <a
+  class="gdoc-markdown__link"
+  href="https://github.com/ahaenggli/AzureAD-LDAP-wrapper/"
+>LDAP-wrapper</a>.</li>
+<li><strong>UniFi AP</strong>: Ensure you are up to date and have access to your controller settings.</li>
+</ul>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="settings-in-synology-radius-server">
+        Settings in Synology RADIUS Server
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/#settings-in-synology-radius-server" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Settings in Synology RADIUS Server" aria-label="Anchor to: Settings in Synology RADIUS Server" href="#settings-in-synology-radius-server">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
+<ol>
+<li>
+<p>Open the RADIUS Server package on your Synology NAS.</p>
+</li>
+<li>
+<p>Configure the RADIUS <code>Common Settings</code> with the following parameters:</p>
+<ul>
+<li><strong>Authentication port</strong>: Set the RADIUS Server&rsquo;s port number for interface protocols. The default value is 1812 for authentication.</li>
+<li><strong>Select network interface</strong>: Choose the network interfaces connected to RADIUS client devices (e.g., a router). RADIUS Server provides authentication services only for access requests coming from the specified interface.</li>
+<li><strong>TLS/SSL profile level</strong>: Choose &ldquo;Intermediate compatibility,&rdquo; which is the default setting. This option is recommended because it is compatible with general-purpose browsers but is not compatible with insecure cipher suites.</li>
+<li><strong>Source for user authentication</strong>: Enable LDAP users.</li>
+</ul>
+<p><img
+  src="../radius_settings_common.png"
+  alt="RADIUS common settings"
+  
+/></p>
+</li>
+<li>
+<p>Check your certificates.</p>
+<ul>
+<li>RADIUS Server requires a valid certificate.</li>
+</ul>
+<p><img
+  src="../radius_settings_certs.png"
+  alt="RADIUS certs"
+  
+/></p>
+</li>
+<li>
+<p>Configure the RADIUS <code>Clients</code> by adding clients based on the IP address range.</p>
+
+
+
+
+
+<blockquote class="gdoc-hint warning">
+  <div class="gdoc-hint__title flex align-center"><i class="fa warning" title="Important Notice"></i></div>
+  <div class="gdoc-hint__text">Each UniFi AP will directly contact your Synology RADIUS Server. Ensure that your firewall allows all those APs to connect to your NAS with the previously defined port (e.g., 1812).</div>
+</blockquote>
+
+<p>To set up clients by IP address range:</p>
 <ul>
 <li>
-<p>Restrict access through a firewall. Do <strong>NOT</strong> allow everyone in your network access to the LDAP-wrapper.<br>
-Only your (local hosted) applications or your NAS should have access.</p>
-</li>
-<li>
-<p>An LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all.
-Therefore, some queries can be run as anonymous by default. Data like domain/baseDN or schema can be fetched without authentication.
-Since this LDAP-wrapper is originally only meant to use my work account (Microsoft Entra Account) on a NAS, this is the default behaviour.
-You can change this via the env var <code>LDAP_ANONYMOUSBIND</code> if required.</p>
-</li>
-<li>
-<p>In order to use samba, the user credentials hashes are cached in the ldap attribute sambaNTPassword.<br>
-If you don&rsquo;t need samba, the cache can be disabled by setting <code>LDAP_SAMBANTPWD_MAXCACHETIME</code> to 0.<br>
-However, if you do not disable the cache, there is a special treatment for these hashed credentials. This handling can not be disabled.</p>
+<p>Click <strong>Add</strong> and choose <strong>Subnet</strong>, then enter the following information:</p>
 <ul>
-<li>Superusers, as defined in <code>LDAP_BINDUSER</code>, can get all cached credentials.</li>
-<li>Each user has access to his own cached credential hash.</li>
-<li>In all other cases the attribute is returned with XXXX instead of the hash value.</li>
+<li><strong>Name</strong>: Enter a display name for the collection of clients, making it easier to identify.</li>
+<li><strong>IP address</strong>: Enter the base IP addresses of the RADIUS clients (e.g., 192.168.10.1).</li>
+<li><strong>Subnet mask</strong>: Enter a subnet mask, for example, 255.255.255.0.</li>
+<li><strong>Shared secret</strong>: Enter a text string used as a password between the clients and RADIUS Server. This secret will also be needed in your UniFi configuration.</li>
 </ul>
 </li>
-<li>
-<p>In cases such as network/internet issues or Microsoft Graph API / Entra ID not being reachable, the cached hash is used for authentication.<br>
-This can be a problem if the user has been deactivated in the meantime or the password would be invalid.
-The use of the cached password during authentication can be disabled by setting the <code>LDAP_ALLOWCACHEDLOGINONFAILURE</code> parameter to false.</p>
-</li>
-<li>
-<p>Using the experimental feature to bypass MFA/2FA<br>
-Officially MFA is not supported by this LDAP-wrapper. The login for users with activated MFA simply fails, as mentioned  <a
-  class="gdoc-markdown__link"
-  href="https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth-ropc"
->here</a> and <a
-  class="gdoc-markdown__link"
-  href="https://github.com/Azure/ms-rest-nodeauth/issues/93"
->here</a>.
-There is an experimental feature to <strong>bypass</strong> MFA/2FA. It must be manually enabled by setting the the env var <code>GRAPH_IGNORE_MFA_ERRORS</code> to true. Even if the env var is set to true, the login attempt appears as &ldquo;Failure&rdquo; in the Microsoft Entra ID sign-in logs due to MFA/2FA. It is only the LDAP-wrapper that internally treats some MFA/2FA related error codes as a successful login.</p>
-</li>
-<li>
-<p>Mapped docker volume<br>
-Be aware that other users with access on your file system may also be able to read the JSON files in the mounted docker path (/app/.cache) and thus get access to the cached sambaNTPassword attribute.</p>
-</li>
 </ul>
+<p><img
+  src="../radius_settings_clients.png"
+  alt="RADIUS clients"
+  
+/></p>
+</li>
+</ol>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="settings-in-unifi-controller">
+        Settings in UniFi Controller
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/#settings-in-unifi-controller" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Settings in UniFi Controller" aria-label="Anchor to: Settings in UniFi Controller" href="#settings-in-unifi-controller">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
+<ol>
+<li>
+<p>Log in to your UniFi controller.</p>
+</li>
+<li>
+<p>Navigate to <strong>Settings &gt; Profiles &gt; RADIUS</strong> and create a new entry.</p>
+<p><img
+  src="../radius_unifi_profiles_find.png"
+  alt="UniFi: Find RADIUS profiles"
+  
+/></p>
+<ul>
+<li>Enable <strong>Wired Networks</strong>.</li>
+<li>Enable <strong>Wireless Networks</strong>.</li>
+<li>Enter the IP address of your Synology NAS in the <strong>IP Address</strong> field.</li>
+<li>Specify the RADIUS authentication port (typically 1812) in the <strong>Port</strong> field.</li>
+<li>Enter the same shared secret configured in the Synology RADIUS Server in the <strong>Shared Secret</strong> field.</li>
+<li>Disable <strong>Accounting</strong>.</li>
+</ul>
+<p><img
+  src="../radius_unifi_profiles_detail.png"
+  alt="UniFi: RADIUS Details"
+  
+/></p>
+</li>
+<li>
+<p>Navigate to the <strong>Wireless Networks</strong> section (<strong>Settings &gt; WiFi</strong>) and edit your network.</p>
+<p><img
+  src="../radius_unifi_wlan_new.png"
+  alt="UniFi: Find WLAN details"
+  
+/></p>
+</li>
+<li>
+<p>Edit the Wireless Network where you want to enable RADIUS authentication.</p>
+<ul>
+<li>Enable <strong>WPA Enterprise</strong>.</li>
+<li>Select the previously added RADIUS Profile.</li>
+</ul>
+<p><img
+  src="../radius_unifi_wlan_detail.png"
+  alt="UniFi: WLAN Details"
+  
+/></p>
+</li>
+<li>
+<p>Save the settings and apply the changes to your UniFi network.</p>
+</li>
+</ol>
+<p>Now, UniFi is configured to use the Synology RADIUS Server for authentication. Users authenticated through UniFi will be verified against your LDAP directory using LDAP-wrapper, creating a robust and secure setup.</p>
 
   </article>
 
@@ -1617,9 +1750,6 @@ Be aware that other users with access on your file system may also be able to re
       
 
       
-        
-        
-      
 
       
     
@@ -1641,9 +1771,6 @@ Be aware that other users with access on your file system may also be able to re
       
       
 
-      
-        
-        
       
 
       
@@ -1746,6 +1873,9 @@ Be aware that other users with access on your file system may also be able to re
 
       
 
+      
+        
+        
       
 
       
@@ -1767,24 +1897,15 @@ Be aware that other users with access on your file system may also be able to re
     
       <a
         class="gdoc-page__nav--prev flex align-center"
-        href="/AzureAD-LDAP-wrapper/configuration/customize-attributes/"
-        title="2.3 Customize attributes"
+        href="/AzureAD-LDAP-wrapper/usage/authelia/"
+        title="6.2 Authelia"
       >
         <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-        2.3 Customize attributes
+        6.2 Authelia
       </a>
     
   </span>
   <span class="gdoc-page__nav">
-    
-      <a
-        class="gdoc-page__nav--next flex align-center"
-        href="/AzureAD-LDAP-wrapper/troubleshooting/"
-        title="5. Troubleshooting"
-      >
-        5. Troubleshooting
-        <i class="gdoc-icon">gdoc_arrow_right_alt</i>
-      </a>
     
   </span>
 

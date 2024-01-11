@@ -12,10 +12,10 @@
 <meta name="generator" content="Hugo 0.111.1">
 
 
-  <meta name="description" content="Prerequisites Register an application with Azure AD and create a service principal Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites To register an application in your Azure AD tenant, you need:
-An Azure AD user account. If you don&rsquo;t already have one, you can create an account for free. Register an application with Azure AD and create a service principal Register a new application in your aad-portal." />
+  <meta name="description" content="Prerequisites Register an application with the Microsoft identity platform Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites To register an application with the Microsoft identity platform, you need:
+A Microsoft Entra ID user account. If you don&rsquo;t already have one, you can create an account for free. Register an application with the Microsoft identity platform Register a new application in your Microsoft Entra Admin Center." />
 
-    <title>1.1 Create an AzureAD application | AzureAD-LDAP-wrapper</title>
+    <title>1.1 Register an application with the Microsoft identity platform | AzureAD-LDAP-wrapper</title>
 
     <link rel="icon" type="image/svg+xml" href="/AzureAD-LDAP-wrapper/favicon/favicon.svg" />
 <link
@@ -36,25 +36,25 @@ An Azure AD user account. If you don&rsquo;t already have one, you can create an
     
   <meta
     property="og:title"
-    content="1.1 Create an AzureAD application"
+    content="1.1 Register an application with the Microsoft identity platform"
   />
   <meta property="og:site_name" content="AzureAD-LDAP-wrapper" />
-  <meta property="og:description" content="Prerequisites Register an application with Azure AD and create a service principal Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites To register an application in your Azure AD tenant, you need:
-An Azure AD user account. If you don’t already have one, you can create an account for free. Register an application with Azure AD and create a service principal Register a new application in your aad-portal." />
+  <meta property="og:description" content="Prerequisites Register an application with the Microsoft identity platform Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites To register an application with the Microsoft identity platform, you need:
+A Microsoft Entra ID user account. If you don’t already have one, you can create an account for free. Register an application with the Microsoft identity platform Register a new application in your Microsoft Entra Admin Center." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/" />
 
 <meta property="article:section" content="Installation" />
     <meta
       property="article:modified_time"
-      content="2023-03-05T17:39:48+01:00"
+      content="2024-01-11T15:18:30+01:00"
     />
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="1.1 Create an AzureAD application" />
-  <meta name="twitter:description" content="Prerequisites Register an application with Azure AD and create a service principal Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites To register an application in your Azure AD tenant, you need:
-An Azure AD user account. If you don’t already have one, you can create an account for free. Register an application with Azure AD and create a service principal Register a new application in your aad-portal." />
+<meta name="twitter:title" content="1.1 Register an application with the Microsoft identity platform" />
+  <meta name="twitter:description" content="Prerequisites Register an application with the Microsoft identity platform Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites To register an application with the Microsoft identity platform, you need:
+A Microsoft Entra ID user account. If you don’t already have one, you can create an account for free. Register an application with the Microsoft identity platform Register a new application in your Microsoft Entra Admin Center." />
 
 
   <script type="application/ld+json">
@@ -62,11 +62,11 @@ An Azure AD user account. If you don’t already have one, you can create an acc
       "@context": "http://schema.org",
       "@type": "TechArticle",
       "articleSection": "Installation",
-      "name": "1.1 Create an AzureAD application",
+      "name": "1.1 Register an application with the Microsoft identity platform",
       "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/",
-      "headline": "1.1 Create an AzureAD application",
-      "description": "Prerequisites Register an application with Azure AD and create a service principal Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites To register an application in your Azure AD tenant, you need:\nAn Azure AD user account. If you don’t already have one, you can create an account for free. Register an application with Azure AD and create a service principal Register a new application in your aad-portal.",
-      "wordCount" : "268",
+      "headline": "1.1 Register an application with the Microsoft identity platform",
+      "description": "Prerequisites Register an application with the Microsoft identity platform Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites To register an application with the Microsoft identity platform, you need:\nA Microsoft Entra ID user account. If you don’t already have one, you can create an account for free. Register an application with the Microsoft identity platform Register a new application in your Microsoft Entra Admin Center.",
+      "wordCount" : "262",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -77,7 +77,7 @@ An Azure AD user account. If you don’t already have one, you can create an acc
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2023-03-05T17:39:48.00Z",
+      "dateModified": "2024-01-11T15:18:30.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "AzureAD-LDAP-wrapper",
@@ -875,6 +875,196 @@ An Azure AD user account. If you don’t already have one, you can create an acc
         
       </li>
     
+      
+      
+
+
+      <li>
+        
+        
+          
+          
+          
+          
+          
+          
+          
+
+          
+          
+
+          
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              <span class="flex">
+                
+                <a
+                  href="/AzureAD-LDAP-wrapper/usage"
+                  class="gdoc-nav__entry"
+                >
+                  6. Usage examples
+                </a>
+              </span>
+              
+            </label>
+          
+        
+
+        
+          
+  
+  
+
+
+  <ul class="gdoc-nav__list">
+    
+      
+      
+
+
+      <li>
+        
+        
+          
+          
+          
+          
+          
+          
+          
+
+          
+          
+
+          
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              <span class="flex">
+                
+                <a
+                  href="/AzureAD-LDAP-wrapper/usage/portainer"
+                  class="gdoc-nav__entry"
+                >
+                  6.1 Portainer
+                </a>
+              </span>
+              
+            </label>
+          
+        
+
+        
+      </li>
+    
+      
+      
+
+
+      <li>
+        
+        
+          
+          
+          
+          
+          
+          
+          
+
+          
+          
+
+          
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              <span class="flex">
+                
+                <a
+                  href="/AzureAD-LDAP-wrapper/usage/authelia"
+                  class="gdoc-nav__entry"
+                >
+                  6.2 Authelia
+                </a>
+              </span>
+              
+            </label>
+          
+        
+
+        
+      </li>
+    
+      
+      
+
+
+      <li>
+        
+        
+          
+          
+          
+          
+          
+          
+          
+
+          
+          
+
+          
+            <input
+              type="checkbox"
+              
+                class="hidden"
+              
+            />
+            <label
+              
+            >
+              <span class="flex">
+                
+                <a
+                  href="/AzureAD-LDAP-wrapper/usage/synology-radius-unifi"
+                  class="gdoc-nav__entry"
+                >
+                  6.3 Synology Radius with UniFi
+                </a>
+              </span>
+              
+            </label>
+          
+        
+
+        
+      </li>
+    
+  </ul>
+
+        
+      </li>
+    
   </ul>
 
 
@@ -1101,7 +1291,7 @@ An Azure AD user account. If you don’t already have one, you can create an acc
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/' href='/AzureAD-LDAP-wrapper/'><span itemprop='name'>AzureAD-LDAP-wrapper</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/installation/' href='/AzureAD-LDAP-wrapper/installation/'><span itemprop='name'>Installation</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>1.1 Create an AzureAD application</span><meta itemprop='position' content='4' /></li>
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/' href='/AzureAD-LDAP-wrapper/'><span itemprop='name'>LDAP-wrapper for Microsoft Entra ID</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/installation/' href='/AzureAD-LDAP-wrapper/installation/'><span itemprop='name'>Installation</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>1.1 Register an application with the Microsoft identity platform</span><meta itemprop='position' content='4' /></li>
   
 
   
@@ -1119,10 +1309,10 @@ An Azure AD user account. If you don’t already have one, you can create an acc
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    <h1>1.1 Create an AzureAD application</h1>
+    <h1>1.1 Register an application with the Microsoft identity platform</h1>
     <nav id="TableOfContents"><ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#register-an-application-with-azure-ad-and-create-a-service-principal">Register an application with Azure AD and create a service principal</a></li>
+        <li><a href="#register-an-application-with-the-microsoft-identity-platform">Register an application with the Microsoft identity platform</a></li>
         <li><a href="#set-permissions">Set permissions</a></li>
         <li><a href="#get-tenantid-appid-and-appsecret">Get TenantId, AppId and AppSecret</a></li>
         <li><a href="#use-tenantid-appid-and-appsecret-in-your-wrapper">Use TenantId, AppId and AppSecret in your wrapper</a></li>
@@ -1135,34 +1325,34 @@ An Azure AD user account. If you don’t already have one, you can create an acc
         </a>
     </h2>
 </div>
-<p>To register an application in your Azure AD tenant, you need:</p>
+<p>To register an application with the Microsoft identity platform, you need:</p>
 <ul>
-<li>An Azure AD user account. If you don&rsquo;t already have one, you can <a
+<li>A Microsoft Entra ID user account. If you don&rsquo;t already have one, you can <a
   class="gdoc-markdown__link"
   href="https://azure.microsoft.com/free/"
 >create an account for free</a>.</li>
 </ul>
 <div class="gdoc-page__anchorwrap">
-    <h2 id="register-an-application-with-azure-ad-and-create-a-service-principal">
-        Register an application with Azure AD and create a service principal
-        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/#register-an-application-with-azure-ad-and-create-a-service-principal" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Register an application with Azure AD and create a service principal" aria-label="Anchor to: Register an application with Azure AD and create a service principal" href="#register-an-application-with-azure-ad-and-create-a-service-principal">
+    <h2 id="register-an-application-with-the-microsoft-identity-platform">
+        Register an application with the Microsoft identity platform
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/#register-an-application-with-the-microsoft-identity-platform" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Register an application with the Microsoft identity platform" aria-label="Anchor to: Register an application with the Microsoft identity platform" href="#register-an-application-with-the-microsoft-identity-platform">
             <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
         </a>
     </h2>
 </div>
 <p>Register a new application in your <a
   class="gdoc-markdown__link"
-  href="https://aad.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps"
->aad-portal</a>. More descriptions can be found <a
+  href="https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM"
+>Microsoft Entra Admin Center</a>. More descriptions can be found <a
   class="gdoc-markdown__link"
-  href="https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal"
+  href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal"
 >here</a>.</p>
 <ul>
-<li>Sign-in to the Azure portal.</li>
-<li>Select Azure Active Directory and navigateo to <a
+<li>Sign-in to the Microsoft Entra Admin Center.</li>
+<li>Browse to Identity &gt; Applications &gt; <a
   class="gdoc-markdown__link"
-  href="https://aad.portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps"
->App registrations</a>.</li>
+  href="https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM"
+>App registrations</a></li>
 <li>Select New registration.</li>
 <li>Name the application, for example &ldquo;ldap-wrapper&rdquo;.</li>
 <li>Select a supported account type, which determines who can use the application.<br>
@@ -1185,12 +1375,12 @@ Important: Personal Microsoft accounts are not supported.</li>
 </div>
 <ul>
 <li>
-<p>Set the following Graph-API Application permissions:<br>
+<p>Set the following Microsoft Graph API Application permissions:<br>
 For type <code>Application</code>  allow <code>User.Read.All</code> and <code>Group.Read.All</code>.<br>
 For type <code>Delegated</code> allow <code>User.Read</code>.<br>
 <img
-  src="../azure_permissions.png"
-  alt="Azure Permissions"
+  src="../entra_permissions.png"
+  alt="Entra Permissions"
   
 /></p>
 </li>
@@ -1198,19 +1388,19 @@ For type <code>Delegated</code> allow <code>User.Read</code>.<br>
 <p>Click &ldquo;Grant admin consent&rdquo;. The status should be &ldquo;Granted for&rdquo;.<br>
 If you see en entry with &ldquo;Not granted for&rdquo;, click again:
 <img
-  src="../azure_permissions_notgranted.png"
-  alt="Azure wrong permissions"
+  src="../entra_permissions_notgranted.png"
+  alt="Entra wrong permissions"
   
 /></p>
 </li>
 <li>
 <p>Set <a
   class="gdoc-markdown__link"
-  href="https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Username-Password-Authentication#application-registration"
->Treat application as a public client</a> to <code>Yes</code><br>
-(former &ldquo;Allow public client flows&rdquo;)<img
-  src="../azure_ROPC.png"
-  alt="Azure ROPC"
+  href="https://learn.microsoft.com/de-de/entra/msal/dotnet/acquiring-tokens/desktop-mobile/username-password-authentication#application-registration"
+>Allow public client flows</a> to <code>Yes</code><br>
+<img
+  src="../entra_ROPC.png"
+  alt="Entra ROPC"
   
 /></p>
 </li>
@@ -1549,6 +1739,109 @@ If you see en entry with &ldquo;Not granted for&rdquo;, click again:
     
 
     
+    
+  
+    
+    
+
+    
+    
+      
+      
+      
+
+      
+        
+      
+      
+
+      
+
+      
+
+      
+    
+
+    
+    
+      
+  
+  
+
+  
+    
+    
+
+    
+    
+      
+      
+      
+
+      
+        
+      
+      
+
+      
+
+      
+
+      
+    
+
+    
+    
+  
+    
+    
+
+    
+    
+      
+      
+      
+
+      
+        
+      
+      
+
+      
+
+      
+
+      
+    
+
+    
+    
+  
+    
+    
+
+    
+    
+      
+      
+      
+
+      
+        
+      
+      
+
+      
+
+      
+
+      
+    
+
+    
+    
+  
+
     
   
 

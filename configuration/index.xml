@@ -13,7 +13,7 @@
       
       <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/bypass-mfa/</guid>
       <description>Officially MFA is not supported by this LDAP-wrapper. The login for users with activated MFA simply fails, as mentioned here and here. There is no interactive window to enter another factor, and LDAP does not support this either. If you need to use this LDAP-wrapper despite of activated MFA, there are two options:
-Disable MFA for this application in AzureAD (preferred).
+Disable MFA for this application in your tenant (preferred).
 There are several ways to define MFA, but only some of them allows you to disable MFA.</description>
     </item>
     

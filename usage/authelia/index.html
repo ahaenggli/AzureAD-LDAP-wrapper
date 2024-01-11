@@ -12,12 +12,11 @@
 <meta name="generator" content="Hugo 0.111.1">
 
 
-  <meta name="description" content="There are a few things you should definitely keep in mind:
-Restrict access through a firewall. Do NOT allow everyone in your network access to the LDAP-wrapper.
-Only your (local hosted) applications or your NAS should have access.
-An LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all. Therefore, some queries can be run as anonymous by default." />
+  <meta name="description" content="Authelia supports LDAP authentication, enabling users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication with Authelia using LDAP-wrapper.
+Prerequisites Settings for Authelia LDAP Authentication with LDAP-wrapper Prerequisites Before configuring LDAP authentication for Authelia with LDAP-wrapper, ensure the following prerequisites are met:
+LDAP-wrapper: Ensure you have a functioning LDAP-wrapper. Authelia: Set up and configure Authelia for your environment. Settings for Authelia LDAP Authentication with LDAP-wrapper To configure LDAP authentication with Authelia using LDAP-wrapper, follow these steps:" />
 
-    <title>3. Security | AzureAD-LDAP-wrapper</title>
+    <title>6.2 Authelia with LDAP-wrapper | AzureAD-LDAP-wrapper</title>
 
     <link rel="icon" type="image/svg+xml" href="/AzureAD-LDAP-wrapper/favicon/favicon.svg" />
 <link
@@ -38,17 +37,16 @@ An LDAP search on the NAS must be possible without any authentication in order t
     
   <meta
     property="og:title"
-    content="3. Security"
+    content="6.2 Authelia with LDAP-wrapper"
   />
   <meta property="og:site_name" content="AzureAD-LDAP-wrapper" />
-  <meta property="og:description" content="There are a few things you should definitely keep in mind:
-Restrict access through a firewall. Do NOT allow everyone in your network access to the LDAP-wrapper.
-Only your (local hosted) applications or your NAS should have access.
-An LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all. Therefore, some queries can be run as anonymous by default." />
+  <meta property="og:description" content="Authelia supports LDAP authentication, enabling users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication with Authelia using LDAP-wrapper.
+Prerequisites Settings for Authelia LDAP Authentication with LDAP-wrapper Prerequisites Before configuring LDAP authentication for Authelia with LDAP-wrapper, ensure the following prerequisites are met:
+LDAP-wrapper: Ensure you have a functioning LDAP-wrapper. Authelia: Set up and configure Authelia for your environment. Settings for Authelia LDAP Authentication with LDAP-wrapper To configure LDAP authentication with Authelia using LDAP-wrapper, follow these steps:" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/" />
+<meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/" />
 
-<meta property="article:section" content="Security" />
+<meta property="article:section" content="Usage" />
     <meta
       property="article:modified_time"
       content="2024-01-11T15:18:30+01:00"
@@ -56,28 +54,27 @@ An LDAP search on the NAS must be possible without any authentication in order t
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="3. Security" />
-  <meta name="twitter:description" content="There are a few things you should definitely keep in mind:
-Restrict access through a firewall. Do NOT allow everyone in your network access to the LDAP-wrapper.
-Only your (local hosted) applications or your NAS should have access.
-An LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all. Therefore, some queries can be run as anonymous by default." />
+<meta name="twitter:title" content="6.2 Authelia with LDAP-wrapper" />
+  <meta name="twitter:description" content="Authelia supports LDAP authentication, enabling users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication with Authelia using LDAP-wrapper.
+Prerequisites Settings for Authelia LDAP Authentication with LDAP-wrapper Prerequisites Before configuring LDAP authentication for Authelia with LDAP-wrapper, ensure the following prerequisites are met:
+LDAP-wrapper: Ensure you have a functioning LDAP-wrapper. Authelia: Set up and configure Authelia for your environment. Settings for Authelia LDAP Authentication with LDAP-wrapper To configure LDAP authentication with Authelia using LDAP-wrapper, follow these steps:" />
 
 
   <script type="application/ld+json">
   {
       "@context": "http://schema.org",
       "@type": "TechArticle",
-      "articleSection": "Security",
-      "name": "3. Security",
-      "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/",
-      "headline": "3. Security",
-      "description": "There are a few things you should definitely keep in mind:\nRestrict access through a firewall. Do NOT allow everyone in your network access to the LDAP-wrapper.\nOnly your (local hosted) applications or your NAS should have access.\nAn LDAP search on the NAS must be possible without any authentication in order to be able to select the domain\/baseDN at all. Therefore, some queries can be run as anonymous by default.",
-      "wordCount" : "396",
+      "articleSection": "Usage",
+      "name": "6.2 Authelia with LDAP-wrapper",
+      "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/",
+      "headline": "6.2 Authelia with LDAP-wrapper",
+      "description": "Authelia supports LDAP authentication, enabling users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication with Authelia using LDAP-wrapper.\nPrerequisites Settings for Authelia LDAP Authentication with LDAP-wrapper Prerequisites Before configuring LDAP authentication for Authelia with LDAP-wrapper, ensure the following prerequisites are met:\nLDAP-wrapper: Ensure you have a functioning LDAP-wrapper. Authelia: Set up and configure Authelia for your environment. Settings for Authelia LDAP Authentication with LDAP-wrapper To configure LDAP authentication with Authelia using LDAP-wrapper, follow these steps:",
+      "wordCount" : "542",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/"
+          "@id": "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/"
       },
       "copyrightHolder" : "AzureAD-LDAP-wrapper",
       "copyrightYear" : "0001",
@@ -161,7 +158,7 @@ An LDAP search on the NAS must be possible without any authentication in order t
   href="/AzureAD-LDAP-wrapper/custom.css"
   media="all"
 />
-  <link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/" rel="canonical" type="text/html" />
+  <link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/" rel="canonical" type="text/html" />
 
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -823,7 +820,7 @@ An LDAP search on the NAS must be possible without any authentication in order t
                 
                 <a
                   href="/AzureAD-LDAP-wrapper/security"
-                  class="gdoc-nav__entry is-active"
+                  class="gdoc-nav__entry"
                 >
                   4. Security
                 </a>
@@ -1008,7 +1005,7 @@ An LDAP search on the NAS must be possible without any authentication in order t
                 
                 <a
                   href="/AzureAD-LDAP-wrapper/usage/authelia"
-                  class="gdoc-nav__entry"
+                  class="gdoc-nav__entry is-active"
                 >
                   6.2 Authelia
                 </a>
@@ -1291,7 +1288,15 @@ An LDAP search on the NAS must be possible without any authentication in order t
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/' href='/AzureAD-LDAP-wrapper/'><span itemprop='name'>LDAP-wrapper for Microsoft Entra ID</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>3. Security</span><meta itemprop='position' content='3' /></li>
+    
+    
+    
+    
+  
+  
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/' href='/AzureAD-LDAP-wrapper/'><span itemprop='name'>LDAP-wrapper for Microsoft Entra ID</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/usage/' href='/AzureAD-LDAP-wrapper/usage/'><span itemprop='name'>Usage examples</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>6.2 Authelia with LDAP-wrapper</span><meta itemprop='position' content='4' /></li>
+  
+
   
 
   
@@ -1307,50 +1312,109 @@ An LDAP search on the NAS must be possible without any authentication in order t
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    <h1>3. Security</h1>
-    <p><strong>There are a few things you should definitely keep in mind:</strong></p>
+    <h1>6.2 Authelia with LDAP-wrapper</h1>
+    <p>Authelia supports LDAP authentication, enabling users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication with Authelia using LDAP-wrapper.</p>
+<nav id="TableOfContents"><ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#settings-for-authelia-ldap-authentication-with-ldap-wrapper">Settings for Authelia LDAP Authentication with LDAP-wrapper</a></li>
+      </ul></nav>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="prerequisites">
+        Prerequisites
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/#prerequisites" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Prerequisites" aria-label="Anchor to: Prerequisites" href="#prerequisites">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
+<p>Before configuring LDAP authentication for Authelia with LDAP-wrapper, ensure the following prerequisites are met:</p>
 <ul>
-<li>
-<p>Restrict access through a firewall. Do <strong>NOT</strong> allow everyone in your network access to the LDAP-wrapper.<br>
-Only your (local hosted) applications or your NAS should have access.</p>
-</li>
-<li>
-<p>An LDAP search on the NAS must be possible without any authentication in order to be able to select the domain/baseDN at all.
-Therefore, some queries can be run as anonymous by default. Data like domain/baseDN or schema can be fetched without authentication.
-Since this LDAP-wrapper is originally only meant to use my work account (Microsoft Entra Account) on a NAS, this is the default behaviour.
-You can change this via the env var <code>LDAP_ANONYMOUSBIND</code> if required.</p>
-</li>
-<li>
-<p>In order to use samba, the user credentials hashes are cached in the ldap attribute sambaNTPassword.<br>
-If you don&rsquo;t need samba, the cache can be disabled by setting <code>LDAP_SAMBANTPWD_MAXCACHETIME</code> to 0.<br>
-However, if you do not disable the cache, there is a special treatment for these hashed credentials. This handling can not be disabled.</p>
-<ul>
-<li>Superusers, as defined in <code>LDAP_BINDUSER</code>, can get all cached credentials.</li>
-<li>Each user has access to his own cached credential hash.</li>
-<li>In all other cases the attribute is returned with XXXX instead of the hash value.</li>
-</ul>
-</li>
-<li>
-<p>In cases such as network/internet issues or Microsoft Graph API / Entra ID not being reachable, the cached hash is used for authentication.<br>
-This can be a problem if the user has been deactivated in the meantime or the password would be invalid.
-The use of the cached password during authentication can be disabled by setting the <code>LDAP_ALLOWCACHEDLOGINONFAILURE</code> parameter to false.</p>
-</li>
-<li>
-<p>Using the experimental feature to bypass MFA/2FA<br>
-Officially MFA is not supported by this LDAP-wrapper. The login for users with activated MFA simply fails, as mentioned  <a
+<li><strong>LDAP-wrapper</strong>: Ensure you have a functioning <a
   class="gdoc-markdown__link"
-  href="https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth-ropc"
->here</a> and <a
+  href="https://github.com/ahaenggli/AzureAD-LDAP-wrapper/"
+>LDAP-wrapper</a>.</li>
+<li><strong>Authelia</strong>: Set up and configure <a
   class="gdoc-markdown__link"
-  href="https://github.com/Azure/ms-rest-nodeauth/issues/93"
->here</a>.
-There is an experimental feature to <strong>bypass</strong> MFA/2FA. It must be manually enabled by setting the the env var <code>GRAPH_IGNORE_MFA_ERRORS</code> to true. Even if the env var is set to true, the login attempt appears as &ldquo;Failure&rdquo; in the Microsoft Entra ID sign-in logs due to MFA/2FA. It is only the LDAP-wrapper that internally treats some MFA/2FA related error codes as a successful login.</p>
-</li>
-<li>
-<p>Mapped docker volume<br>
-Be aware that other users with access on your file system may also be able to read the JSON files in the mounted docker path (/app/.cache) and thus get access to the cached sambaNTPassword attribute.</p>
-</li>
+  href="https://www.authelia.com/overview/prologue/introduction/"
+>Authelia</a> for your environment.</li>
 </ul>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="settings-for-authelia-ldap-authentication-with-ldap-wrapper">
+        Settings for Authelia LDAP Authentication with LDAP-wrapper
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/#settings-for-authelia-ldap-authentication-with-ldap-wrapper" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Settings for Authelia LDAP Authentication with LDAP-wrapper" aria-label="Anchor to: Settings for Authelia LDAP Authentication with LDAP-wrapper" href="#settings-for-authelia-ldap-authentication-with-ldap-wrapper">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
+<p>To configure LDAP authentication with Authelia using LDAP-wrapper, follow these steps:</p>
+<ol>
+<li>Open your <code>configuration.yml</code> file in the Authelia configuration directory.</li>
+<li>Locate the <code>authentication_backend</code> section and configure it with the following example, adjusting the <code>url</code>,<code>base_dn</code>, <code>user</code>, and <code>password</code> based on your LDAP-wrapper setup:</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="w">    </span><span class="c">## Authentication Backend Provider Configuration</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">authentication_backend</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">## Password Reset Options</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">password_reset</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## Disable both the HTML element and the API for reset password functionality.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">disable</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## External reset password url for Microsoft</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">custom_url</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;https://account.activedirectory.windowsazure.com/ChangePassword.aspx&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">## The amount of time to wait before we refresh data from the authentication backend. Uses duration notation</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">## See the below documentation for more information</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">## Duration Notation docs:  &lt;https://www.authelia.com/c/common#duration-notation-format&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">## Refresh Interval docs: &lt;https://www.authelia.com/c/1fa#refresh-interval&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">refresh_interval</span><span class="p">:</span><span class="w"> </span><span class="l">5m</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">##</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">## LDAP (Authentication Provider)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c">##</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">ldap</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The LDAP implementation, this affects elements like the attribute utilised for resetting a password.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">implementation</span><span class="p">:</span><span class="w"> </span><span class="l">custom</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The url to the ldap server. Format: &lt;scheme&gt;://&lt;address&gt;[:&lt;port&gt;].</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">url</span><span class="p">:</span><span class="w"> </span><span class="l">ldap://my-nas-name.local:389</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The dial timeout for LDAP.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="l">5s</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## Use StartTLS with the LDAP connection.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">start_tls</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">tls</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## Server Name for certificate validation (in case it&#39;s not set correctly in the URL).</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c"># server_name: ldap.domain.tld</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## Skip verifying the server certificate (to allow a self-signed certificate).</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">skip_verify</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## Minimum TLS version for either Secure LDAP or LDAP StartTLS.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">minimum_version</span><span class="p">:</span><span class="w"> </span><span class="l">TLS1.2</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The distinguished name of the container searched for objects in the directory information tree.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">base_dn</span><span class="p">:</span><span class="w"> </span><span class="l">dc=domain,dc=tld</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The attribute holding the username of the user. This attribute is used to populate the username in the session</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">username_attribute</span><span class="p">:</span><span class="w"> </span><span class="l">uid</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The additional_users_dn is prefixed to base_dn and delimited by a comma when searching for users.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">additional_users_dn</span><span class="p">:</span><span class="w"> </span><span class="l">cn=users</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The users filter used in search queries to find the user profile based on input filled in login form.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">users_filter</span><span class="p">:</span><span class="w"> </span><span class="l">(&amp;(|({username_attribute}={input})({mail_attribute}={input}))(objectClass=person))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The additional_groups_dn is prefixed to base_dn and delimited by a comma when searching for groups.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">additional_groups_dn</span><span class="p">:</span><span class="w"> </span><span class="l">cn=groups</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The groups filter used in search queries to find the groups based on relevant authenticated user.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">groups_filter</span><span class="p">:</span><span class="w"> </span><span class="l">(&amp;(member={dn})(objectClass=posixGroup))</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The attribute holding the name of the group.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">group_name_attribute</span><span class="p">:</span><span class="w"> </span><span class="l">cn</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The attribute holding the mail address of the user. If multiple email addresses are defined for a user, only the</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">mail_attribute</span><span class="p">:</span><span class="w"> </span><span class="l">mail</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The attribute holding the display name of the user. This will be used to greet an authenticated user.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">display_name_attribute</span><span class="p">:</span><span class="w"> </span><span class="l">displayName</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## Follow referrals returned by the server.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## This is especially useful for environments where read-only servers exist. Only implemented for write operations.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">permit_referrals</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## The username and password of the admin user, matching an entry of your LDAP-wrapper environment variable `LDAP_BINDUSER`.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">uid=root</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="c">## Password can also be set using a secret: &lt;https://www.authelia.com/c/secrets&gt;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">password</span><span class="p">:</span><span class="w"> </span><span class="m">1234</span><span class="w">
+</span></span></span></code></pre></div><ol start="3">
+<li>Save the changes to your <code>configuration.yml</code> file.</li>
+<li>Restart Authelia to apply the new configuration.</li>
+</ol>
+<p>Now, Authelia is configured to authenticate users against your LDAP directory through LDAP-wrapper.</p>
 
   </article>
 
@@ -1617,9 +1681,6 @@ Be aware that other users with access on your file system may also be able to re
       
 
       
-        
-        
-      
 
       
     
@@ -1641,9 +1702,6 @@ Be aware that other users with access on your file system may also be able to re
       
       
 
-      
-        
-        
       
 
       
@@ -1723,6 +1781,9 @@ Be aware that other users with access on your file system may also be able to re
       
 
       
+        
+        
+      
 
       
     
@@ -1744,6 +1805,9 @@ Be aware that other users with access on your file system may also be able to re
       
       
 
+      
+        
+        
       
 
       
@@ -1767,11 +1831,11 @@ Be aware that other users with access on your file system may also be able to re
     
       <a
         class="gdoc-page__nav--prev flex align-center"
-        href="/AzureAD-LDAP-wrapper/configuration/customize-attributes/"
-        title="2.3 Customize attributes"
+        href="/AzureAD-LDAP-wrapper/usage/portainer/"
+        title="6.1 Portainer"
       >
         <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-        2.3 Customize attributes
+        6.1 Portainer
       </a>
     
   </span>
@@ -1779,10 +1843,10 @@ Be aware that other users with access on your file system may also be able to re
     
       <a
         class="gdoc-page__nav--next flex align-center"
-        href="/AzureAD-LDAP-wrapper/troubleshooting/"
-        title="5. Troubleshooting"
+        href="/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/"
+        title="6.3 Synology Radius with UniFi"
       >
-        5. Troubleshooting
+        6.3 Synology Radius with UniFi
         <i class="gdoc-icon">gdoc_arrow_right_alt</i>
       </a>
     

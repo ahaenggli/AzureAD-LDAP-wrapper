@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Usage examples on AzureAD-LDAP-wrapper</title>
+    <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/</link>
+    <description>Recent content in Usage examples on AzureAD-LDAP-wrapper</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language><atom:link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>6.1 Portainer</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/</guid>
+      <description>Portainer supports LDAP authentication, allowing users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication over LDAP-wrapper with Portainer.
+Prerequisites Settings for Portainer LDAP Authentication with LDAP-wrapper LDAP Configuration LDAP Security User Search Configurations Prerequisites Before configuring LDAP authentication for Portainer, ensure the following prerequisites are met:
+LDAP-wrapper: Make sure you have a working LDAP-wrapper. Portainer: Install and set up a working instance of Portainer.</description>
+    </item>
+    
+    <item>
+      <title>6.2 Authelia with LDAP-wrapper</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/</guid>
+      <description>Authelia supports LDAP authentication, enabling users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication with Authelia using LDAP-wrapper.
+Prerequisites Settings for Authelia LDAP Authentication with LDAP-wrapper Prerequisites Before configuring LDAP authentication for Authelia with LDAP-wrapper, ensure the following prerequisites are met:
+LDAP-wrapper: Ensure you have a functioning LDAP-wrapper. Authelia: Set up and configure Authelia for your environment. Settings for Authelia LDAP Authentication with LDAP-wrapper To configure LDAP authentication with Authelia using LDAP-wrapper, follow these steps:</description>
+    </item>
+    
+    <item>
+      <title>6.3 Synology Radius with UniFi</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/</guid>
+      <description>UniFi allows you to use a custom Radius server like the default package from Synology. Combined with the LDAP-wrapper, this creates a powerful setup for your users.
+DSM 7.2.1-69057 Update 3
+LDAP-wrapper v2.0.2
+RADIUS Server Package 3.0.25-0515
+UniFi Network Application 8.0.24 Prerequisites Settings in Synology RADIUS Server Settings in UniFi Controller Prerequisites Before configuring Synology Radius and UniFi, ensure the following prerequisites are met:
+Synology NAS: Ensure you are up to date with your DSM, and install the current RADIUS Server package.</description>
+    </item>
+    
+  </channel>
+</rss>
