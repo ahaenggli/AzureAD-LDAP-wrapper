@@ -1,21 +1,21 @@
 ---
-title: 1.1 Create an AzureAD application 
+title: 1.1 Register an application with the Microsoft identity platform
 ---
 
 {{< toc format=raw >}}
 
 ## Prerequisites
 
-To register an application in your Azure AD tenant, you need:
+To register an application with the Microsoft identity platform, you need:
 
-- An Azure AD user account. If you don't already have one, you can [create an account for free](https://azure.microsoft.com/free/).
+- A Microsoft Entra ID user account. If you don't already have one, you can [create an account for free](https://azure.microsoft.com/free/).
 
-## Register an application with Azure AD and create a service principal
+## Register an application with the Microsoft identity platform
 
-Register a new application in your [aad-portal](https://aad.portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps). More descriptions can be found [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal).
+Register a new application in your [Microsoft Entra Admin Center](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM). More descriptions can be found [here](https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal).
 
-- Sign-in to the Azure portal.
-- Select Azure Active Directory and navigateo to [App registrations](https://aad.portal.azure.com/#view/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/~/RegisteredApps).
+- Sign-in to the Microsoft Entra Admin Center.
+- Browse to Identity > Applications > [App registrations](https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM)
 - Select New registration.
 - Name the application, for example "ldap-wrapper".
 - Select a supported account type, which determines who can use the application.\
@@ -26,17 +26,17 @@ Register a new application in your [aad-portal](https://aad.portal.azure.com/#bl
 
 ## Set permissions
 
-- Set the following Graph-API Application permissions:  
+- Set the following Microsoft Graph API Application permissions:  
   For type `Application`  allow `User.Read.All` and `Group.Read.All`.\
   For type `Delegated` allow `User.Read`.\
-  ![Azure Permissions](../azure_permissions.png)
+  ![Entra Permissions](../entra_permissions.png)
 
 - Click "Grant admin consent". The status should be "Granted for".\
   If you see en entry with "Not granted for", click again:
-  ![Azure wrong permissions](../azure_permissions_notgranted.png)
+  ![Entra wrong permissions](../entra_permissions_notgranted.png)
 
-- Set [Treat application as a public client](https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Username-Password-Authentication#application-registration) to `Yes`  
-(former "Allow public client flows")![Azure ROPC](../azure_ROPC.png)
+- Set [Allow public client flows](https://learn.microsoft.com/de-de/entra/msal/dotnet/acquiring-tokens/desktop-mobile/username-password-authentication#application-registration) to `Yes`  
+![Entra ROPC](../entra_ROPC.png)
 
 ## Get TenantId, AppId and AppSecret
 

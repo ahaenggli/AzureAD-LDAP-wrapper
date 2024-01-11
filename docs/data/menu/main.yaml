@@ -4,24 +4,24 @@ main:
     ref: /
 
   - name: 1. Installation
-    ref: "/installation"
+    ref: '/installation'
     sub:
       - name: 1.1 Create an AzureAD application
-        ref: "/installation/create-azuread-application"
+        ref: '/installation/create-azuread-application'
       - name: 1.2 Run the LDAP-wrapper
-        ref: "/installation/run-ldap-wrapper"
+        ref: '/installation/run-ldap-wrapper'
       - name: 1.3 Use on a Synology NAS
-        ref: "/installation/use-synology-nas"
+        ref: '/installation/use-synology-nas'
 
   - name: 2. Configuration
     ref: /configuration
     sub:
       - name: 2.1 Settings
-        ref: "/configuration/settings"
+        ref: '/configuration/settings'
       - name: 2.2 Bypass MFA
-        ref: "/configuration/bypass-mfa"
+        ref: '/configuration/bypass-mfa'
       - name: 2.3 Customize attributes
-        ref: "/configuration/customize-attributes"
+        ref: '/configuration/customize-attributes'
 
   - name: 4. Security
     ref: /security
@@ -29,3 +29,12 @@ main:
   - name: 5. Troubleshooting
     ref: /troubleshooting
 
+  - name: 6. Usage examples
+    ref: /usage
+    sub:
+      - name: 6.1 Portainer
+        ref: '/usage/portainer'
+      - name: 6.2 Authelia
+        ref: '/usage/authelia'
+      - name: 6.3 Synology Radius with UniFi
+        ref: '/usage/synology-radius-unifi'

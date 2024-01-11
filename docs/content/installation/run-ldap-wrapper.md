@@ -4,7 +4,7 @@ title: Run the LDAP-wrapper
 
 
 The preferred way to use the LDAP wrapper is with Docker. Alternatively, the source can be downloaded and started manually with npm/node.
-As domain (and basedn, if manually specified) it is recommended to use the same as used in AzureAD tenant (e.g. `@domain.tld`). This way, the spelling of the users (e.g. `username@domain.tld`) will match at the end. Otherwise, your users will have to use `username@example.com` instead of the estimated `username@domain.tld`, for example.
+As domain (and basedn, if manually specified) it is recommended to use the same as used in your Microsoft Entra tenant (e.g. `@domain.tld`). This way, the spelling of the users (e.g. `username@domain.tld`) will match at the end. Otherwise, your users will have to use `username@example.com` instead of the estimated `username@domain.tld`, for example.
 
 {{< hint type=note >}}
 The API results and a local copy of the LDAP entries are stored as JSON files inside the container at this path: `/app/.cache`  
@@ -35,7 +35,7 @@ Use "bridge" as your network.
 4. Give your container a name and enable auto-restart.
 ![grafik](../syno/syno_docker_name.png)
 
-5. Configure the environment variables in "Advanced Settings". Be sure to double check your Azure values and define at least one binduser. The binduser (superuser like root) does not need to exist in your AzureAD. Replace example.com with your domain. Here is an example of a minimum required configuration:
+5. Configure the environment variables in "Advanced Settings". Be sure to double check your AZURE_* values and define at least one binduser. The binduser (superuser like root) does not need to exist in your Microsoft Entra tenant. Replace example.com with your domain. Here is an example of a minimum required configuration:
 
     ```bash
     TZ: "Europe/Zurich" # optional
@@ -69,6 +69,7 @@ Use "bridge" as your network.
 docker run -d `
 -p 389:13389 `
 --volume /volume1/docker/ldapwrapper:/app/.cache `
+-e TZ="Europe/Zurich" `
 -e AZURE_TENANTID="0def2345-ff01-56789-1234-ab9d6dda1e1e" `
 -e AZURE_APP_ID="abc12345-ab01-0000-1111-a1e1eab9d6dd" `
 -e AZURE_APP_SECRET="iamasecret~yep-reallyreallysecret" `
@@ -141,7 +142,7 @@ You can either set environment variables or create an .env file in the root dire
 
 ```env
 ## .env file or environment variables ##
-# Values of your AzureAD application
+# Values of your Microsoft Entra application
 AZURE_APP_ID="abc12345-ab01-0000-1111-a1e1eab9d6dd"
 AZURE_TENANTID="0def2345-ff01-56789-1234-ab9d6dda1e1e"
 AZURE_APP_SECRET="iamasecret~yep-reallyreallysecret"

@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+### Changed
+
+- updated npm dependencies
+- renamed Azure, AzureAD, ... to Microsoft Entra ID
+
+### Fixed
+
+- checked and fixed all links
+
+### Added
+
+- example [customizer](./customizer/customizer_DSM7_IDs_string2int_filterUserByGroups.js) to sync only users within specified groups
+- usage examples for `Portainer`, `Authelia` and `Synology Radius with UniFi` in the [documentation](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/)
+
 ## [2.0.1] - 2023-07-21
 
 ### Changed
@@ -57,7 +71,7 @@ As a result, existing customizers (mapped `/app/customizer/ldap_customizer.js`) 
 ### Added
 
 - Env var `GRAPH_IGNORE_MFA_ERRORS` to allow logins despite required MFA. When set to true, some MFA-related error codes are treated as successful logins. Attention, this is only a first attempt and may not work in all cases. Please open an issue if you encounter any problems with this.
-- Deleted users and groups in Azure are now also removed from the LDAP entries. The number of days these entries should be kept in this wrapper before deletion can be specified with the env var `LDAP_DAYSTOKEEPDELETEDUSERS`. (see [FAQ](./FAQ.md#are-deleted-users-or-groups-in-azure-also-removed-from-the-ldap-entries) for more details)
+- Deleted users and groups in Azure are now also removed from the LDAP entries. The number of days these entries should be kept in this wrapper before deletion can be specified with the env var `LDAP_DAYSTOKEEPDELETEDUSERS`. (see [FAQ](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/troubleshooting/#are-deleted-users-or-groups-in-azure-also-removed-from-the-ldap-entries) for more details)
 - Env var `LDAP_PORT` to set a custom port for the listener (e.g. 389 for running the container directly on the host network)
 - Print version at start-up, so you don't have to remember which version you are currently using.
 - Check if the volume /app/.cache is mapped inside a docker container
@@ -268,7 +282,7 @@ if set to true and the login is failed, the login is retried against the sambaNT
 - Dockerfile
 - Container on hub.docker.cm
 
-[Unreleased]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/projects/1
+[Unreleased]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/
 [2.0.1]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v2.0.1
 [2.0.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v2.0.0
 [1.8.2]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.8.2
