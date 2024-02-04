@@ -14,7 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- checked and fixed all links
+- Checked and fixed all links throughout the application.
+- Resolved issue #68, ensuring that the container can start even if the original JSON is corrupt.
 
 ### Added
 

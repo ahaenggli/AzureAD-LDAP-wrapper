@@ -134,3 +134,4 @@ dist
 /test/*.json
 /tests/*.json
 /certs/*
+*.code-workspace

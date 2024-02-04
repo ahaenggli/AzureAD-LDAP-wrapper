@@ -54,13 +54,24 @@ helper.SaveJSONtoFile = function (content, file, encoding = 'utf8') {
     return true;
 };
 
+helper.IsJsonString = function IsJsonString(str) {
+    if (typeof str !== 'string' || str == undefined || str == "") return false;
+
+    try {
+        var json = JSON.parse(str);
+        return (typeof json === 'object');
+    } catch (e) {
+        return false;
+    }
+};
+
 helper.ReadJSONfile = function (file, encoding = 'utf8') {
     let content;
     if (fs.existsSync(file)) content = fs.readFileSync(file, encoding);
     else return {};
 
     if (!content || content == "") return {};
-    else return JSON.parse(content);
+    else return (helper.IsJsonString(content)) ? JSON.parse(content) : {};
 };
 
 helper.ReadCSVfile = function (file, func = null, encoding = 'utf8', ignorelines = -1) {

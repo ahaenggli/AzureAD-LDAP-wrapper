@@ -57,6 +57,14 @@ describe('helper tests debug = true', () => {
     expect(sr2).toBe(false);
 
     expect(helper.ReadJSONfile("./test.json")).toStrictEqual({});
+
+    expect(helper.IsJsonString(null)).toBe(false);
+    expect(helper.IsJsonString()).toBe(false);
+    expect(helper.IsJsonString("")).toBe(false);
+    expect(helper.IsJsonString({})).toBe(false);
+    expect(helper.IsJsonString([])).toBe(false);
+
+    expect(helper.ReadJSONfile("./tests/test_wrongformat.txt")).toStrictEqual({});
   });
 
   test('json empty file', () => {
@@ -172,7 +180,7 @@ describe('helper tests debug = false', () => {
     expect(helper.ReadFile('nonExistent')).toBe('');
     expect(helper.ReadFile('./tests/azure.test.json', 'ascii')).not.toBe('');
     expect(helper.ReadFile('./tests/azure.test.json')).not.toBe('');
-    
+
   });
 
   test('csv files without function', () => {
