@@ -1,4 +1,4 @@
-FROM node:lts-alpine as build
+FROM node:18-alpine as build
 
 ENV NODE_ENV="production"
 
@@ -6,9 +6,9 @@ RUN mkdir -p /app && chown -R node:node /app
 WORKDIR /app
 COPY . .
 
-RUN npm install --production && npm prune --production
+RUN npm install --omit=dev && npm prune --omit=dev
 
-FROM node:lts-alpine as final
+FROM node:18-alpine as final
 RUN apk add --no-cache tini su-exec
 
 ENV NODE_ENV "production"
