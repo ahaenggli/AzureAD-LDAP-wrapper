@@ -63,7 +63,7 @@
       "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/",
       "headline": "Use on a Synology NAS",
       "description": "To access a share on the NAS, for example, from a Windows PC, the credentials must be entered. These credentials are NOT sent to the LDAP-wrapper (or any other LDAP server). They are sent to samba so that it can generate a hash from the password. Afterwards samba fetches the password hash from the LDAP-wrapper and compares the two hashes. Perhaps you are now wondering why this is important to know?",
-      "wordCount" : "628",
+      "wordCount" : "649",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -1360,6 +1360,10 @@ Perhaps you are now wondering why this is important to know? Well, the AzureAD-L
 </li>
 <li>
 <p>Enter the credentials of your previously defined superuser (environment variable <code>LDAP_BINDUSER</code>) as Bind DN. Should your user not be found, try writing &ldquo;uid=root&rdquo; or the full name &ldquo;uid=root,cn=users,dc=domain,dc=tld&rdquo; instead of just &ldquo;root&rdquo;. Select your domain in Base DN.
+To prevent potential problems with permissions in Samba, it&rsquo;s recommended to enable <code>UID/GID shifting</code>. Refer to <a
+  class="gdoc-markdown__link"
+  href="https://github.com/ahaenggli/AzureAD-LDAP-wrapper/issues/47"
+>issue #47</a> for more details.
 <img
   src="../use/syno_ldap_infos.png"
   alt="enter ldap infos"
