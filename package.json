@@ -11,8 +11,8 @@
   "scripts": {
     "start": "node --openssl-legacy-provider index.js",
     "lint": "npm exec --no -- eslint *.js",
-    "test": "set \"NODE_OPTIONS=--openssl-legacy-provider\" && jest --runInBand",
-    "test:watch": "jest --watchAll"
+    "test": "set \"NODE_OPTIONS=--openssl-legacy-provider\" && jest --runInBand --coverage",
+    "test:watch": "jest --watchAll --coverage"
   },
   "license": "MIT",
   "repository": {
@@ -20,8 +20,8 @@
     "url": "https://github.com/ahaenggli/AzureAD-LDAP-wrapper"
   },
   "dependencies": {
-    "@azure/msal-node": "2.6.1",
-    "axios": "~1.6.5",
+    "@azure/msal-node": "2.6.2",
+    "axios": "~1.6.7",
     "diacritic": "0.0.2",
     "dotenv": "^16.3.1",
     "fs": "0.0.1-security",

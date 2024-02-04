@@ -35,8 +35,11 @@ const allConfigs = {
     GRAPH_FILTER_USERS: { format: "String", required: false, default: null, transform: "TRIM" },
     GRAPH_FILTER_GROUPS: { format: "String", required: false, default: null, transform: "TRIM" },
     GRAPH_IGNORE_MFA_ERRORS: { format: "Boolean", required: false, default: true },
+
     LDAP_SYNC_TIME: { format: "Integer", required: false, default: 30 /* minutes */ },
     LDAP_DAYSTOKEEPDELETEDUSERS: { format: "Integer", required: false, default: 7 /* days */ },
+    LDAP_USERS_SYNCONLYINGROUP: { format: "String", required: false, default: false },
+    LDAP_USERS_SETDEFAULTGROUP: { format: "String", required: false, default: false },
 
     //LDAP
     LDAP_PORT: { format: "Integer", required: true, default: 389, validate: "PORT" },

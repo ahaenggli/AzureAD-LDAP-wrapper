@@ -18,8 +18,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- example [customizer](./customizer/customizer_DSM7_IDs_string2int_filterUserByGroups.js) to sync only users within specified groups
 - usage examples for `Portainer`, `Authelia` and `Synology Radius with UniFi` in the [documentation](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/)
+- Introducing new environment variable `LDAP_USERS_SYNCONLYINGROUP`:
+  - When set, only users within the specified groups are fetched and made available in the wrapper.
+  - Multiple group names can be specified using the pipe character (|).
+  - This addresses also issue #65. The variable can be used in conjunction with `LDAP_USERS_SETDEFAULTGROUP` (the next new one).
+- New environment variable `LDAP_USERS_SETDEFAULTGROUP`:
+  - When set, the first specified group associated with the user will be used as the default group.
+  - Multiple group names can be specified using the pipe character (|).
+  - For example, `admins|finance|hr`. If a user is within both groups (finance and hr), the default group will be set to finance because it was defined first.
+  - With DSM 7, there are some issues regarding group permissions (#47). ACL and UID/GID shifting can help. However, when losing the permissions, there seems to be some sort of fallback to the default group. With this setting, you can adjust the default group for your users.
 
 ## [2.0.1] - 2023-07-21
 

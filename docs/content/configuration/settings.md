@@ -123,6 +123,17 @@ However, you can set the value to 0 to delete a user/group immediately. Use a ne
 
 The interval in minutes for fetching users/groups from azure. The default is 30 minutes.
 
+### LDAP_USERS_SYNCONLYINGROUP
+
+When set, only users within the specified groups are fetched and made available in the wrapper.
+Multiple group names can be specified using the pipe character (|). The variable can be used in conjunction with `LDAP_USERS_SETDEFAULTGROUP`.
+
+### LDAP_USERS_SETDEFAULTGROUP
+
+When set, the first specified group associated with the user will be used as the default group.
+Multiple group names can be specified using the pipe character (|). For example, `admins|finance|hr`. If a user is within both groups (finance and hr), the default group will be set to finance because it was defined first.
+With DSM 7, there are some issues regarding group permissions. ACL and UID/GID shifting can help. However, when losing the permissions, there seems to be some sort of fallback to the default group. With this setting, you can adjust the default group for your users.
+
 ## LDAPS
 
 ### LDAPS_CERTIFICATE
