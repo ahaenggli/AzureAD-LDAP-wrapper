@@ -25,6 +25,7 @@ To enable users to log in to Synology NAS with their Azure credentials, you need
 ![server address](../use/syno_ldap_serveraddress.png)
 
 3. Enter the credentials of your previously defined superuser (environment variable `LDAP_BINDUSER`) as Bind DN. Should your user not be found, try writing "uid=root" or the full name "uid=root,cn=users,dc=domain,dc=tld" instead of just "root". Select your domain in Base DN.
+To prevent potential problems with permissions in Samba, it's recommended to enable `UID/GID shifting`. Refer to [issue #47](https://github.com/ahaenggli/AzureAD-LDAP-wrapper/issues/47) for more details.
 ![enter ldap infos](../use/syno_ldap_infos.png)
 
 4. If you see a warning about a local group having the same name as a synchronized group, you can ignore it and skip the warning in "Details".
