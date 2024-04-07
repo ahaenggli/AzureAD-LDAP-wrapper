@@ -83,6 +83,10 @@ ahaen/azuread-ldap-wrapper:latest
 
 {{< tab "Docker compose" >}}
 
+{{< hint type=important >}}
+Attention if you use a volume instead of a host directory to map '/app/.cache'. The file 'IshouldNotExist.txt' may have to be deleted manually after the first start attempt.
+{{< /hint >}}
+
 ```Docker
 version: '3.2'
 services:
@@ -109,6 +113,10 @@ services:
 {{< /tab >}}
 
 {{< tab "Portainer" >}}
+
+{{< hint type=important >}}
+Attention if you use a volume instead of a host directory to map '/app/.cache'. The file 'IshouldNotExist.txt' may have to be deleted manually after the first start attempt.
+{{< /hint >}}
 
 ```Docker
 version: '3.8'

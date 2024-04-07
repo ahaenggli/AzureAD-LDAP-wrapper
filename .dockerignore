@@ -21,3 +21,5 @@ docs
 coverage
 *.md
 certs
+*.code-workspace
+*.cmd

@@ -159,7 +159,7 @@ if (config.LDAPS_CERTIFICATE && config.LDAPS_KEY && config.LDAP_PORT != 636) {
 
 // validateMAXcacheTime
 if (fs.existsSync("./.cache/IshouldNotExist.txt") && config.LDAP_SAMBANTPWD_MAXCACHETIME != 0) {
-    errors.push("config", "The volume /app/.cache/ is not mapped in the Docker container. You will lose your cached credentials from time to time and therefore have problems with Samba access. If you do not intend to cache the credentials, set the environment variable LDAP_SAMBANTPWD_MAXCACHETIME to 0.");
+    errors.push("config", "The volume /app/.cache/ is not mapped in the Docker container. You will lose your cached credentials from time to time and therefore have problems with Samba access. If you do not intend to cache the credentials, set the environment variable LDAP_SAMBANTPWD_MAXCACHETIME to 0. Attention if you use a volume instead of a host directory to map '/app/.cache'. The file 'IshouldNotExist.txt' may have to be deleted manually after the first start attempt.");
     validated = false;
 }
 
