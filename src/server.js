@@ -243,20 +243,7 @@ server.search(SUFFIX, authorize, (req, res, next) => {
     try {
 
         const isAnonymous = req.connection.ldap.bindDN.equals('cn=anonymous');
-        var dn = req.dn.toString().toLowerCase().replace(/ /g, '') || config.LDAP_BASEDN;
-        console.log('Original DN=' + dn)
-        const dnParts = dn.split(',')
-        console.log('PARTS=' + JSON.stringify(dnParts))
-
-        const suffix = "@" + config.LDAP_DOMAIN;
-        console.log(suffix)
-        if (dnParts.length > 0 && dnParts[0].startsWith(config.LDAP_USERRDN + "=") && dnParts[0].endsWith(suffix)) {
-           console.log("Trimming")
-           // trim domain suffix
-           dnParts[0] = dnParts[0].slice(0, -suffix.length)
-           dn = dnParts.join(',')
-           console.log("Trimmed dn=" + dn)
-        }
+        const dn = req.dn.toString().toLowerCase().replace(/ /g, '') || config.LDAP_BASEDN;
         
         helper.log("server.js", "server.search", 'Search for => DB: ' + dn + '; Scope: ' + req.scopeName + '; Filter: ' + req.filter + '; Attributes: ' + req.attributes + ';');
 
@@ -269,6 +256,18 @@ server.search(SUFFIX, authorize, (req, res, next) => {
             res.attributes = res.attributes.join('|°|').toLowerCase().split('|°|');
         req.filter = parseFilter(req.filter.toString().toLowerCase());
 
+        console.log('Original filter=' + req.filter)
+        const filterParts = req.filter.split(',')
+        console.log('PARTS=' + JSON.stringify(filterParts))
+        const suffix = "@" + config.LDAP_DOMAIN;
+        console.log(suffix)
+        if (filterParts.length > 0 && filterParts[0].startsWith(config.LDAP_USERRDN + "=") && filterParts[0].endsWith(suffix)) {
+           console.log("Trimming")
+           // trim domain suffix
+           filterParts[0] = filterParts[0].slice(0, -suffix.length)
+           req.filter = filterParts.join(',')
+           console.log("Trimmed filter=" + req.filter)
+        }
         // special treatment if search for schema/configuration
         if (['cn=SubSchema', 'cn=schema,cn=config', 'cn=schema,cn=configuration'].map(v => v.toLowerCase()).indexOf(dn.toLowerCase()) > -1) {
             res.send({
