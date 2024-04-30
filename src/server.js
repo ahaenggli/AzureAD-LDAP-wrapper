@@ -244,12 +244,18 @@ server.search(SUFFIX, authorize, (req, res, next) => {
 
         const isAnonymous = req.connection.ldap.bindDN.equals('cn=anonymous');
         var dn = req.dn.toString().toLowerCase().replace(/ /g, '') || config.LDAP_BASEDN;
+        console.log('Original DN=' + dn)
         const dnParts = dn.split(',')
+        console.log('PARTS=' + JSON.stringify(dnParts))
+
         const suffix = "@" + config.LDAP_DOMAIN;
+        console.log(suffix)
         if (dnParts.length > 0 && dnParts[0].startsWith(config.LDAP_USERRDN + "=") && dnParts[0].endsWith(suffix)) {
+           console.log("Trimming")
            // trim domain suffix
            dnParts[0] = dnParts[0].slice(0, -suffix.length)
            dn = dnParts.join(',')
+           console.log("Trimmed dn=" + dn)
         }
         
         helper.log("server.js", "server.search", 'Search for => DB: ' + dn + '; Scope: ' + req.scopeName + '; Filter: ' + req.filter + '; Attributes: ' + req.attributes + ';');
