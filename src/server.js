@@ -257,7 +257,9 @@ server.search(SUFFIX, authorize, (req, res, next) => {
         req.filter = parseFilter(req.filter.toString().toLowerCase());
         const suffix = "@" + config.LDAP_DOMAIN;
         console.log(suffix)
-        if (req.filter.attribute !== undefined && req.filter.value !== undefined && req.filter.value.endsWith(suffix)) {
+        if (req.filter.attribute !== undefined && req.filter.value !== undefined && 
+            req.filter.attribute === config.LDAP_USERRDN && req.filter.value.endsWith(suffix))
+        {
            console.log("Trimming")
            // trim domain suffix
            req.filter.value = req.filter.value.slice(0, -suffix.length)
