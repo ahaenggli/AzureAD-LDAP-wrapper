@@ -50,7 +50,10 @@ function authorize(req, res, next) {
 
     var bindi = req.connection.ldap.bindDN.toString().replace(/ /g, '');
     var username = bindi.toLowerCase().replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
-
+    const suffix = "@" + config.LDAP_DOMAIN;
+    // trim domain suffix if present
+    username = username.endsWith(suffix) ? username.slice(0, -suffix.length) : username
+    
     const isSearch = (req instanceof ldap.SearchRequest);
     const isAnonymous = req.connection.ldap.bindDN.equals('cn=anonymous');
 
@@ -83,6 +86,9 @@ function isUserENVBindUser(binduser) {
     for (var u of config.LDAP_BINDUSER.toString().split("||")) {
         u = u.split("|")[0];
         var username = binduser.toString().toLowerCase().replace(/ /g, '').replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
+        const suffix = "@" + config.LDAP_DOMAIN;
+        // trim domain suffix if present
+        username = username.endsWith(suffix) ? username.slice(0, -suffix.length) : username
         if (u === username) allowSensitiveAttributes = true;
     }
     return allowSensitiveAttributes;
@@ -152,6 +158,10 @@ server.bind(SUFFIX, async (req, res, next) => {
 
         // dn bind
         var username = helper.unescapeLDAPspecialChars(dn.replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, ''));
+        const suffix = "@" + config.LDAP_DOMAIN;
+        // trim domain suffix if present
+        username = username.endsWith(suffix) ? username.slice(0, -suffix.length) : username
+
         var pass = req.credentials;
 
         if (config.LDAP_BINDUSER && config.LDAP_BINDUSER.toString().split("||").indexOf(username + '|' + pass) > -1) {
@@ -159,9 +169,8 @@ server.bind(SUFFIX, async (req, res, next) => {
             res.end();
             return next();
         } else {
-
-            if (username.indexOf("@") == -1)
-                username = username + "@" + config.LDAP_DOMAIN;
+            // add domain suffix
+            username = username + "@" + config.LDAP_DOMAIN;
 
             if (!db.hasOwnPropertyCI(dn)) {
                 // helper.warn("server.js", "server.bind", "hmpf", dn);
@@ -234,8 +243,15 @@ server.search(SUFFIX, authorize, (req, res, next) => {
     try {
 
         const isAnonymous = req.connection.ldap.bindDN.equals('cn=anonymous');
-        const dn = req.dn.toString().toLowerCase().replace(/ /g, '') || config.LDAP_BASEDN;
-
+        var dn = req.dn.toString().toLowerCase().replace(/ /g, '') || config.LDAP_BASEDN;
+        const dnParts = dn.split(',')
+        const suffix = "@" + config.LDAP_DOMAIN;
+        if (dnParts.length > 0 && dnParts[0].startsWith(config.LDAP_USERRDN + "=") && dnParts[0].endsWith(suffix)) {
+           // trim domain suffix
+           dnParts[0] = dnParts[0].slice(0, -suffix.length)
+           dn = dnParts.join(',')
+        }
+        
         helper.log("server.js", "server.search", 'Search for => DB: ' + dn + '; Scope: ' + req.scopeName + '; Filter: ' + req.filter + '; Attributes: ' + req.attributes + ';');
 
         // rewrite attributes an filter to lowercase
