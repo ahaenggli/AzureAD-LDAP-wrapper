@@ -256,14 +256,11 @@ server.search(SUFFIX, authorize, (req, res, next) => {
             res.attributes = res.attributes.join('|°|').toLowerCase().split('|°|');
         req.filter = parseFilter(req.filter.toString().toLowerCase());
         const suffix = "@" + config.LDAP_DOMAIN;
-        console.log(suffix)
         if (req.filter.attribute !== undefined && req.filter.value !== undefined && 
             req.filter.attribute === config.LDAP_USERRDN && req.filter.value.endsWith(suffix))
         {
-           console.log("Trimming")
            // trim domain suffix
            req.filter.value = req.filter.value.slice(0, -suffix.length)
-           console.log("Trimmed filter=" + req.filter)
         }
         // special treatment if search for schema/configuration
         if (['cn=SubSchema', 'cn=schema,cn=config', 'cn=schema,cn=configuration'].map(v => v.toLowerCase()).indexOf(dn.toLowerCase()) > -1) {
