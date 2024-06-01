@@ -67,7 +67,7 @@ describe('check server with LDAP_ANONYMOUSBIND=none', () => {
         expect.assertions(5);
         expect(server.url).toBe('ldaps://0.0.0.0:13388');
 
-        const client = ldap.createClient({ url: ['ldaps://anet-lap01.brugg.haenggli.net:13388'], tlsOptions: { rejectUnauthorized: false } });
+        const client = ldap.createClient({ url: ['ldaps://anet-wst01.brugg.haenggli.net:13388'], tlsOptions: { rejectUnauthorized: false } });
         const baseDN = 'dc=domain,dc=tld';
 
         clientSearch(client, 'dc=example,dc=tld', {
@@ -100,6 +100,6 @@ describe('check server with LDAP_ANONYMOUSBIND=none', () => {
         });
 
     });
-    
+
 });
 

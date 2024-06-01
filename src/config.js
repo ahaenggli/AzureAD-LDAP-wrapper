@@ -73,6 +73,7 @@ const allConfigs = {
     // misc
     DSM7: { format: "Boolean", default: true },
     LDAP_DEBUG: { format: "Boolean", default: false },
+    LDAP_DOMAIN_OU: { format: "Boolean", default: false },
 };
 
 // Check that all required settings are defined

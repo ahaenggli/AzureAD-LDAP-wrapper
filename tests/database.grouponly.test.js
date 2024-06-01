@@ -44,8 +44,6 @@ ${'LDAP_USERS_SYNCONLYINGROUP'}  | ${'sécu'}              | ${true}     | ${''}
         if (fs.existsSync('./tests/tmp_azure.test.json'))
             fs.unlinkSync('./tests/tmp_azure.test.json');
 
-        if (fs.existsSync('./tests/tmp_azure_empty.test.json'))
-            fs.unlinkSync('./tests/tmp_azure_empty.test.json');
     });
 
     test('callback should be called', async () => {

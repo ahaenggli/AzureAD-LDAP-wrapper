@@ -78,6 +78,7 @@ customizer.ModifyLDAPGlobal = function (all) {
                 && all[key].gidNumber === 0
             ) {
                 delete all[key];
+                users.splice(users.indexOf(key), 1);
             }
         }
     }

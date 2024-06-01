@@ -581,7 +581,21 @@ async function mergeAzureUserEntries(db) {
             }
 
             userPrincipalName = userPrincipalName.replace("@" + config.LDAP_DOMAIN, '');
+            let udn = config.LDAP_USERSDN;
+            let ou = "";
+
+            if (config.LDAP_DOMAIN_OU) {
+                ou = "ou=" + config.LDAP_DOMAIN;
+                udn = ou + "," + config.LDAP_USERSDN;
+            }
+
             if (userPrincipalName.indexOf("@") > -1) {
+
+                if (config.LDAP_DOMAIN_OU) {
+                    ou = "ou=" + userPrincipalName.substring(userPrincipalName.indexOf("@") + 1);
+                    udn = ou + "," + config.LDAP_USERSDN;
+                }
+
                 userPrincipalName = userPrincipalName.substring(0, userPrincipalName.indexOf("@"));
             }
 
@@ -593,8 +607,9 @@ async function mergeAzureUserEntries(db) {
 
 
             userPrincipalName = helper.escapeLDAPspecialChars(userPrincipalName);
+            let userPrincipalNameOU = [userPrincipalName, ou].filter(x => typeof x === 'string' && x.length > 0).join(",");
 
-            let upName = config.LDAP_USERRDN + "=" + userPrincipalName + "," + config.LDAP_USERSDN;
+            let upName = config.LDAP_USERRDN + "=" + userPrincipalName + "," + udn;
             upName = upName.toLowerCase();
 
             renameEntryByUUID(db, user.id, upName);
@@ -618,7 +633,7 @@ async function mergeAzureUserEntries(db) {
             }
 
             // add default `users`-group
-            db['tmp_user_to_groups'][user.id].push(config.LDAP_USERSGROUPSBASEDN);           
+            db['tmp_user_to_groups'][user.id].push(config.LDAP_USERSGROUPSBASEDN);
 
             for (let j = 0, jlen = db['tmp_user_to_groups'][user.id].length; j < jlen; j++) {
                 let g = db['tmp_user_to_groups'][user.id][j];
@@ -642,8 +657,9 @@ async function mergeAzureUserEntries(db) {
                 ],
                 "apple-generateduid": user.id,
                 "authAuthority": ";basic;",
-                "cn": userPrincipalName.toLowerCase(),
+                "cn": userPrincipalNameOU.toLowerCase(),
                 "AzureADuserPrincipalName": user.userPrincipalName,
+                "krbPrincipalName": user.userPrincipalName,
                 "AzureADuserExternal": AzureADuserExternal,
                 "displayName": user.displayName,
                 "entryDN": upName,
@@ -660,7 +676,7 @@ async function mergeAzureUserEntries(db) {
                 //"sambaSID": "S-1-5-21-" + user_hash + "-" + user_hash + "-" + user_hash,
                 "sambaSID": generateSID(config.LDAP_SAMBA_USEAZURESID, 1, config.LDAP_SAMBASIDBASE, user_hash, user.id),
                 "sambaPrimaryGroupSID": db[config.LDAP_USERSGROUPSBASEDN].sambaSID,
-                "sAMAccountName": userPrincipalName,
+                "sAMAccountName": userPrincipalNameOU,
                 "shadowExpire": -1,
                 "shadowFlag": 0,
                 "shadowInactive": 0,
@@ -669,7 +685,7 @@ async function mergeAzureUserEntries(db) {
                 "shadowMin": 0,
                 "shadowWarning": 7,
                 "sn": user.surname,
-                "uid": userPrincipalName,
+                "uid": userPrincipalNameOU,
                 "uidNumber": user_hash,
                 "structuralObjectClass": "inetOrgPerson",
                 "hasSubordinates": "FALSE",
@@ -682,16 +698,17 @@ async function mergeAzureUserEntries(db) {
                 ...db[upName],
 
                 // overwrite values from before
-                "cn": userPrincipalName.toLowerCase(),
+                "cn": userPrincipalNameOU.toLowerCase(),
                 "AzureADuserPrincipalName": user.userPrincipalName,
+                "krbPrincipalName": user.userPrincipalName,
                 "AzureADuserExternal": AzureADuserExternal,
                 "entryDN": upName,
-                "uid": userPrincipalName,
+                "uid": userPrincipalNameOU,
                 "displayName": user.displayName,
                 "sambaSID": generateSID(config.LDAP_SAMBA_USEAZURESID, 1, config.LDAP_SAMBASIDBASE, user_hash, user.id),
                 "sambaNTPassword": sambaNTPassword,
                 "sambaPwdLastSet": sambaPwdLastSet,
-                "sAMAccountName": userPrincipalName,
+                "sAMAccountName": userPrincipalNameOU,
                 "givenName": user.givenName,
                 "sn": user.surname,
                 "homeDirectory": "/home/" + userPrincipalName,
@@ -701,7 +718,10 @@ async function mergeAzureUserEntries(db) {
                 "sambaPrimaryGroupSID": db[config.LDAP_USERSGROUPSBASEDN].sambaSID,
                 "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
                 "modifyTimestamp": helper.ldap_now() + "Z",
+                "ou": ou.substring(3) || config.LDAP_DOMAIN,
             };
+
+
 
             db[upName] = customizer.ModifyLDAPUser(db[upName], user);
         }

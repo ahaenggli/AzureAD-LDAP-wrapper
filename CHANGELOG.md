@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+## [2.0.2] - 2024-06-01
+
 ### Changed
 
 - updated npm dependencies
@@ -29,6 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Multiple group names can be specified using the pipe character (|).
   - For example, `admins|finance|hr`. If a user is within both groups (finance and hr), the default group will be set to finance because it was defined first.
   - With DSM 7, there are some issues regarding group permissions (#47). ACL and UID/GID shifting can help. However, when losing the permissions, there seems to be some sort of fallback to the default group. With this setting, you can adjust the default group for your users.
+- Experimental environment variable `LDAP_DOMAIN_OU`:
+  - In a tenant with multiple domains, the same username can also be used multiple times (issue #74)
+  - When the env var is set, the domain name for each user is appended in the username as ou=domain.tld
+    So instead of cn=bob it will become cn=bob,ou=domain.tld. This way bob from domain1 and domain2 can be separated
+    by `bob,ou=domain1.tld` and `bob,ou=domain2.tld`.
+  - The feature is only experimental. There will be changes in handling the different domains.
 
 ## [2.0.1] - 2023-07-21
 
@@ -292,6 +300,7 @@ if set to true and the login is failed, the login is retried against the sambaNT
 - Container on hub.docker.cm
 
 [Unreleased]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/
+[2.0.2]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v2.0.2
 [2.0.1]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v2.0.1
 [2.0.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v2.0.0
 [1.8.2]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v1.8.2
