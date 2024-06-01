@@ -56,8 +56,8 @@ customizer.ModifyLDAPUser = function (ldapuser, azureuser) {
 
     // no groups for user? set gidNumber to 0
     if (sync_only_groups && sync_only_groups.length > 0) {
-        ldapuser.memberOf = ldapuser.memberOf.filter(e => e != config.LDAP_USERSGROUPSBASEDN);
-        if (Array.isArray(ldapuser.memberOf) && ldapuser.memberOf.length === 0) ldapuser.gidNumber = 0;
+        var memberOf = ldapuser.memberOf.filter(e => e != config.LDAP_USERSGROUPSBASEDN);
+        if (Array.isArray(memberOf) && memberOf.length === 0) ldapuser.gidNumber = 0;
     }
 
     return ldapuser;

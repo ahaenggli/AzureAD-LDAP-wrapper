@@ -348,6 +348,10 @@ function cleanUpOldEntries(db, compDate) {
                 (value.hasOwnProperty('modifyTimestamp') && helper.ldap_now_2_date(value.modifyTimestamp) < compDate))) {
                 helper.forceLog('database.js', 'cleanUpOldEntries', 'deleted group:', { entryDN: value.entryDN, modifyTimestamp: helper.ldap_now_2_date(value.modifyTimestamp), compDate: compDate });
                 delete db[key];
+            } else if (value.hasOwnProperty('structuralObjectClass') && value.hasOwnProperty('entryDN') && value.entryDN.startsWith('ou=') && (!value.hasOwnProperty('modifyTimestamp') ||
+                (value.hasOwnProperty('modifyTimestamp') && helper.ldap_now_2_date(value.modifyTimestamp) < compDate))) {
+                helper.forceLog('database.js', 'cleanUpOldEntries', 'deleted group:', { entryDN: value.entryDN, modifyTimestamp: helper.ldap_now_2_date(value.modifyTimestamp), compDate: compDate });
+                delete db[key];
             }
         }
     }
@@ -486,11 +490,13 @@ async function mergeAzureGroupEntries(db) {
             let member = members[t];
             if (member['@odata.type'] == '#microsoft.graph.user') {
                 db['tmp_user_to_groups'][member.id] = db['tmp_user_to_groups'][member.id] || [];
-                db['tmp_user_to_groups'][member.id].push(gpName);
+                if (!db['tmp_user_to_groups'][member.id].includes(gpName))
+                    db['tmp_user_to_groups'][member.id].push(gpName);
             }
             if (member['@odata.type'] == '#microsoft.graph.group') {
                 db['tmp_nested_groups'][member.id] = db['tmp_nested_groups'][member.id] || [];
-                db['tmp_nested_groups'][member.id].push(gpName);
+                if (!db['tmp_nested_groups'][member.id].includes(gpName))
+                    db['tmp_nested_groups'][member.id].push(gpName);
             }
         }
     }
@@ -637,8 +643,12 @@ async function mergeAzureUserEntries(db) {
 
             for (let j = 0, jlen = db['tmp_user_to_groups'][user.id].length; j < jlen; j++) {
                 let g = db['tmp_user_to_groups'][user.id][j];
-                db[g].member.push(upName);
-                db[g].memberUid.push(userPrincipalName);
+
+                if (!db[g].member.includes(upName))
+                    db[g].member.push(upName);
+
+                if (!db[g].memberUid.includes(userPrincipalName))
+                    db[g].memberUid.push(userPrincipalName);
             }
 
             db[upName] = {
