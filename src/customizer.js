@@ -67,7 +67,7 @@ customizer.ModifyLDAPUser = function (ldapuser, azureuser) {
 customizer.ModifyLDAPGlobal = function (all) {
     if (typeof customizer_script.ModifyLDAPGlobal !== "undefined") all = customizer_script.ModifyLDAPGlobal(all);
 
-    const users = Object.keys(all).filter(e => all[e].hasOwnProperty("structuralObjectClass") && all[e].structuralObjectClass === "inetOrgPerson");
+    var users = Object.keys(all).filter(e => all[e].hasOwnProperty("structuralObjectClass") && all[e].structuralObjectClass === "inetOrgPerson").sort();
 
     // keep only users with gidNumber > 0
     if ((sync_only_groups && sync_only_groups.length > 0)) {
@@ -78,10 +78,11 @@ customizer.ModifyLDAPGlobal = function (all) {
                 && all[key].gidNumber === 0
             ) {
                 delete all[key];
-                users.splice(users.indexOf(key), 1);
             }
         }
     }
+
+    users = Object.keys(all).filter(e => all[e].hasOwnProperty("structuralObjectClass") && all[e].structuralObjectClass === "inetOrgPerson").sort();
 
     // set gidNumber for default group
     if (default_group && default_group.length > 0) {
