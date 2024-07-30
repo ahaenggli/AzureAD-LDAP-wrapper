@@ -10,5 +10,5 @@ REM multiarch-dev
 echo "Build DEV as multiarch"
 pause
 REM docker buildx build --no-cache --push -t ahaen/azuread-ldap-wrapper:dev --platform linux/amd64,linux/arm64/v8,linux/arm/v7  .
-docker buildx build --no-cache --push -t ahaen/azuread-ldap-wrapper:dev --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6 .
+docker buildx build --no-cache --push -t ahaen/azuread-ldap-wrapper:dev --platform linux/amd64,linux/arm64,linux/s390x,linux/arm/v8,linux/arm/v7,linux/arm/v6 .
 pause

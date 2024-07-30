@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+### Changed
+
+- updated dependencies
+- set node version to 22 (fix #87)
+  (build is kept at version 18 because of an [issue](https://github.com/nodejs/docker-node/issues/2077))
+- removed placeholder secrets from the dockerfile to prevent export error of SecretsUsedInArgOrEnv
+- removed build for ppc64le arch due to build errors with the new node version
+
 ## [2.0.2] - 2024-06-01
 
 ### Changed
