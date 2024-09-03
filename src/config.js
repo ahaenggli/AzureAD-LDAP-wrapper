@@ -1,6 +1,6 @@
 'use strict';
 
-const fs = require('fs');
+const fs = require('node:fs');
 
 if (!process.env["SKIP_DOTENV"])
     require('dotenv').config();
@@ -157,6 +157,23 @@ if ((config.LDAPS_CERTIFICATE || config.LDAPS_KEY) && !(config.LDAPS_CERTIFICATE
 if (config.LDAPS_CERTIFICATE && config.LDAPS_KEY && config.LDAP_PORT != 636) {
     errors.push("config", "LDAPS usually runs on port 636. So you may need to set the env var `LDAP_PORT` to 636.");
 }
+
+
+// does .cache exists?
+if (!fs.existsSync("./.cache")) {
+
+    try {
+        fs.mkdirSync("./.cache");
+    } catch (error) {
+        errors.push("config", "Failed to create the directory .cache");
+    }
+
+    if (!fs.existsSync("./.cache")) {
+        errors.push("config", "The directory .cache does not exist.");
+        validated = false;
+    }
+}
+
 
 // validateMAXcacheTime
 if (fs.existsSync("./.cache/IshouldNotExist.txt") && config.LDAP_SAMBANTPWD_MAXCACHETIME != 0) {

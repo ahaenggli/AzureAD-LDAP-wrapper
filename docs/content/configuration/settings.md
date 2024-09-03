@@ -87,10 +87,11 @@ Depending on the value, anonymous binding is handelt differently
 
 If set to true there are more detailed logs in the console output.
 
-### LDAP_PORT (default: 13389)
+### LDAP_PORT (default: 13389/389)
 
-Sets the port for the listener. The wrapper listens on port 13389 by default.
-However, if you are running a Docker container directly on the host network, you may want to change the port to 389.
+Sets the port for the listener. The wrapper in the Docker containter listens on port 13389 by default.
+However, if you are running a Docker container directly on the host network, you may want to map the port to 389.
+Port 389 is also used when starting directly via npm.
 
 ### LDAP_SECURE_ATTRIBUTES (optional)
 

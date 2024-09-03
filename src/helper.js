@@ -1,7 +1,7 @@
 'use strict';
 
 const config = require('./config');
-const fs = require('fs');
+const fs = require('node:fs');
 const crypto = require('crypto');
 
 var helper = {};

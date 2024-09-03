@@ -482,8 +482,8 @@ async function mergeAzureGroupEntries(db) {
 
         if (members.length > 0) {
             // members.sort((a, b) => a.userPrincipalName.localeCompare(b.userPrincipalName));
-            helper.SaveJSONtoFile(members, './.cache/members_' + groupDisplayName + '.json');
-            helper.log("database.js", 'members_' + groupDisplayName + '.json' + " saved.");
+            helper.SaveJSONtoFile(members, './.cache/members_' + groupDisplayNameClean + '.json');
+            helper.log("database.js", 'members_' + groupDisplayNameClean + '.json' + " saved.");
         }
 
         for (let t = 0, tlen = members.length; t < tlen; t++) {
@@ -506,7 +506,8 @@ async function mergeAzureGroupEntries(db) {
         if (db['tmp_nested_groups'][group.id]) {
             for (let j = 0, jlen = db['tmp_nested_groups'][group.id].length; j < jlen; j++) {
                 let g = db['tmp_nested_groups'][group.id][j];
-                let gpName = Object.values(db).find(g => g.entryUUID === group.id && g.objectClass.includes('posixGroup')).entryDN;
+                let gp = Object.values(db).find(g => g.entryUUID === group.id && g.objectClass.includes('posixGroup'));
+                let gpName = (gp) ? Object.values(db).find(g => g.entryUUID === group.id && g.objectClass.includes('posixGroup')).entryDN : null;
                 if (gpName && g !== gpName) { db[g].member.push(gpName); }
             }
         }

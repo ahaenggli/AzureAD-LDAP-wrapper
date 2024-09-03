@@ -9,11 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- updated dependencies
-- set node version to 22 (fix #87)
+- set node version in docker container to 22 (fix #87)
   (build is kept at version 18 because of an [issue](https://github.com/nodejs/docker-node/issues/2077))
 - removed placeholder secrets from the dockerfile to prevent export error of SecretsUsedInArgOrEnv
 - removed build for ppc64le arch due to build errors with the new node version
+- updated dependencies, removed package fs:0.0.1-security as fs is npm default
+
+### Fixed
+
+- handling missing .cache dir if startet directly in npm
+- write group without special chars to disk (probably fix #90)
 
 ## [2.0.2] - 2024-06-01
 
