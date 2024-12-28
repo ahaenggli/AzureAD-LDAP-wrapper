@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+## [2.0.3] - 2024-12-28
+
 ### Changed
 
 - set node version in docker container to 22 (fix #87)
@@ -313,6 +315,7 @@ if set to true and the login is failed, the login is retried against the sambaNT
 - Container on hub.docker.cm
 
 [Unreleased]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/
+[2.0.3]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v2.0.3
 [2.0.2]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v2.0.2
 [2.0.1]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v2.0.1
 [2.0.0]: https://github.com/ahaenggli/AzureAD-LDAP-wrapper/releases/tag/v2.0.0
