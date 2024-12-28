@@ -12,10 +12,10 @@
 <meta name="generator" content="Hugo 0.124.1">
 
 
-  <meta name="description" content="Prerequisites Register an application with the Microsoft identity platform Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper PrerequisitesTo register an application with the Microsoft identity platform, you need:
-A Microsoft Entra ID user account. If you don&rsquo;t already have one, you can create an account for free. Register an application with the Microsoft identity platformRegister a new application in your Microsoft Entra Admin Center." />
+  <meta name="description" content="In some scenarios, you may want to include your assigned custom security attributes for each user in the LDAP-wrapper. PrerequisitesBefore the LDAP-wrapper can retrieve custom security attributes, ensure the following prerequisites are met:
+Microsoft Entra: Verify that you have the appropriate licenses to create and assign custom security attributes to your users. Ensure custom security attributes are properly configured in Microsoft Entra. LDAP-wrapper: Use version 2.0.3 or later, as earlier versions do not support this feature." />
 
-    <title>1.1 Register an application with the Microsoft identity platform | AzureAD-LDAP-wrapper</title>
+    <title>custom security attributes | AzureAD-LDAP-wrapper</title>
 
     <link rel="icon" type="image/svg+xml" href="/AzureAD-LDAP-wrapper/favicon/favicon.svg" />
 <link
@@ -36,48 +36,44 @@ A Microsoft Entra ID user account. If you don&rsquo;t already have one, you can 
     
   <meta
     property="og:title"
-    content="1.1 Register an application with the Microsoft identity platform"
+    content="custom security attributes"
   />
   <meta property="og:site_name" content="AzureAD-LDAP-wrapper" />
-  <meta property="og:description" content="Prerequisites Register an application with the Microsoft identity platform Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper PrerequisitesTo register an application with the Microsoft identity platform, you need:
-A Microsoft Entra ID user account. If you don’t already have one, you can create an account for free. Register an application with the Microsoft identity platformRegister a new application in your Microsoft Entra Admin Center." />
+  <meta property="og:description" content="In some scenarios, you may want to include your assigned custom security attributes for each user in the LDAP-wrapper. PrerequisitesBefore the LDAP-wrapper can retrieve custom security attributes, ensure the following prerequisites are met:
+Microsoft Entra: Verify that you have the appropriate licenses to create and assign custom security attributes to your users. Ensure custom security attributes are properly configured in Microsoft Entra. LDAP-wrapper: Use version 2.0.3 or later, as earlier versions do not support this feature." />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/" />
+<meta property="og:url" content="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/customSecurityAttributes/" />
 
-<meta property="article:section" content="Installation" />
-    <meta
-      property="article:modified_time"
-      content="2024-01-11T15:18:30+01:00"
-    />
+<meta property="article:section" content="Security" />
 
 
   <meta name="twitter:card" content="summary" />
-<meta name="twitter:title" content="1.1 Register an application with the Microsoft identity platform" />
-  <meta name="twitter:description" content="Prerequisites Register an application with the Microsoft identity platform Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper PrerequisitesTo register an application with the Microsoft identity platform, you need:
-A Microsoft Entra ID user account. If you don’t already have one, you can create an account for free. Register an application with the Microsoft identity platformRegister a new application in your Microsoft Entra Admin Center." />
+<meta name="twitter:title" content="custom security attributes" />
+  <meta name="twitter:description" content="In some scenarios, you may want to include your assigned custom security attributes for each user in the LDAP-wrapper. PrerequisitesBefore the LDAP-wrapper can retrieve custom security attributes, ensure the following prerequisites are met:
+Microsoft Entra: Verify that you have the appropriate licenses to create and assign custom security attributes to your users. Ensure custom security attributes are properly configured in Microsoft Entra. LDAP-wrapper: Use version 2.0.3 or later, as earlier versions do not support this feature." />
 
 
   <script type="application/ld+json">
   {
       "@context": "http://schema.org",
       "@type": "TechArticle",
-      "articleSection": "Installation",
-      "name": "1.1 Register an application with the Microsoft identity platform",
-      "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/",
-      "headline": "1.1 Register an application with the Microsoft identity platform",
-      "description": "Prerequisites Register an application with the Microsoft identity platform Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites\rTo register an application with the Microsoft identity platform, you need:\nA Microsoft Entra ID user account. If you don’t already have one, you can create an account for free. Register an application with the Microsoft identity platform\rRegister a new application in your Microsoft Entra Admin Center.",
-      "wordCount" : "262",
+      "articleSection": "Security",
+      "name": "custom security attributes",
+      "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/customSecurityAttributes/",
+      "headline": "custom security attributes",
+      "description": "In some scenarios, you may want to include your assigned custom security attributes for each user in the LDAP-wrapper. Prerequisites\rBefore the LDAP-wrapper can retrieve custom security attributes, ensure the following prerequisites are met:\nMicrosoft Entra: Verify that you have the appropriate licenses to create and assign custom security attributes to your users. Ensure custom security attributes are properly configured in Microsoft Entra. LDAP-wrapper: Use version 2.0.3 or later, as earlier versions do not support this feature.",
+      "wordCount" : "387",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
           "@type": "WebPage",
-          "@id": "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/"
+          "@id": "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/customSecurityAttributes/"
       },
       "copyrightHolder" : "AzureAD-LDAP-wrapper",
       "copyrightYear" : "0001",
       "dateCreated": "0001-01-01T00:00:00.00Z",
       "datePublished": "0001-01-01T00:00:00.00Z",
-      "dateModified": "2024-01-11T15:18:30.00Z",
+      "dateModified": "0001-01-01T00:00:00.00Z",
       "publisher":{
           "@type":"Organization",
           "name": "AzureAD-LDAP-wrapper",
@@ -155,7 +151,7 @@ A Microsoft Entra ID user account. If you don’t already have one, you can crea
   href="/AzureAD-LDAP-wrapper/custom.css"
   media="all"
 />
-  <link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/" rel="canonical" type="text/html" />
+  <link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/customSecurityAttributes/" rel="canonical" type="text/html" />
 
 <!-- Made with Geekdoc theme https://github.com/thegeeklab/hugo-geekdoc -->
 
@@ -487,7 +483,7 @@ A Microsoft Entra ID user account. If you don’t already have one, you can crea
                 
                 <a
                   href="/AzureAD-LDAP-wrapper/installation/create-azuread-application"
-                  class="gdoc-nav__entry is-active"
+                  class="gdoc-nav__entry"
                 >
                   1.1 Create an AzureAD application
                 </a>
@@ -867,7 +863,7 @@ A Microsoft Entra ID user account. If you don’t already have one, you can crea
                 
                 <a
                   href="/AzureAD-LDAP-wrapper/security/customSecurityAttributes"
-                  class="gdoc-nav__entry"
+                  class="gdoc-nav__entry is-active"
                 >
                   3.1 custom security attributes
                 </a>
@@ -1391,7 +1387,7 @@ A Microsoft Entra ID user account. If you don’t already have one, you can crea
     
   
   
-    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/' href='/AzureAD-LDAP-wrapper/'><span itemprop='name'>LDAP-wrapper for Microsoft Entra ID</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/installation/' href='/AzureAD-LDAP-wrapper/installation/'><span itemprop='name'>Installation</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>1.1 Register an application with the Microsoft identity platform</span><meta itemprop='position' content='4' /></li>
+    <li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/' href='/AzureAD-LDAP-wrapper/'><span itemprop='name'>LDAP-wrapper for Microsoft Entra ID</span></a><meta itemprop='position' content='2' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><a itemscope itemtype='https://schema.org/WebPage' itemprop='item' itemid='/AzureAD-LDAP-wrapper/security/' href='/AzureAD-LDAP-wrapper/security/'><span itemprop='name'>3. Security</span></a><meta itemprop='position' content='3' /></li><li> / </li><li itemprop='itemListElement' itemscope itemtype='https://schema.org/ListItem'><span itemprop='name'>custom security attributes</span><meta itemprop='position' content='4' /></li>
   
 
   
@@ -1409,135 +1405,119 @@ A Microsoft Entra ID user account. If you don’t already have one, you can crea
   <article
     class="gdoc-markdown gdoc-markdown__align--left"
   >
-    <h1>1.1 Register an application with the Microsoft identity platform</h1>
-    <nav id="TableOfContents"><ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#register-an-application-with-the-microsoft-identity-platform">Register an application with the Microsoft identity platform</a></li>
-        <li><a href="#set-permissions">Set permissions</a></li>
-        <li><a href="#get-tenantid-appid-and-appsecret">Get TenantId, AppId and AppSecret</a></li>
-        <li><a href="#use-tenantid-appid-and-appsecret-in-your-wrapper">Use TenantId, AppId and AppSecret in your wrapper</a></li>
-      </ul></nav>
+    <h1>custom security attributes</h1>
+    <p>In some scenarios, you may want to include your assigned <a
+  class="gdoc-markdown__link"
+  href="https://learn.microsoft.com/en-us/entra/fundamentals/custom-security-attributes-overview"
+>custom security attributes</a> for each user in the LDAP-wrapper.
+<img
+  src="../cusSecAtt_values.png"
+  alt="entra custom security attributes"
+  
+/></p>
 <div class="gdoc-page__anchorwrap">
     <h2 id="prerequisites">
         Prerequisites
-        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/#prerequisites" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Prerequisites" aria-label="Anchor to: Prerequisites" href="#prerequisites">
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/customSecurityAttributes/#prerequisites" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Prerequisites" aria-label="Anchor to: Prerequisites" href="#prerequisites">
             <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
         </a>
     </h2>
 </div>
-<p>To register an application with the Microsoft identity platform, you need:</p>
+<p>Before the LDAP-wrapper can retrieve custom security attributes, ensure the following prerequisites are met:</p>
 <ul>
-<li>A Microsoft Entra ID user account. If you don&rsquo;t already have one, you can <a
-  class="gdoc-markdown__link"
-  href="https://azure.microsoft.com/free/"
->create an account for free</a>.</li>
+<li><strong>Microsoft Entra</strong>:
+<ul>
+<li>Verify that you have the appropriate licenses to create and assign custom security attributes to your users.</li>
+<li>Ensure custom security attributes are properly configured in Microsoft Entra.</li>
+</ul>
+</li>
+<li><strong>LDAP-wrapper</strong>:
+<ul>
+<li>Use version 2.0.3 or later, as earlier versions do not support this feature.</li>
+</ul>
+</li>
 </ul>
 <div class="gdoc-page__anchorwrap">
-    <h2 id="register-an-application-with-the-microsoft-identity-platform">
-        Register an application with the Microsoft identity platform
-        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/#register-an-application-with-the-microsoft-identity-platform" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Register an application with the Microsoft identity platform" aria-label="Anchor to: Register an application with the Microsoft identity platform" href="#register-an-application-with-the-microsoft-identity-platform">
+    <h2 id="steps-to-enable-custom-security-attributes-in-ldap-wrapper">
+        Steps to Enable Custom Security Attributes in LDAP-wrapper
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/customSecurityAttributes/#steps-to-enable-custom-security-attributes-in-ldap-wrapper" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Steps to Enable Custom Security Attributes in LDAP-wrapper" aria-label="Anchor to: Steps to Enable Custom Security Attributes in LDAP-wrapper" href="#steps-to-enable-custom-security-attributes-in-ldap-wrapper">
             <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
         </a>
     </h2>
 </div>
-<p>Register a new application in your <a
-  class="gdoc-markdown__link"
-  href="https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM"
->Microsoft Entra Admin Center</a>. More descriptions can be found <a
-  class="gdoc-markdown__link"
-  href="https://learn.microsoft.com/en-us/entra/identity-platform/howto-create-service-principal-portal"
->here</a>.</p>
-<ul>
-<li>Sign-in to the Microsoft Entra Admin Center.</li>
-<li>Browse to Identity &gt; Applications &gt; <a
-  class="gdoc-markdown__link"
-  href="https://entra.microsoft.com/#view/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType~/null/sourceType/Microsoft_AAD_IAM"
->App registrations</a></li>
-<li>Select New registration.</li>
-<li>Name the application, for example &ldquo;ldap-wrapper&rdquo;.</li>
-<li>Select a supported account type, which determines who can use the application.<br>
-Important: Personal Microsoft accounts are not supported.</li>
-<li>Under Redirect URI, select nothing and keep it empty.</li>
-<li>Select Register.<br>
-<img
-  src="../aad_register.png"
-  alt="aad register"
-  
-/></li>
-</ul>
-<div class="gdoc-page__anchorwrap">
-    <h2 id="set-permissions">
-        Set permissions
-        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/#set-permissions" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Set permissions" aria-label="Anchor to: Set permissions" href="#set-permissions">
-            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-        </a>
-    </h2>
-</div>
-<ul>
+<p>To include custom security attributes in LDAP, follow these steps:</p>
+<ol>
 <li>
-<p>Set the following Microsoft Graph API Application permissions:<br>
-For type <code>Application</code>  allow <code>User.Read.All</code> and <code>Group.Read.All</code>.<br>
-For type <code>Delegated</code> allow <code>User.Read</code>.<br>
-<img
-  src="../entra_permissions.png"
-  alt="Entra Permissions"
+<p>Configure Application Permissions<br>
+You need to grant specific permissions to the application registered in Azure:</p>
+<ul>
+<li>Navigate to your registered application in the Azure portal.</li>
+<li>Add the permission <code>CustomSecAttributeAssignment.Read.All</code> for the <code>Application</code> type.</li>
+<li>Grant admin consent for this permission.</li>
+</ul>
+<p><img
+  src="../cusSecAtt_permission.png"
+  alt="registered app permissions"
   
 /></p>
 </li>
 <li>
-<p>Click &ldquo;Grant admin consent&rdquo;. The status should be &ldquo;Granted for&rdquo;.<br>
-If you see en entry with &ldquo;Not granted for&rdquo;, click again:
-<img
-  src="../entra_permissions_notgranted.png"
-  alt="Entra wrong permissions"
-  
-/></p>
+<p>Optionally set the environment variables <code>LDAP_SECURE_ATTRIBUTES</code> or <code>LDAP_SENSITIVE_ATTRIBUTES</code> to secure the new attribute values as described below.</p>
 </li>
 <li>
-<p>Set <a
-  class="gdoc-markdown__link"
-  href="https://learn.microsoft.com/de-de/entra/msal/dotnet/acquiring-tokens/desktop-mobile/username-password-authentication#application-registration"
->Allow public client flows</a> to <code>Yes</code><br>
-<img
-  src="../entra_ROPC.png"
-  alt="Entra ROPC"
-  
-/></p>
+<p>After updating the application permissions, restart the LDAP-wrapper (or the container hosting it) to load the updated settings.</p>
 </li>
-</ul>
-<div class="gdoc-page__anchorwrap">
-    <h2 id="get-tenantid-appid-and-appsecret">
-        Get TenantId, AppId and AppSecret
-        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/#get-tenantid-appid-and-appsecret" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Get TenantId, AppId and AppSecret" aria-label="Anchor to: Get TenantId, AppId and AppSecret" href="#get-tenantid-appid-and-appsecret">
-            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
-        </a>
-    </h2>
-</div>
-<p>Copy and save those values for the later use as environment variables in the Docker container:</p>
+<li>
+<p>Verify LDAP Entries<br>
+Once the LDAP-wrapper is running, the assigned custom security attributes will be included in your users&rsquo; LDAP entries in a flattened format.</p>
 <ul>
-<li><code>AZURE_TENANTID</code>: Directory (tenant) ID from the page &ldquo;overview&rdquo;.</li>
-<li><code>AZURE_APP_ID</code>: Application (client) ID from the page &ldquo;overview&rdquo;.
-<img
-  src="../aad_tenant.png"
-  alt="aad tenant"
-  
-/></li>
-<li><code>AZURE_APP_SECRET</code>: Value of a new client secret from the page &ldquo;Certificates &amp; secrets&rdquo;.<br>
-<img
-  src="../aad_appsecret.png"
-  alt="aad app secret"
-  
-/></li>
+<li>All attributes will have the prefix <code>cusSecAtt</code>.</li>
+<li>The wrapper automatically updates or removes these attributes if changes are made in Microsoft Entra.<br>
+<strong>Example of Flattened Attributes</strong><br>
+Here are example attributes based on the values in the screenshot:</li>
 </ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-js" data-lang="js"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;cusSecAtt_animals_hasPermissionToFish&#34;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;cusSecAtt_animals_FavoriteAnimal&#34;</span><span class="o">:</span> <span class="s2">&#34;dogs&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;cusSecAtt_animals_fish&#34;</span><span class="o">:</span> <span class="s2">&#34;Tuna&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;cusSecAtt_animals_exampleMultiText&#34;</span><span class="o">:</span> <span class="p">[</span><span class="s2">&#34;ex1&#34;</span><span class="p">,</span><span class="s2">&#34;ex2&#34;</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div></li>
+</ol>
 <div class="gdoc-page__anchorwrap">
-    <h2 id="use-tenantid-appid-and-appsecret-in-your-wrapper">
-        Use TenantId, AppId and AppSecret in your wrapper
-        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/#use-tenantid-appid-and-appsecret-in-your-wrapper" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Use TenantId, AppId and AppSecret in your wrapper" aria-label="Anchor to: Use TenantId, AppId and AppSecret in your wrapper" href="#use-tenantid-appid-and-appsecret-in-your-wrapper">
+    <h2 id="security-configuration">
+        Security Configuration
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/customSecurityAttributes/#security-configuration" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Security Configuration" aria-label="Anchor to: Security Configuration" href="#security-configuration">
             <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
         </a>
     </h2>
 </div>
-<p>Use a docker container or any other method to run the LDAP-wrapper and start it with the previously saved environment variables.</p>
+<p>To enhance security and limit attribute visibility, you can use the two optional environment variables:
+<code>LDAP_SECURE_ATTRIBUTES</code> or <code>LDAP_SENSITIVE_ATTRIBUTES</code>.</p>
+<p><strong>LDAP_SECURE_ATTRIBUTES</strong> allows you to define attributes that are only visible to superusers. These attributes remain hidden for regular users. Example:
+<code>LDAP_SECURE_ATTRIBUTES=cusSecAtt_*|PlannedDischargeDate</code></p>
+<p>In this example, all attributes starting with cusSecAtt_ and the PlannedDischargeDate attribute are restricted to superusers.</p>
+<p><strong>LDAP_SENSITIVE_ATTRIBUTES</strong> defines sensitive attributes that are visible only to the respective user and superusers. Regular users cannot view these attributes for other users. Example:
+<code>LDAP_SENSITIVE_ATTRIBUTES=cusSecAtt_middlename|PrivatePhoneNumber</code></p>
+<p>Here, attributes like cusSecAtt_middlename and PrivatePhoneNumber are considered sensitive and restricted accordingly.</p>
+<div class="gdoc-page__anchorwrap">
+    <h2 id="additional-tips">
+        Additional Tips
+        <a data-clipboard-text="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/customSecurityAttributes/#additional-tips" class="gdoc-page__anchor clip flex align-center" title="Anchor to: Additional Tips" aria-label="Anchor to: Additional Tips" href="#additional-tips">
+            <svg class="gdoc-icon gdoc_link"><use xlink:href="#gdoc_link"></use></svg>
+        </a>
+    </h2>
+</div>
+<ul>
+<li>Testing: To ensure everything works, verify the LDAP entries using an LDAP browser or a query tool.</li>
+<li>Debugging: If the attributes don�t appear, check:
+That the permissions are correctly configured and consented.
+The LDAP-wrapper logs for any errors.</li>
+</ul>
+<p>For more details on custom security attributes, refer to the <a
+  class="gdoc-markdown__link"
+  href="https://learn.microsoft.com/en-us/entra/fundamentals/custom-security-attributes-overview"
+>official Microsoft documentation</a>.</p>
 
   </article>
 
@@ -1626,9 +1606,6 @@ If you see en entry with &ldquo;Not granted for&rdquo;, click again:
       
 
       
-        
-        
-      
 
       
     
@@ -1650,9 +1627,6 @@ If you see en entry with &ldquo;Not granted for&rdquo;, click again:
       
       
 
-      
-        
-        
       
 
       
@@ -1838,6 +1812,9 @@ If you see en entry with &ldquo;Not granted for&rdquo;, click again:
       
 
       
+        
+        
+      
 
       
     
@@ -1862,6 +1839,9 @@ If you see en entry with &ldquo;Not granted for&rdquo;, click again:
       
       
 
+      
+        
+        
       
 
       
@@ -2009,11 +1989,11 @@ If you see en entry with &ldquo;Not granted for&rdquo;, click again:
     
       <a
         class="gdoc-page__nav--prev flex align-center"
-        href="/AzureAD-LDAP-wrapper/installation/"
-        title="1. Installation"
+        href="/AzureAD-LDAP-wrapper/security/"
+        title="3. Security"
       >
         <i class="gdoc-icon">gdoc_arrow_left_alt</i>
-        1. Installation
+        3. Security
       </a>
     
   </span>
@@ -2021,10 +2001,10 @@ If you see en entry with &ldquo;Not granted for&rdquo;, click again:
     
       <a
         class="gdoc-page__nav--next flex align-center"
-        href="/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/"
-        title="1.2 Run the LDAP-wrapper"
+        href="/AzureAD-LDAP-wrapper/troubleshooting/"
+        title="4. Troubleshooting"
       >
-        1.2 Run the LDAP-wrapper
+        4. Troubleshooting
         <i class="gdoc-icon">gdoc_arrow_right_alt</i>
       </a>
     

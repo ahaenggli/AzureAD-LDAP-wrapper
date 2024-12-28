@@ -15,32 +15,11 @@
       <description>Prerequisites Register an application with the Microsoft identity platform Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites&#xD;To register an application with the Microsoft identity platform, you need:&#xA;A Microsoft Entra ID user account. If you don&amp;rsquo;t already have one, you can create an account for free. Register an application with the Microsoft identity platform&#xD;Register a new application in your Microsoft Entra Admin Center.</description>
     </item>
     <item>
-      <title>6.1 Portainer</title>
-      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/</guid>
-      <description>Portainer supports LDAP authentication, allowing users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication over LDAP-wrapper with Portainer.&#xA;Prerequisites Settings for Portainer LDAP Authentication with LDAP-wrapper LDAP Configuration LDAP Security User Search Configurations Prerequisites&#xD;Before configuring LDAP authentication for Portainer, ensure the following prerequisites are met:&#xA;LDAP-wrapper: Make sure you have a working LDAP-wrapper. Portainer: Install and set up a working instance of Portainer.</description>
-    </item>
-    <item>
-      <title>6.2 Authelia with LDAP-wrapper</title>
+      <title>Authelia with LDAP-wrapper</title>
       <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/</guid>
       <description>Authelia supports LDAP authentication, enabling users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication with Authelia using LDAP-wrapper.&#xA;Prerequisites Settings for Authelia LDAP Authentication with LDAP-wrapper Prerequisites&#xD;Before configuring LDAP authentication for Authelia with LDAP-wrapper, ensure the following prerequisites are met:&#xA;LDAP-wrapper: Ensure you have a functioning LDAP-wrapper. Authelia: Set up and configure Authelia for your environment. Settings for Authelia LDAP Authentication with LDAP-wrapper&#xD;To configure LDAP authentication with Authelia using LDAP-wrapper, follow these steps:</description>
-    </item>
-    <item>
-      <title>6.3 Synology Radius with UniFi</title>
-      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/</guid>
-      <description>UniFi allows you to use a custom Radius server like the default package from Synology. Combined with the LDAP-wrapper, this creates a powerful setup for your users.&#xA;DSM 7.2.1-69057 Update 3&#xA;LDAP-wrapper v2.0.2&#xA;RADIUS Server Package 3.0.25-0515&#xA;UniFi Network Application 8.0.24&#xD;Prerequisites Settings in Synology RADIUS Server Settings in UniFi Controller Prerequisites&#xD;Before configuring Synology Radius and UniFi, ensure the following prerequisites are met:&#xA;Synology NAS: Ensure you are up to date with your DSM, and install the current RADIUS Server package.</description>
-    </item>
-    <item>
-      <title>6.4 user-reported examples</title>
-      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/user-reported-examples/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/user-reported-examples/</guid>
-      <description> Using the wrapper to get a Sophos firewall to authenticate VPN users with AzureAD </description>
     </item>
     <item>
       <title>Bypass MFA</title>
@@ -50,11 +29,25 @@
       <description>Officially MFA is not supported by this LDAP-wrapper. The login for users with activated MFA simply fails, as mentioned here and here. There is no interactive window to enter another factor, and LDAP does not support this either. If you need to use this LDAP-wrapper despite of activated MFA, there are two options:&#xA;Disable MFA for this application in your tenant (preferred).&#xA;There are several ways to define MFA, but only some of them allows you to disable MFA.</description>
     </item>
     <item>
+      <title>custom security attributes</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/customSecurityAttributes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/customSecurityAttributes/</guid>
+      <description>In some scenarios, you may want to include your assigned custom security attributes for each user in the LDAP-wrapper. Prerequisites&#xD;Before the LDAP-wrapper can retrieve custom security attributes, ensure the following prerequisites are met:&#xA;Microsoft Entra: Verify that you have the appropriate licenses to create and assign custom security attributes to your users. Ensure custom security attributes are properly configured in Microsoft Entra. LDAP-wrapper: Use version 2.0.3 or later, as earlier versions do not support this feature.</description>
+    </item>
+    <item>
       <title>Customize attributes</title>
       <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/customize-attributes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/customize-attributes/</guid>
       <description>It is possible to customize all the ldap attributes. That&amp;rsquo;s what I do in the DSM 7 workaround. Look at this file for an example. Customize it as you need and map the file in your docker setup as /app/customizer/ldap_customizer.js. This file has even priority over the DSM 7 workaround. Basically everything can be changed with it. Filter users or groups, overwrite a users default group, add/remove/edit entries or attributes, and much more.</description>
+    </item>
+    <item>
+      <title>Portainer</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/</guid>
+      <description>Portainer supports LDAP authentication, allowing users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication over LDAP-wrapper with Portainer.&#xA;Prerequisites Settings for Portainer LDAP Authentication with LDAP-wrapper LDAP Configuration LDAP Security User Search Configurations Prerequisites&#xD;Before configuring LDAP authentication for Portainer, ensure the following prerequisites are met:&#xA;LDAP-wrapper: Make sure you have a working LDAP-wrapper. Portainer: Install and set up a working instance of Portainer.</description>
     </item>
     <item>
       <title>Run the LDAP-wrapper</title>
@@ -71,11 +64,25 @@
       <description>The following is a list of all possible settings. The LDAP wrapper is intended to be used with Docker. Therefore, the settings must be made using environment variables.&#xA;Azure Settings AZURE_APP_ID AZURE_TENANTID AZURE_APP_SECRET AZURE_ENDPOINT (optional) Graph API Settings GRAPH_ENDPOINT (optional) GRAPH_API_VERSION (optional) GRAPH_FILTER_USERS (optional) GRAPH_FILTER_GROUPS (optional) GRAPH_IGNORE_MFA_ERRORS (default: false) LDAP Settings LDAP_DOMAIN LDAP_BASEDN (optional) LDAP_SAMBADOMAINNAME (optional) LDAP_BINDUSER LDAP_ANONYMOUSBIND (default: domain) LDAP_DEBUG (default: false) LDAP_PORT (default: 13389/389) LDAP_SECURE_ATTRIBUTES (optional) LDAP_SENSITIVE_ATTRIBUTES (optional) LDAP_ALLOWCACHEDLOGINONFAILURE (default: true) LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity) LDAP_DAYSTOKEEPDELETEDUSERS (optional, default: 7) LDAP_SYNC_TIME (default: 30 minutes) LDAP_USERS_SYNCONLYINGROUP LDAP_USERS_SETDEFAULTGROUP LDAPS LDAPS_CERTIFICATE LDAPS_KEY Samba SAMBA_BASESID (optional) LDAP_SAMBA_USEAZURESID (default: true) misc DSM7 HTTPS_PROXY or HTTP_PROXY (optional) Azure Settings&#xD;AZURE_APP_ID&#xD;Your Application ID from azure (see #4)</description>
     </item>
     <item>
+      <title>Synology Radius with UniFi</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/</guid>
+      <description>UniFi allows you to use a custom Radius server like the default package from Synology. Combined with the LDAP-wrapper, this creates a powerful setup for your users.&#xA;DSM 7.2.1-69057 Update 3&#xA;LDAP-wrapper v2.0.2&#xA;RADIUS Server Package 3.0.25-0515&#xA;UniFi Network Application 8.0.24&#xD;Prerequisites Settings in Synology RADIUS Server Settings in UniFi Controller Prerequisites&#xD;Before configuring Synology Radius and UniFi, ensure the following prerequisites are met:&#xA;Synology NAS: Ensure you are up to date with your DSM, and install the current RADIUS Server package.</description>
+    </item>
+    <item>
       <title>Use on a Synology NAS</title>
       <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/</guid>
       <description>To access a share on the NAS, for example, from a Windows PC, the credentials must be entered. These credentials are NOT sent to the LDAP-wrapper (or any other LDAP server). They are sent to samba so that it can generate a hash from the password. Afterwards samba fetches the password hash from the LDAP-wrapper and compares the two hashes. Perhaps you are now wondering why this is important to know?</description>
+    </item>
+    <item>
+      <title>user-reported examples</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/user-reported-examples/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/user-reported-examples/</guid>
+      <description> Using the wrapper to get a Sophos firewall to authenticate VPN users with AzureAD </description>
     </item>
   </channel>
 </rss>

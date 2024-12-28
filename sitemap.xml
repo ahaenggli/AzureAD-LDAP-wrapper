@@ -8,25 +8,16 @@
     <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/</loc>
     <lastmod>2024-01-11T15:18:30+01:00</lastmod>
   </url><url>
-    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/troubleshooting/</loc>
-    <lastmod>2024-01-11T15:18:30+01:00</lastmod>
-  </url><url>
-    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/</loc>
-    <lastmod>2024-01-11T15:18:30+01:00</lastmod>
-  </url><url>
     <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/</loc>
     <lastmod>2024-01-11T15:18:30+01:00</lastmod>
-  </url><url>
-    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/</loc>
-    <lastmod>2024-01-11T15:18:30+01:00</lastmod>
-  </url><url>
-    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/user-reported-examples/</loc>
   </url><url>
     <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/bypass-mfa/</loc>
     <lastmod>2024-01-11T15:18:30+01:00</lastmod>
   </url><url>
     <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/</loc>
     <lastmod>2023-03-04T20:54:20+01:00</lastmod>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/security/customSecurityAttributes/</loc>
   </url><url>
     <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/customize-attributes/</loc>
     <lastmod>2023-03-04T20:54:20+01:00</lastmod>
@@ -37,18 +28,30 @@
     <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/</loc>
     <lastmod>2024-01-11T15:18:30+01:00</lastmod>
   </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/</loc>
+    <lastmod>2024-01-11T15:18:30+01:00</lastmod>
+  </url><url>
     <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/</loc>
     <lastmod>2024-04-07T10:22:42+02:00</lastmod>
   </url><url>
     <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/</loc>
     <lastmod>2024-09-03T09:07:56+02:00</lastmod>
   </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/</loc>
+    <lastmod>2024-01-11T15:18:30+01:00</lastmod>
+  </url><url>
     <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/tags/</loc>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/troubleshooting/</loc>
+    <lastmod>2024-01-11T15:18:30+01:00</lastmod>
   </url><url>
     <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/</loc>
     <lastmod>2024-01-11T15:18:30+01:00</lastmod>
   </url><url>
     <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/</loc>
     <lastmod>2024-02-04T18:32:33+01:00</lastmod>
+  </url><url>
+    <loc>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/user-reported-examples/</loc>
+    <lastmod>2024-12-28T13:45:42+01:00</lastmod>
   </url>
 </urlset>

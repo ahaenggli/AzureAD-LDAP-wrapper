@@ -8,28 +8,28 @@
     <language>en-us</language>
     <atom:link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>6.1 Portainer</title>
-      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/</guid>
-      <description>Portainer supports LDAP authentication, allowing users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication over LDAP-wrapper with Portainer.&#xA;Prerequisites Settings for Portainer LDAP Authentication with LDAP-wrapper LDAP Configuration LDAP Security User Search Configurations Prerequisites&#xD;Before configuring LDAP authentication for Portainer, ensure the following prerequisites are met:&#xA;LDAP-wrapper: Make sure you have a working LDAP-wrapper. Portainer: Install and set up a working instance of Portainer.</description>
-    </item>
-    <item>
-      <title>6.2 Authelia with LDAP-wrapper</title>
+      <title>Authelia with LDAP-wrapper</title>
       <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/authelia/</guid>
       <description>Authelia supports LDAP authentication, enabling users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication with Authelia using LDAP-wrapper.&#xA;Prerequisites Settings for Authelia LDAP Authentication with LDAP-wrapper Prerequisites&#xD;Before configuring LDAP authentication for Authelia with LDAP-wrapper, ensure the following prerequisites are met:&#xA;LDAP-wrapper: Ensure you have a functioning LDAP-wrapper. Authelia: Set up and configure Authelia for your environment. Settings for Authelia LDAP Authentication with LDAP-wrapper&#xD;To configure LDAP authentication with Authelia using LDAP-wrapper, follow these steps:</description>
     </item>
     <item>
-      <title>6.3 Synology Radius with UniFi</title>
+      <title>Portainer</title>
+      <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/portainer/</guid>
+      <description>Portainer supports LDAP authentication, allowing users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication over LDAP-wrapper with Portainer.&#xA;Prerequisites Settings for Portainer LDAP Authentication with LDAP-wrapper LDAP Configuration LDAP Security User Search Configurations Prerequisites&#xD;Before configuring LDAP authentication for Portainer, ensure the following prerequisites are met:&#xA;LDAP-wrapper: Make sure you have a working LDAP-wrapper. Portainer: Install and set up a working instance of Portainer.</description>
+    </item>
+    <item>
+      <title>Synology Radius with UniFi</title>
       <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/synology-radius-unifi/</guid>
       <description>UniFi allows you to use a custom Radius server like the default package from Synology. Combined with the LDAP-wrapper, this creates a powerful setup for your users.&#xA;DSM 7.2.1-69057 Update 3&#xA;LDAP-wrapper v2.0.2&#xA;RADIUS Server Package 3.0.25-0515&#xA;UniFi Network Application 8.0.24&#xD;Prerequisites Settings in Synology RADIUS Server Settings in UniFi Controller Prerequisites&#xD;Before configuring Synology Radius and UniFi, ensure the following prerequisites are met:&#xA;Synology NAS: Ensure you are up to date with your DSM, and install the current RADIUS Server package.</description>
     </item>
     <item>
-      <title>6.4 user-reported examples</title>
+      <title>user-reported examples</title>
       <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/user-reported-examples/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/usage/user-reported-examples/</guid>
