@@ -5,34 +5,28 @@
     <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/</link>
     <description>Recent content in Installation on AzureAD-LDAP-wrapper</description>
     <generator>Hugo -- gohugo.io</generator>
-    <language>en-us</language><atom:link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/index.xml" rel="self" type="application/rss+xml" />
+    <language>en-us</language>
+    <atom:link href="https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>1.1 Register an application with the Microsoft identity platform</title>
       <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
       <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/create-azuread-application/</guid>
-      <description>Prerequisites Register an application with the Microsoft identity platform Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites To register an application with the Microsoft identity platform, you need:
-A Microsoft Entra ID user account. If you don&amp;rsquo;t already have one, you can create an account for free. Register an application with the Microsoft identity platform Register a new application in your Microsoft Entra Admin Center.</description>
+      <description>Prerequisites Register an application with the Microsoft identity platform Set permissions Get TenantId, AppId and AppSecret Use TenantId, AppId and AppSecret in your wrapper Prerequisites&#xD;To register an application with the Microsoft identity platform, you need:&#xA;A Microsoft Entra ID user account. If you don&amp;rsquo;t already have one, you can create an account for free. Register an application with the Microsoft identity platform&#xD;Register a new application in your Microsoft Entra Admin Center.</description>
     </item>
-    
     <item>
       <title>Run the LDAP-wrapper</title>
       <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
       <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/</guid>
       <description>The preferred way to use the LDAP wrapper is with Docker. Alternatively, the source can be downloaded and started manually with npm/node. As domain (and basedn, if manually specified) it is recommended to use the same as used in your Microsoft Entra tenant (e.g. @domain.tld). This way, the spelling of the users (e.g. username@domain.tld) will match at the end. Otherwise, your users will have to use username@example.com instead of the estimated username@domain.</description>
     </item>
-    
     <item>
       <title>Use on a Synology NAS</title>
       <link>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
       <guid>https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/use-synology-nas/</guid>
       <description>To access a share on the NAS, for example, from a Windows PC, the credentials must be entered. These credentials are NOT sent to the LDAP-wrapper (or any other LDAP server). They are sent to samba so that it can generate a hash from the password. Afterwards samba fetches the password hash from the LDAP-wrapper and compares the two hashes. Perhaps you are now wondering why this is important to know?</description>
     </item>
-    
   </channel>
 </rss>
