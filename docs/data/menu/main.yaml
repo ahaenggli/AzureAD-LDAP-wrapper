@@ -38,3 +38,5 @@ main:
         ref: '/usage/authelia'
       - name: 6.3 Synology Radius with UniFi
         ref: '/usage/synology-radius-unifi'
+      - name: 6.4 user-reported examples
+        ref: '/usage/user-reported-examples'
