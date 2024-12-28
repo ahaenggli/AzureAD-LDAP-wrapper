@@ -23,20 +23,23 @@ main:
       - name: 2.3 Customize attributes
         ref: '/configuration/customize-attributes'
 
-  - name: 4. Security
+  - name: 3. Security
     ref: /security
-
-  - name: 5. Troubleshooting
+    sub:
+      - name: 3.1 custom security attributes
+        ref: '/security/customSecurityAttributes'
+     
+  - name: 4. Troubleshooting
     ref: /troubleshooting
 
-  - name: 6. Usage examples
+  - name: 5. Usage examples
     ref: /usage
     sub:
-      - name: 6.1 Portainer
+      - name: 5.1 Portainer
         ref: '/usage/portainer'
-      - name: 6.2 Authelia
+      - name: 5.2 Authelia
         ref: '/usage/authelia'
-      - name: 6.3 Synology Radius with UniFi
+      - name: 5.3 Synology Radius with UniFi
         ref: '/usage/synology-radius-unifi'
-      - name: 6.4 user-reported examples
+      - name: 5.4 user-reported examples
         ref: '/usage/user-reported-examples'

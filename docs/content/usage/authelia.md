@@ -1,5 +1,5 @@
 ---
-title: 6.2 Authelia with LDAP-wrapper
+title: Authelia with LDAP-wrapper
 ---
 
 Authelia supports LDAP authentication, enabling users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication with Authelia using LDAP-wrapper.

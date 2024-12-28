@@ -17,7 +17,7 @@ function addFilter(val) { return (val === undefined || val === null) ? '' : "&$f
 
 // Default settings
 fetch.apiConfig = {
-    uri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/users?$count=true&$select=businessPhones,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState,accountEnabled${addFilter(config.GRAPH_FILTER_USERS)}`,
+    uri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/users?$count=true&$select=businessPhones,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState,accountEnabled,customSecurityAttributes${addFilter(config.GRAPH_FILTER_USERS)}`,
     gri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/groups?$count=true${addFilter(config.GRAPH_FILTER_GROUPS)}`,
     mri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/groups/{id}/members`,
 };

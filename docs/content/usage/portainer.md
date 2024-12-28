@@ -1,5 +1,5 @@
 ---
-title: 6.1 Portainer
+title: Portainer
 ---
 
 Portainer supports LDAP authentication, allowing users to log in by authenticating against your LDAP directory. This guide outlines the steps to set up LDAP authentication over LDAP-wrapper with Portainer.

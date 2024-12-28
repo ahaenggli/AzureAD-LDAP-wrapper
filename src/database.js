@@ -652,6 +652,15 @@ async function mergeAzureUserEntries(db) {
                     db[g].memberUid.push(userPrincipalName);
             }
 
+            let filtered = db[upName] ?? {};
+
+            filtered = Object.keys(filtered)
+                .filter(key => !key.startsWith('cusSecAtt_'))
+                .reduce((obj, key) => {
+                    obj[key] = filtered[key];
+                    return obj;
+                }, {});
+
             db[upName] = {
                 // default values
                 "objectClass": [
@@ -705,9 +714,10 @@ async function mergeAzureUserEntries(db) {
                 "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
                 "modifyTimestamp": helper.ldap_now() + "Z",
 
-                // merge existing values
-                ...db[upName],
-
+                // merge existing values except values staring with cusSecAtt
+                //...db[upName],
+                ...filtered,
+                
                 // overwrite values from before
                 "cn": userPrincipalNameOU.toLowerCase(),
                 "AzureADuserPrincipalName": user.userPrincipalName,
@@ -732,7 +742,12 @@ async function mergeAzureUserEntries(db) {
                 "ou": ou.substring(3) || config.LDAP_DOMAIN,
             };
 
-
+            // append all fetched data to the ldap entry
+            if (user.hasOwnProperty('customSecurityAttributes') && user.customSecurityAttributes)
+            {
+                let flattendAttributes = helper.flattenObjectAndIgnoreOdata({ "cusSecAtt": user.customSecurityAttributes });                
+                db[upName] = Object.assign(db[upName], flattendAttributes);
+            }
 
             db[upName] = customizer.ModifyLDAPUser(db[upName], user);
         }
