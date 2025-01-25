@@ -20,6 +20,7 @@ fetch.apiConfig = {
     uri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/users?$count=true&$select=businessPhones,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState,accountEnabled,customSecurityAttributes${addFilter(config.GRAPH_FILTER_USERS)}`,
     gri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/groups?$count=true${addFilter(config.GRAPH_FILTER_GROUPS)}`,
     mri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/groups/{id}/members`,
+    dri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/devices?$count=true${addFilter(config.GRAPH_FILTER_DEVICES)}`,
 };
 
 // Settings can be overwritten by a customizer
@@ -81,6 +82,20 @@ fetch.getUsers = async function () {
     }
     users = customizer.ModifyAzureUsers(users);
     return users;
+};
+
+/**
+ * Fetches all devices from Graph API
+ * @async
+ * @returns {Promise<Array<object>>} A promise that resolves to an array of device objects.
+ */
+fetch.getDevices = async function() {
+    let devices = await fetch.callApi(fetch.apiConfig.dri, accessToken);
+    if (devices.length === 0) {
+        helper.warn("graph.fetch.js", "getDevices()", "no devices found");
+    }
+    devices = customizer.ModifyAzureDevices(devices);
+    return devices;
 };
 
 /**

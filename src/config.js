@@ -34,6 +34,7 @@ const allConfigs = {
 
     GRAPH_FILTER_USERS: { format: "String", required: false, default: null, transform: "TRIM" },
     GRAPH_FILTER_GROUPS: { format: "String", required: false, default: null, transform: "TRIM" },
+    GRAPH_FILTER_DEVICES: { format: "String", required: false, default: null, transform: "TRIM" },
     GRAPH_IGNORE_MFA_ERRORS: { format: "Boolean", required: false, default: true },
 
     LDAP_SYNC_TIME: { format: "Integer", required: false, default: 30 /* minutes */ },
@@ -56,6 +57,11 @@ const allConfigs = {
     LDAP_GROUPSDN: { format: "String", required: true, default: () => "cn=groups," + config.LDAP_BASEDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
     LDAP_USERSDN: { format: "String", required: true, default: () => "cn=users," + config.LDAP_BASEDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
     LDAP_USERSGROUPSBASEDN: { format: "String", required: true, default: () => "cn=users," + config.LDAP_GROUPSDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
+
+    // Devices
+    LDAP_GETDEVICES: { format: "Boolean", default: false },
+    LDAP_DEVICESDN: { format: "String", required: true, default: () => "cn=devices," + config.LDAP_BASEDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
+    LDAP_DEVICESGROUPSBASEDN: { format: "String", required: true, default: () => "cn=devices," + config.LDAP_GROUPSDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
 
     LDAP_USERRDN: { format: "String", required: true, default: "uid", transform: nonWhiteSpaceLowerCase },
     LDAP_DATAFILE: { format: "String", required: true, default: "./.cache/azure.json", transform: "TRIM" },

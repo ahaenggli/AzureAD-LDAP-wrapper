@@ -46,6 +46,8 @@ describe('customizer tests', () => {
         expect(customizer.ModifyLDAPGroup(data, {})).toStrictEqual(data);
         expect(customizer.ModifyAzureUsers(data, {})).toStrictEqual(data);
         expect(customizer.ModifyLDAPUser(data, {})).toStrictEqual(data);
+        expect(customizer.ModifyAzureDevices(data, {})).toStrictEqual(data);
+        expect(customizer.ModifyLDAPDevice(data, {})).toStrictEqual(data);
         expect(customizer.ModifyLDAPGlobal(data)).toStrictEqual(data);
 
     });
@@ -86,18 +88,22 @@ describe('customizer tests #2', () => {
 
         const user = { "gidNumber": "123", "uidNumber": "456", "creatorsName": "none" };
         const group = { "gidNumber": "123", "creatorsName": "none" };
-        const all = { "user": user, "group": group, "samba": { "sambaDomainName": "SAMBA" } };
+        const device = { "displayName": "Pixel 7", "creatorsName": "none" };
+        const all = { "user": user, "group": group, "samba": { "sambaDomainName": "SAMBA" }, "device": device };
 
         expect(customizer.ModifyLDAPGroup(group, {})).toStrictEqual(group);
         expect(customizer.ModifyLDAPUser(user, {})).toStrictEqual(user);
+        expect(customizer.ModifyLDAPDevice(device, {})).toStrictEqual(device);
         expect(customizer.ModifyLDAPGlobal(all)).toStrictEqual(all);
 
         expect(customizer.ModifyLDAPGroup(group, {})).toMatchObject(group);
         expect(customizer.ModifyLDAPUser(user, {})).toMatchObject(user);
+        expect(customizer.ModifyLDAPDevice(device, {})).toMatchObject(device);
         expect(customizer.ModifyLDAPGlobal(all)).toMatchObject(all);
 
         expect(customizer.ModifyLDAPGroup(group, {}).gidNumber).toBe(123);
         expect(customizer.ModifyLDAPUser(user, {}).uidNumber).toBe(456);
+        expect(customizer.ModifyLDAPDevice(device, {}).displayName).toBe("Pixel 7");
         expect(customizer.ModifyLDAPGlobal(all).creatorsName).toBe(undefined);
 
         expect(customizer.modifyGraphApiConfig({})).toStrictEqual({});
@@ -121,7 +127,7 @@ describe('customizer tests #2', () => {
 
         /* copy/paste tests from customizer_add_customSecurityAttributes.test.js: START */
 
-        const apiConfig = { "uri": "uri", "gri": "gri", "mri": "mri" };
+        const apiConfig = { "uri": "uri", "gri": "gri", "mri": "mri", "dri":"dri" };
         expect(customizer.modifyGraphApiConfig(apiConfig, "hello-wordl")).toStrictEqual(apiConfig);
         expect(customizer.modifyGraphApiConfig(apiConfig, "hello-wordl")).toMatchObject(apiConfig);
 
