@@ -112,6 +112,13 @@ describe('config tests', () => {
             expect(config.LDAP_USERRDN).toBe("uid");
 
         });
+      test('LDAP devices configs', () => {
+          // Run your test here
+          expect(config.LDAP_GETDEVICES).toBe(exDebug);
+          expect(config.LDAP_DEVICESDN).toBe(`cn=devices,${exDN}`);
+          expect(config.LDAP_DEVICESGROUPSBASEDN).toBe(`cn=devices,cn=groups,${exDN}`);
+
+      });
 
         test('VARS VALIDATED', () => {
             expect(config.VARS_VALIDATED).toBe(exVali);

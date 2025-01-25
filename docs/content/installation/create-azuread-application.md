@@ -27,8 +27,9 @@ Register a new application in your [Microsoft Entra Admin Center](https://entra.
 ## Set permissions
 
 - Set the following Microsoft Graph API Application permissions:  
-  For type `Application`  allow `User.Read.All` and `Group.Read.All`.\
+  For type `Application` allow `User.Read.All`, `Group.Read.All`.\
   For type `Delegated` allow `User.Read`.\
+  Optionally: Allow `Device.Read.All` for type `Application` if you also want to load devices.\
   ![Entra Permissions](../entra_permissions.png)
 
 - Click "Grant admin consent". The status should be "Granted for".\

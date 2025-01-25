@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+### Added
+
+- Devices with group membership if env var `LDAP_GETDEVICES` is set to `true`.  
+Note: The `Device.Read.All` permission is additionally needed in the registered app in Entra.
+
 ## [2.0.3] - 2024-12-28
 
 ### Changed
@@ -17,7 +22,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - removed build for ppc64le arch due to build errors with the new node version
 - updated dependencies, removed package fs:0.0.1-security as fs is npm default
 - fetch customSecurityAttributes by default if entra app permissions are set correctly (probably also fixes #94)
-
 
 ### Fixed
 

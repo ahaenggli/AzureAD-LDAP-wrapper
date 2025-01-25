@@ -118,4 +118,7 @@ customizer.ModifyLDAPGlobal = function (all) {
 customizer.ModifyAzureGroups = function (azuregroups) { return azuregroups; };
 customizer.ModifyAzureUsers = function (azureusers) { return azureusers; };
 
+customizer.ModifyAzureDevices = function (azuredevices) {return azuredevices;};
+customizer.ModifyLDAPDevice = function (ldapdevice, azuredevice) { return ldapdevice; };
+
 module.exports = customizer;

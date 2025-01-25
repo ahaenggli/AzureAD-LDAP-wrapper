@@ -249,7 +249,7 @@ function mergeDnUsers(db) {
  * @param {Object} db existing db to merge
  */
 function mergeDnDevices(db) {
-
+    if (!config.LDAP_GETDEVICES) return;
     renameEntryByUUID(db, 'ecc6dc2f-6816-4e50-bd6d-9e6e59593fab', config.LDAP_DEVICESDN);
 
     db[config.LDAP_DEVICESDN] = {
@@ -531,7 +531,7 @@ async function mergeAzureGroupEntries(db) {
                 if (!db['tmp_nested_groups'][member.id].includes(gpName))
                     db['tmp_nested_groups'][member.id].push(gpName);
             }
-            if (member['@odata.type'] == '#microsoft.graph.device') {
+            if (member['@odata.type'] == '#microsoft.graph.device' && config.LDAP_GETDEVICES) {
                 db['tmp_device_to_groups'][member.id] = db['tmp_device_to_groups'][member.id] || [];
                 if (!db['tmp_device_to_groups'][member.id].includes(gpName))
                     db['tmp_device_to_groups'][member.id].push(gpName);
@@ -798,80 +798,80 @@ async function mergeAzureUserEntries(db) {
  * @param {Object} db existing db to merge
  */
 async function mergeAzureDeviceEntries(db) {
+    if (config.LDAP_GETDEVICES) {
+        helper.log("database.js", "mergeAzureDevicesEntries", "try fetching the devices");
+        const devices = await fetch.getDevices();
+        //const groups = await fetch.getGroups();
 
-    helper.log("database.js", "mergeAzureDevicesEntries", "try fetching the devices");
-    const devices = await fetch.getDevices();
-    //const groups = await fetch.getGroups();
-
-    if (devices.length > 0) {
-        helper.SaveJSONtoFile(devices, './.cache/devices.json');
-        helper.log("database.js", "devices.json saved.");
-    }
-
-    for (let i = 0, len = devices.length; i < len; i++) {
-        let device = devices[i];
-        let deviceDisplayName = device.displayName; //.replace(/\s/g, '');
-        let deviceDisplayNameClean = removeSpecialChars(deviceDisplayName);
-
-        if (deviceDisplayName !== deviceDisplayNameClean) {
-            helper.warn("database.js", 'device names may not contain any special chars. We are using ', deviceDisplayNameClean, 'instead of', deviceDisplayName);
+        if (devices.length > 0) {
+            helper.SaveJSONtoFile(devices, './.cache/devices.json');
+            helper.log("database.js", "devices.json saved.");
         }
 
-        let devName = "cn=" + deviceDisplayNameClean + "," + config.LDAP_DEVICESDN;
-        devName = devName.toLowerCase();
+        for (let i = 0, len = devices.length; i < len; i++) {
+            let device = devices[i];
+            let deviceDisplayName = device.displayName; //.replace(/\s/g, '');
+            let deviceDisplayNameClean = removeSpecialChars(deviceDisplayName);
 
-        renameEntryByUUID(db, device.id, devName);
-
-        if (typeof db['tmp_device_to_groups'][device.id] === 'undefined' || !db['tmp_device_to_groups'][device.id]) {
-            helper.log("database.js", "no groups found for user", devName);
-            db['tmp_device_to_groups'][device.id] = [];
-        }
-
-        for (let j = 0, jlen = db['tmp_device_to_groups'][device.id].length; j < jlen; j++) {
-            let g = db['tmp_device_to_groups'][device.id][j];
-            let gp = Object.values(db).find(x => x.entryDN.includes(g) && x.objectClass.includes('posixGroup')).entryDN;
-            //helper.log("database.js", "gp", gp);
-            if (gp) {
-                //helper.log("database.js", "instance of gp", gp);
-                if (!db[gp].member.includes(devName))
-                    db[gp].member.push(devName);
+            if (deviceDisplayName !== deviceDisplayNameClean) {
+                helper.warn("database.js", 'device names may not contain any special chars. We are using ', deviceDisplayNameClean, 'instead of', deviceDisplayName);
             }
+
+            let devName = "cn=" + deviceDisplayNameClean + "," + config.LDAP_DEVICESDN;
+            devName = devName.toLowerCase();
+
+            renameEntryByUUID(db, device.id, devName);
+
+            if (typeof db['tmp_device_to_groups'][device.id] === 'undefined' || !db['tmp_device_to_groups'][device.id]) {
+                helper.log("database.js", "no groups found for user", devName);
+                db['tmp_device_to_groups'][device.id] = [];
+            }
+
+            for (let j = 0, jlen = db['tmp_device_to_groups'][device.id].length; j < jlen; j++) {
+                let g = db['tmp_device_to_groups'][device.id][j];
+                let gp = Object.values(db).find(x => x.entryDN.includes(g) && x.objectClass.includes('posixGroup')).entryDN;
+                //helper.log("database.js", "gp", gp);
+                if (gp) {
+                    //helper.log("database.js", "instance of gp", gp);
+                    if (!db[gp].member.includes(devName))
+                        db[gp].member.push(devName);
+                }
+            }
+
+            db[devName] = {
+                // default values
+                "objectClass": [
+                    "top",
+                    "device",
+                    "extensibleObject"
+                ],
+                "cn": deviceDisplayNameClean.toLowerCase(),
+                "displayName": deviceDisplayName,
+                "entryDN": devName,
+                "memberOf": db['tmp_device_to_groups'][device.id],
+                "entryUUID": device.id,
+                "structuralObjectClass": "device",
+                "hasSubordinates": "FALSE",
+                "subschemaSubentry": "cn=subschema",
+                "createTimestamp": helper.ldap_now() + "Z",
+                "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
+                "modifyTimestamp": helper.ldap_now() + "Z",
+
+                // merge existing values
+                ...db[devName],
+
+                // overwrite values from before
+                "cn": deviceDisplayNameClean.toLowerCase(),
+                "entryDN": devName,
+                "displayName": deviceDisplayName,
+                "memberOf": db['tmp_device_to_groups'][device.id],
+                "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
+                "modifyTimestamp": helper.ldap_now() + "Z",
+            };
+
+            db[devName] = customizer.ModifyLDAPDevice(db[devName], device);
         }
-
-        db[devName] = {
-            // default values
-            "objectClass": [
-                "top",
-                "device",
-                "extensibleObject"
-            ],
-            "cn": deviceDisplayNameClean.toLowerCase(),
-            "displayName": deviceDisplayName,
-            "entryDN": devName,
-            "memberOf": db['tmp_device_to_groups'][device.id],
-            "entryUUID": device.id,
-            "structuralObjectClass": "device",
-            "hasSubordinates": "FALSE",
-            "subschemaSubentry": "cn=subschema",
-            "createTimestamp": helper.ldap_now() + "Z",
-            "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
-            "modifyTimestamp": helper.ldap_now() + "Z",
-
-            // merge existing values
-            ...db[devName],
-
-            // overwrite values from before
-            "cn": deviceDisplayNameClean.toLowerCase(),
-            "entryDN": devName,
-            "displayName": deviceDisplayName,
-            "memberOf": db['tmp_device_to_groups'][device.id],
-            "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
-            "modifyTimestamp": helper.ldap_now() + "Z",
-        };
-
-        db[devName] = customizer.ModifyLDAPDevice(db[devName], device);
     }
-
     delete db['tmp_device_to_groups'];
 }
 

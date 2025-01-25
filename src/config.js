@@ -57,6 +57,9 @@ const allConfigs = {
     LDAP_GROUPSDN: { format: "String", required: true, default: () => "cn=groups," + config.LDAP_BASEDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
     LDAP_USERSDN: { format: "String", required: true, default: () => "cn=users," + config.LDAP_BASEDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
     LDAP_USERSGROUPSBASEDN: { format: "String", required: true, default: () => "cn=users," + config.LDAP_GROUPSDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
+
+    // Devices
+    LDAP_GETDEVICES: { format: "Boolean", default: false },
     LDAP_DEVICESDN: { format: "String", required: true, default: () => "cn=devices," + config.LDAP_BASEDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
     LDAP_DEVICESGROUPSBASEDN: { format: "String", required: true, default: () => "cn=devices," + config.LDAP_GROUPSDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
 
