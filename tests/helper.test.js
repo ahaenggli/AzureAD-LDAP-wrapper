@@ -134,6 +134,12 @@ describe('helper tests debug = true', () => {
     d.setDate(d.getDate() + 5);
     d = d.toISOString().replace(/T/, ' ').replace(/\..+/, '').replaceAll('-', '').replaceAll(':', '').replaceAll(' ', '');
     expect(helper.ldap_now(5)).toBe(d);
+
+    d = new Date();
+    d.setDate(d.getDate() + 0);
+    d = d.toISOString().replace(/T/, ' ').replace(/\..+/, '').replaceAll('-', '').replaceAll(':', '').replaceAll(' ', '');
+    expect(helper.ldap_now(0)).toBe(d);
+    expect(helper.ldap_now()).toBe(d);
   });
 
 });
@@ -194,5 +200,102 @@ describe('helper tests debug = false', () => {
     expect(ldapSyntaxes2[30]).toStrictEqual(["( 1.3.6.1.1.16.1 DESC 'UUID' )"]);
 
   });
+
+  test('test if array has subarrays', () => { 
+    let arr = [1,2,3];
+    expect(helper.hasSubObjects(arr)).toBe(false);
+    arr = [[1,2,3],[4,5,6]];
+    expect(helper.hasSubObjects(arr)).toBe(true);
+    arr = [[1,2,3],[4,5,6],7];
+    expect(helper.hasSubObjects(arr)).toBe(true);
+    arr = [[1,2,3],[4,5,6],7,8];
+    expect(helper.hasSubObjects(arr)).toBe(true);
+    arr = [[1,2,3],[4,5,6],[7,8]];
+    expect(helper.hasSubObjects(arr)).toBe(true);
+
+    arr = {"gugu": "gaga"};
+    expect(helper.hasSubObjects(arr)).toBe(false);
+  
+    arr = { "gugu": { "gaga":"v1", "gege":"v2"} };
+    expect(helper.hasSubObjects(arr)).toBe(true);
+
+  });
+
+  test('test flattenObjectAndIgnoreOdata with and without subarrays', () => {
+    // define the object
+    let obj = {
+      "key1": "value1",
+      "key2": "value2",
+      "key3": "value3",
+      "key4": [],
+      "key5": {}
+    };
+
+  // call the function
+  let result = helper.flattenObjectAndIgnoreOdata(obj);
+  // check the result
+    expect(result).toEqual({
+      "key1": "value1",
+      "key2": "value2",
+      "key3": "value3",
+      "key4": null,
+      "key5": null
+    });
+
+// next check
+     obj = {
+      "animals": {
+        "@odata.type": "#microsoft.graph.customSecurityAttributeValue",
+        "hasPermissionToFish": true,
+        "FavoriteAnimal": "dogs",
+        "fish": "Tuna",
+        "exampleMultiText@odata.type": "#Collection(String)",
+        "exampleMultiText": [
+          "ex1",
+          "ex2"
+        ]
+      }
+    };
+
+    result = helper.flattenObjectAndIgnoreOdata(obj);
+    expect(result).toEqual({
+      "animals_hasPermissionToFish": true,
+      "animals_FavoriteAnimal": "dogs",
+      "animals_fish": "Tuna",
+      "animals_exampleMultiText": ["ex1","ex2"]
+    });
+
+    // last check
+    obj = {
+      "animals": {
+        "@odata.type": "#microsoft.graph.customSecurityAttributeValue",
+        "hasPermissionToFish": true,
+        "FavoriteAnimal": "dogs",
+        "fish": "Tuna",
+        "exampleMultiText@odata.type": "#Collection(String)",
+        "exampleMultiText": [
+          "ex1",
+          "ex2"
+        ]
+      },
+
+      "birds": {        
+        "hasPermissionToChirp": false,
+        "FavoriteAnimal": "cats",
+      }
+    };
+
+    result = helper.flattenObjectAndIgnoreOdata(obj);
+    expect(result).toEqual({
+      "animals_hasPermissionToFish": true,
+      "animals_FavoriteAnimal": "dogs",
+      "animals_fish": "Tuna",
+      "animals_exampleMultiText": ["ex1", "ex2"],
+      "birds_hasPermissionToChirp": false,
+      "birds_FavoriteAnimal": "cats"
+    });
+
+  });
+
 
 });

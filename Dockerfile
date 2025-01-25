@@ -28,7 +28,7 @@ ENV GRAPH_FILTER_GROUPS="securityEnabled eq true"
 ENV GRAPH_IGNORE_MFA_ERRORS="false"
 
 RUN mkdir -p /app && chown -R node:node /app
-RUN mkdir -p /app/.cache  && chown -R node:node /app/.cache
+RUN mkdir -p /app/.cache && chown -R node:node /app/.cache
 RUN echo "This file was created by the dockerfile. It should not exist on a mapped volume." > /app/.cache/IshouldNotExist.txt 
 
 WORKDIR /app

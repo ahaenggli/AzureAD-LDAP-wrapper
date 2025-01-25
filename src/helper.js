@@ -148,4 +148,80 @@ helper.ldap_now_2_date = function (strDate) {
     return new Date(Date.UTC(year, month - 1, day, hours, minutes, seconds, 0));
 };
 
+
+
+/**
+ * check for subarrays in further flatten function
+ * @param {arr} array array to check for subarrays
+ * @returns boolean
+ */
+helper.hasSubObjects = function (arr) {
+    var returni = false;
+    //(Array.isArray(ob[i]) && ob[i].length == 1 && 
+    for (var i in arr) {
+        //if (!arr.hasOwnProperty(i)) continue;
+        if ((typeof arr[i]) === 'object' && arr[i] !== null) return true;
+    }
+    return returni;
+};
+
+/**
+ * convert the json object from azure to a simpler structure
+ * ignore @odata attributes and skip them
+ * @param {ob} object object to flatten
+ * @returns object
+ */
+
+helper.flattenObjectAndIgnoreOdata = function (ob) {
+    var returni = {};
+
+    for (var i in ob) {
+        // skip odata attributes
+        if (i.indexOf('@odata') > -1) continue;
+
+        // skip empty arrays and objects
+        if (Array.isArray(ob[i]) && ob[i].length == 0) {
+            returni[i] = null;
+            continue;
+        }
+        if ((typeof ob[i]) === 'object' && ob[i] !== null && Object.keys(ob[i]).length == 0) {
+            returni[i] = null;
+            continue;
+        }
+
+        // keep arrays
+        if ((typeof ob[i]) === 'object' && ob[i] !== null && Array.isArray(ob[i])) {
+            returni[i] = ob[i];
+            continue;
+        }
+
+        // keep non-objects
+        if ((typeof ob[i]) !== 'object' && ob[i] !== null && !Array.isArray(ob[i])) {
+            returni[i] = ob[i];
+            continue;
+        }
+
+        // each sub multi-array has to be flatten
+        // single items or items without deeper items are also okay, so an attribute can hav multiple values         
+        if ((typeof ob[i]) === 'object' && ob[i] !== null && helper.hasSubObjects(ob[i])) {
+            var flatObject = helper.flattenObjectAndIgnoreOdata(ob[i]);
+            for (var x in flatObject) {
+                //if (!flatObject.hasOwnProperty(x)) continue;
+                //if (x.indexOf('@odata') > -1) continue;
+                returni[i + '_' + x] = flatObject[x];
+            }
+            continue;
+        }
+        
+        if ((typeof ob[i]) === 'object' && ob[i] !== null && !helper.hasSubObjects(ob[i]) && !Array.isArray(ob[i])) {            
+            for (var x in ob[i]) {
+                returni[i + '_' + x] = ob[i][x];
+            }
+        }
+                
+    }
+
+    return returni;
+};
+
 module.exports = helper;

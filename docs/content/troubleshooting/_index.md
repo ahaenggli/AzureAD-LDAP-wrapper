@@ -1,5 +1,5 @@
 ---
-title: 4. Troubleshooting
+title: Troubleshooting
 ---
 
 The first step is always to look at the Docker log. Many errors are handled there. For further steps, e.g. Samba debugging, read this [guide](#samba-is-not-working-what-can-i-do). If you get stuck, feel free to open an issue - but please add the log files, maybe others will be able to read more from them than you.

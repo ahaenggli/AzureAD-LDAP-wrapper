@@ -1,5 +1,5 @@
 ---
-title: 6.3 Synology Radius with UniFi
+title: Synology Radius with UniFi
 ---
 
 UniFi allows you to use a custom Radius server like the default package from Synology. Combined with the LDAP-wrapper, this creates a powerful setup for your users.
