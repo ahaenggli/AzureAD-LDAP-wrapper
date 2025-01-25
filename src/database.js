@@ -244,6 +244,37 @@ function mergeDnUsers(db) {
         "modifyTimestamp": helper.ldap_now() + "Z",
     };
 }
+/**
+ * Create and/or merge the LDAP entry for Devices
+ * @param {Object} db existing db to merge
+ */
+function mergeDnDevices(db) {
+
+    renameEntryByUUID(db, 'ecc6dc2f-6816-4e50-bd6d-9e6e59593fab', config.LDAP_DEVICESDN);
+
+    db[config.LDAP_DEVICESDN] = {
+        // default values
+        "objectClass": "organizationalRole",
+        "cn": config.LDAP_DEVICESDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
+        "entryDN": config.LDAP_DEVICESDN,
+        "entryUUID": "ecc6dc2f-6816-4e50-bd6d-9e6e59593fab",
+        "structuralObjectClass": "organizationalRole",
+        "hasSubordinates": "TRUE",
+        "subschemaSubentry": "cn=subschema",
+        "createTimestamp": helper.ldap_now() + "Z",
+        "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
+        "modifyTimestamp": helper.ldap_now() + "Z",
+
+        // merge existing values
+        ...db[config.LDAP_DEVICESDN],
+
+        // overwrite values from before
+        "cn": config.LDAP_DEVICESDN.replace("," + config.LDAP_BASEDN, '').replace('cn=', ''),
+        "entryDN": config.LDAP_DEVICESDN,
+        "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
+        "modifyTimestamp": helper.ldap_now() + "Z",
+    };
+}
 
 /**
  * Create and/or merge the LDAP entry for Groups
@@ -381,6 +412,7 @@ async function refreshDBentries() {
             mergeDnBase(newDbEntries); // domain        
             mergeDnSambaDomainName(newDbEntries); // samba
             mergeDnUsers(newDbEntries); // users
+            mergeDnDevices(newDbEntries); // devices
             mergeDnGroups(newDbEntries); // groups
             mergeDnUserDefaultGroup(newDbEntries); // default group for all users
             await mergeAzureEntries(newDbEntries);  // load and append users and groups from azure
@@ -414,6 +446,7 @@ async function mergeAzureGroupEntries(db) {
 
     db['tmp_user_to_groups'] = [];
     db['tmp_nested_groups'] = [];
+    db['tmp_device_to_groups'] = [];
 
     for (let i = 0, len = groups.length; i < len; i++) {
         let group = groups[i];
@@ -497,6 +530,11 @@ async function mergeAzureGroupEntries(db) {
                 db['tmp_nested_groups'][member.id] = db['tmp_nested_groups'][member.id] || [];
                 if (!db['tmp_nested_groups'][member.id].includes(gpName))
                     db['tmp_nested_groups'][member.id].push(gpName);
+            }
+            if (member['@odata.type'] == '#microsoft.graph.device') {
+                db['tmp_device_to_groups'][member.id] = db['tmp_device_to_groups'][member.id] || [];
+                if (!db['tmp_device_to_groups'][member.id].includes(gpName))
+                    db['tmp_device_to_groups'][member.id].push(gpName);
             }
         }
     }
@@ -638,13 +676,12 @@ async function mergeAzureUserEntries(db) {
                 helper.log("database.js", "no groups found for user", upName);
                 db['tmp_user_to_groups'][user.id] = [];
             }
-
+            
             // add default `users`-group
             db['tmp_user_to_groups'][user.id].push(config.LDAP_USERSGROUPSBASEDN);
 
             for (let j = 0, jlen = db['tmp_user_to_groups'][user.id].length; j < jlen; j++) {
                 let g = db['tmp_user_to_groups'][user.id][j];
-
                 if (!db[g].member.includes(upName))
                     db[g].member.push(upName);
 
@@ -757,7 +794,89 @@ async function mergeAzureUserEntries(db) {
 }
 
 /**
- * Create and/or merge the LDAP entries for Azure Users and Groups
+ * Create and/or merge the LDAP entries for Azure Devices
+ * @param {Object} db existing db to merge
+ */
+async function mergeAzureDeviceEntries(db) {
+
+    helper.log("database.js", "mergeAzureDevicesEntries", "try fetching the devices");
+    const devices = await fetch.getDevices();
+    //const groups = await fetch.getGroups();
+
+    if (devices.length > 0) {
+        helper.SaveJSONtoFile(devices, './.cache/devices.json');
+        helper.log("database.js", "devices.json saved.");
+    }
+
+    for (let i = 0, len = devices.length; i < len; i++) {
+        let device = devices[i];
+        let deviceDisplayName = device.displayName; //.replace(/\s/g, '');
+        let deviceDisplayNameClean = removeSpecialChars(deviceDisplayName);
+
+        if (deviceDisplayName !== deviceDisplayNameClean) {
+            helper.warn("database.js", 'device names may not contain any special chars. We are using ', deviceDisplayNameClean, 'instead of', deviceDisplayName);
+        }
+
+        let devName = "cn=" + deviceDisplayNameClean + "," + config.LDAP_DEVICESDN;
+        devName = devName.toLowerCase();
+
+        renameEntryByUUID(db, device.id, devName);
+
+        if (typeof db['tmp_device_to_groups'][device.id] === 'undefined' || !db['tmp_device_to_groups'][device.id]) {
+            helper.log("database.js", "no groups found for user", devName);
+            db['tmp_device_to_groups'][device.id] = [];
+        }
+
+        for (let j = 0, jlen = db['tmp_device_to_groups'][device.id].length; j < jlen; j++) {
+            let g = db['tmp_device_to_groups'][device.id][j];
+            let gp = Object.values(db).find(x => x.entryDN.includes(g) && x.objectClass.includes('posixGroup')).entryDN;
+            //helper.log("database.js", "gp", gp);
+            if (gp) {
+                //helper.log("database.js", "instance of gp", gp);
+                if (!db[gp].member.includes(devName))
+                    db[gp].member.push(devName);
+            }
+        }
+
+        db[devName] = {
+            // default values
+            "objectClass": [
+                "top",
+                "device",
+                "extensibleObject"
+            ],
+            "cn": deviceDisplayNameClean.toLowerCase(),
+            "displayName": deviceDisplayName,
+            "entryDN": devName,
+            "memberOf": db['tmp_device_to_groups'][device.id],
+            "entryUUID": device.id,
+            "structuralObjectClass": "device",
+            "hasSubordinates": "FALSE",
+            "subschemaSubentry": "cn=subschema",
+            "createTimestamp": helper.ldap_now() + "Z",
+            "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
+            "modifyTimestamp": helper.ldap_now() + "Z",
+
+            // merge existing values
+            ...db[devName],
+
+            // overwrite values from before
+            "cn": deviceDisplayNameClean.toLowerCase(),
+            "entryDN": devName,
+            "displayName": deviceDisplayName,
+            "memberOf": db['tmp_device_to_groups'][device.id],
+            "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
+            "modifyTimestamp": helper.ldap_now() + "Z",
+        };
+
+        db[devName] = customizer.ModifyLDAPDevice(db[devName], device);
+    }
+
+    delete db['tmp_device_to_groups'];
+}
+
+/**
+ * Create and/or merge the LDAP entries for Azure Devices, Users and Groups
  * @param {Object} db existing db to merge
  */
 async function mergeAzureEntries(db) {
@@ -765,6 +884,7 @@ async function mergeAzureEntries(db) {
         await fetch.initAccessToken();
         await mergeAzureGroupEntries(db);
         await mergeAzureUserEntries(db);
+        await mergeAzureDeviceEntries(db);
     } catch (error) {
         helper.error('database.js', 'mergeAzureEntries', error);
     }

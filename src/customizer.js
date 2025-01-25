@@ -63,6 +63,19 @@ customizer.ModifyLDAPUser = function (ldapuser, azureuser) {
     return ldapuser;
 };
 
+// ** modify fetched devices from Azure, e.g to delete some of them or som attributes so they are not processed further ** /
+customizer.ModifyAzureDevices = function (azuredevices) {
+    if (typeof customizer_script.ModifyAzureDevices !== "undefined") azuredevices = customizer_script.ModifyAzureDevices(azuredevices);
+
+    return azuredevices;
+};
+
+// ** modify a single ldap devicer entry, e.g. add more attributes from azure, assign a different default group, ... ** /
+customizer.ModifyLDAPDevice = function (ldapdevice, azuredevice) {
+    if (typeof customizer_script.ModifyLDAPDevice !== "undefined") ldapdevice = customizer_script.ModifyLDAPDevice(ldapdevice, azuredevice);
+
+    return ldapdevice;
+};
 // ** modify some overall attributes/entries ** /
 customizer.ModifyLDAPGlobal = function (all) {
     if (typeof customizer_script.ModifyLDAPGlobal !== "undefined") all = customizer_script.ModifyLDAPGlobal(all);
