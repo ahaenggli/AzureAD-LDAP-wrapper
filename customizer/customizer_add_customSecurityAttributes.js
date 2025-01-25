@@ -1,3 +1,8 @@
+/**
+ * This customizer is now obsolete.
+ * Since version 2.0.3, the standard can be used and the individual entry point is no longer necessary.
+ */
+
 'use strict';
 
 const helper = require('../src/helper');
@@ -8,7 +13,7 @@ var customizer = {};
 
 // use beta endpoint to retrieve more data
 customizer.modifyGraphApiConfig = function (apiConfig, MS_GRAPH_SCOPE) {
-    apiConfig.uri = `${MS_GRAPH_SCOPE}beta/users?$select=businessPhones,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState,customSecurityAttributes${config.GRAPH_FILTER_USERS}`;
+    apiConfig.uri = `${MS_GRAPH_SCOPE}/beta/users?$select=businessPhones,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState,customSecurityAttributes${config.GRAPH_FILTER_USERS}`;
     return apiConfig;
 };
 
