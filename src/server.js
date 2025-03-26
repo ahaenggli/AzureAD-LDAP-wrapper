@@ -247,7 +247,7 @@ server.search(SUFFIX, authorize, (req, res, next) => {
     try {
 
         const isAnonymous = req.connection.ldap.bindDN.equals('cn=anonymous');
-        const dn = req.dn.toString().toLowerCase().replace(/ /g, '') || config.LDAP_BASEDN;
+        const dn = req.dn.toString().toLowerCase().replace(/ {2,}/g, ' ').replace(/, /g, ',') || config.LDAP_BASEDN;
 
         helper.log("server.js", "server.search", 'Search for => DB: ' + dn + '; Scope: ' + req.scopeName + '; Filter: ' + req.filter + '; Attributes: ' + req.attributes + ';');
 
@@ -393,7 +393,7 @@ server.search(SUFFIX, authorize, (req, res, next) => {
 
 // compare entries  
 server.compare(SUFFIX, authorize, (req, res, next) => {
-    const dn = req.dn.toString().toLowerCase().replace(/  {2,}/g, ' ').replace(/, /g, ',');
+    const dn = req.dn.toString().toLowerCase().replace(/ {2,}/g, ' ').replace(/, /g, ',');
 
     if (!db[dn])
         return next(new ldap.NoSuchObjectError(dn));
@@ -420,7 +420,7 @@ server.compare(SUFFIX, authorize, (req, res, next) => {
 
 // add entries  
 server.add(SUFFIX, authorize, (req, res, next) => {
-    const dn = req.dn.toString().toLowerCase().replace(/  {2,}/g, ' ').replace(/, /g, ',');
+    const dn = req.dn.toString().toLowerCase().replace(/ {2,}/g, ' ').replace(/, /g, ',');
 
     if (db[dn]) {
         helper.error("server.js", "add", "EntryAlreadyExistsError", dn);
@@ -446,7 +446,7 @@ server.add(SUFFIX, authorize, (req, res, next) => {
 
 // delete entries
 server.del(SUFFIX, authorize, (req, res, next) => {
-    const dn = req.dn.toString().toLowerCase().replace(/  {2,}/g, ' ').replace(/, /g, ',');
+    const dn = req.dn.toString().toLowerCase().replace(/ {2,}/g, ' ').replace(/, /g, ',');
 
     if (!db[dn]) {
         helper.error("server.js", "del", "NoSuchObjectError", dn);
@@ -475,7 +475,7 @@ server.modifyDN(SUFFIX, authorize, (req, res, next) => {
 
 // edit entries
 server.modify(SUFFIX, authorize, (req, res, next) => {
-    const dn = req.dn.toString().toLowerCase().replace(/  {2,}/g, ' ').replace(/, /g, ',');
+    const dn = req.dn.toString().toLowerCase().replace(/ {2,}/g, ' ').replace(/, /g, ',');
 
     if (!req.changes.length) {
         helper.error("server.js", "modify", "ProtocolError", req.changes);
