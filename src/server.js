@@ -52,6 +52,7 @@ function authorize(req, res, next) {
     var username = bindi.toLowerCase().replace(config.LDAP_USERRDN + "=", '').replace("," + config.LDAP_USERSDN, '');
 
     const isSearch = (req instanceof ldap.SearchRequest);
+    const isCompare = (req instanceof ldap.CompareRequest);
     const isAnonymous = req.connection.ldap.bindDN.equals('cn=anonymous');
 
     if (config.LDAP_ANONYMOUSBIND == "none" && isAnonymous) {
@@ -72,7 +73,7 @@ function authorize(req, res, next) {
         if (u === usernameOnly) isAdmin = true;
     }
 
-    if (!isAdmin && !isSearch) {
+    if (!isAdmin && !isSearch && !isCompare) {
         helper.error("server.js", "authorize - denied for => ", username, bindi);
 
         return next(new ldap.InsufficientAccessRightsError());
@@ -389,8 +390,6 @@ server.search(SUFFIX, authorize, (req, res, next) => {
 });
 
 
-/* ldapjs modify entries: START */
-
 // compare entries  
 server.compare(SUFFIX, authorize, (req, res, next) => {
     const dn = req.dn.toString().toLowerCase().replace(/  {2,}/g, ' ').replace(/, /g, ',');
@@ -417,6 +416,10 @@ server.compare(SUFFIX, authorize, (req, res, next) => {
     res.end(matches);
     return next();
 });
+
+
+/* ldapjs modify entries: START */
+
 
 // add entries  
 server.add(SUFFIX, authorize, (req, res, next) => {
