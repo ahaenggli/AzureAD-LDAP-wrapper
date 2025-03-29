@@ -148,8 +148,8 @@ describe('check server with LDAP_ANONYMOUSBIND=domain', () => {
         const client = ldap.createClient({ url: ['ldap://127.0.0.1:13389'] });
         const baseDN = 'dc=domain,dc=tld';
 
-        client.compare('cn=foo, o=example', 'sn', 'bar', (err, matched) => {
-            expect(err.lde_message).toBe('Insufficient Access Rights');
+        client.compare('cn=foo, o=example', 'sn', 'bar', (err, matched) => {            
+            expect(err.lde_message).toBe('No Such Object');
         });
 
         client.bind('uid=root', 'mystrongpw', (err, res) => {

@@ -698,6 +698,8 @@ async function mergeAzureUserEntries(db) {
                     return obj;
                 }, {});
 
+            let userDisabled = user.hasOwnProperty('accountEnabled') && user.accountEnabled === false;
+
             db[upName] = {
                 // default values
                 "objectClass": [
@@ -734,7 +736,7 @@ async function mergeAzureUserEntries(db) {
                 "sambaSID": generateSID(config.LDAP_SAMBA_USEAZURESID, 1, config.LDAP_SAMBASIDBASE, user_hash, user.id),
                 "sambaPrimaryGroupSID": db[config.LDAP_USERSGROUPSBASEDN].sambaSID,
                 "sAMAccountName": userPrincipalNameOU,
-                "shadowExpire": -1,
+                "shadowExpire": userDisabled? 1 : -1,
                 "shadowFlag": 0,
                 "shadowInactive": 0,
                 "shadowLastChange": 17399,
@@ -750,7 +752,9 @@ async function mergeAzureUserEntries(db) {
                 "createTimestamp": helper.ldap_now() + "Z",
                 "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
                 "modifyTimestamp": helper.ldap_now() + "Z",
-
+                "AccountDisabled": "FALSE",
+                "nsAccountLock": "FALSE",
+                "UserAccountControl": 512,
                 // merge existing values except values staring with cusSecAtt
                 //...db[upName],
                 ...filtered,
@@ -764,8 +768,8 @@ async function mergeAzureUserEntries(db) {
                 "uid": userPrincipalNameOU,
                 "displayName": user.displayName,
                 "sambaSID": generateSID(config.LDAP_SAMBA_USEAZURESID, 1, config.LDAP_SAMBASIDBASE, user_hash, user.id),
-                "sambaNTPassword": sambaNTPassword,
-                "sambaPwdLastSet": sambaPwdLastSet,
+                "sambaNTPassword": userDisabled ? "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX" : sambaNTPassword,
+                "sambaPwdLastSet": userDisabled ? 0 : sambaPwdLastSet,
                 "sAMAccountName": userPrincipalNameOU,
                 "givenName": user.givenName,
                 "sn": user.surname,
@@ -777,6 +781,12 @@ async function mergeAzureUserEntries(db) {
                 "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
                 "modifyTimestamp": helper.ldap_now() + "Z",
                 "ou": ou.substring(3) || config.LDAP_DOMAIN,
+                "AccountDisabled": userDisabled ? "TRUE" : "FALSE",
+                "nsAccountLock": userDisabled ? "TRUE" : "FALSE",
+                "UserAccountControl": userDisabled ? 514 : 512,
+                "loginShell": userDisabled ? "/bin/false" : "/bin/sh",
+                "sambaAcctFlags": userDisabled ? "[DU         ]" : "[U          ]",
+                "shadowExpire": userDisabled ? 1 : -1,
             };
 
             // append all fetched data to the ldap entry

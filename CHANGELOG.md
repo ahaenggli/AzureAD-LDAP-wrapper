@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Devices with group membership if env var `LDAP_GETDEVICES` is set to `true`.  
 Note: The `Device.Read.All` permission is additionally needed in the registered app in Entra.
 
+### Changed
+
+- Allow compare request to unprivileged users #107
+- Make tini PID 1 process in container #108
+- Improve processing spaces in DN in request handlers #106
+- set attributes for disabled accounts, so they should be listed as deactivated
+
 ## [2.0.3] - 2024-12-28
 
 ### Changed
