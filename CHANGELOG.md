@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+### Fixed
+
+- Treat error code AADSAADSTS53003 also as successful login if env var `GRAPH_IGNORE_MFA_ERRORS` is set. (#115)
+
 ## [2.0.4] - 2025-04-06
 
 ### Added

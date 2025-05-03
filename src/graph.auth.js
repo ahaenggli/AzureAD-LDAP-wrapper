@@ -135,7 +135,12 @@ auth.loginWithUsernamePassword = async function loginWithUsernamePassword(userna
         else if (config.GRAPH_IGNORE_MFA_ERRORS && (error.toString().includes("AADSTS50076") || error.toString().includes("AADSTS50079") || error.toString().includes("AADSTS50158"))) {
             helper.log('graph_azuread.js', "loginWithUsernamePassword", { info: "MFA ignored", username: username, details: error });
             checkCredentials = 1;
-        }
+        }  
+        // Conditional Access errors caused by MFA (APP cannot be exclueded from MFA manuelly)
+        else if (config.GRAPH_IGNORE_MFA_ERRORS && (error.toString().includes("AADSTS53003"))) {
+            helper.log('graph_azuread.js', "loginWithUsernamePassword", { info: "MFA (conditional access) ignored", username: username, details: error });
+            checkCredentials = 1;
+        }   
         else {
             helper.error('graph_azuread.js', "loginWithUsernamePassword", { error: "fallback", username: username, details: error });
             // fallback: try it with cached passwords
