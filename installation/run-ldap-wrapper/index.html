@@ -63,7 +63,7 @@
       "url" : "https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/run-ldap-wrapper/",
       "headline": "Run the LDAP-wrapper",
       "description": "The preferred way to use the LDAP wrapper is with Docker. Alternatively, the source can be downloaded and started manually with npm\/node. As domain (and basedn, if manually specified) it is recommended to use the same as used in your Microsoft Entra tenant (e.g. @domain.tld). This way, the spelling of the users (e.g. username@domain.tld) will match at the end. Otherwise, your users will have to use username@example.com instead of the estimated username@domain.",
-      "wordCount" : "676",
+      "wordCount" : "706",
       "inLanguage": "en",
       "isFamilyFriendly": "true",
       "mainEntityOfPage": {
@@ -1492,6 +1492,8 @@ Use &ldquo;bridge&rdquo; as your network.</p>
 </span></span><span class="line"><span class="cl">LDAP_DEBUG: <span class="s2">&#34;false&#34;</span> <span class="c1"># set this to true for more logs</span>
 </span></span><span class="line"><span class="cl">GRAPH_IGNORE_MFA_ERRORS: <span class="s2">&#34;false&#34;</span> <span class="c1"># set this to true to bypass MFA</span>
 </span></span><span class="line"><span class="cl">DSM7: <span class="s2">&#34;true&#34;</span> <span class="c1"># set this to false if you are running DSM 6 or lower</span>
+</span></span><span class="line"><span class="cl">PUID: <span class="s2">&#34;1000&#34;</span> <span class="c1"># optional, uid used for file access/permissions </span>
+</span></span><span class="line"><span class="cl">PGID: <span class="s2">&#34;1000&#34;</span> <span class="c1"># optional, gid used for file access/permissions</span>
 </span></span></code></pre></div><p><img
   src="../syno/syno_docker_env.png"
   alt="env vars"
@@ -1582,7 +1584,9 @@ A full list of all environment variables can be found <a
 </span></span></span><span class="line"><span class="cl"><span class="err"></span>      LDAP_BINDUSER: <span class="s2">&#34;ldapsearch|ldapsearch123&#34;</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span>      <span class="c1"># LDAP_DEBUG: &#34;true&#34;</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span>      <span class="c1"># GRAPH_IGNORE_MFA_ERRORS: &#34;true&#34;</span><span class="err">
-</span></span></span><span class="line"><span class="cl"><span class="err"></span>      <span class="c1"># DSM7: &#34;true&#34;  </span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>      <span class="c1"># DSM7: &#34;true&#34;</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>      <span class="c1"># PUID: 1000</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>      <span class="c1"># PGID: 1000</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span>    ports:<span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span>      - 389:13389<span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span>    volumes:<span class="err">
@@ -1625,6 +1629,8 @@ A full list of all environment variables can be found <a
 </span></span></span><span class="line"><span class="cl"><span class="err"></span>      <span class="c1"># LDAP_DEBUG: &#34;true&#34;</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span>      <span class="c1"># GRAPH_IGNORE_MFA_ERRORS: &#34;true&#34;</span><span class="err">
 </span></span></span><span class="line"><span class="cl"><span class="err"></span>      <span class="c1"># DSM7: &#34;true&#34;</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>      <span class="c1"># PUID: 1000</span><span class="err">
+</span></span></span><span class="line"><span class="cl"><span class="err"></span>      <span class="c1"># PGID: 1000      </span><span class="err">
 </span></span></span></code></pre></div>
     </div>
     <input
