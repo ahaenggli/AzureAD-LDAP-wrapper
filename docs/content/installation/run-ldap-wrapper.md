@@ -47,6 +47,8 @@ Use "bridge" as your network.
     LDAP_DEBUG: "false" # set this to true for more logs
     GRAPH_IGNORE_MFA_ERRORS: "false" # set this to true to bypass MFA
     DSM7: "true" # set this to false if you are running DSM 6 or lower
+    PUID: "1000" # optional, uid used for file access/permissions 
+    PGID: "1000" # optional, gid used for file access/permissions
     ```
 
     ![env vars](../syno/syno_docker_env.png)
@@ -102,7 +104,9 @@ services:
       LDAP_BINDUSER: "ldapsearch|ldapsearch123"
       # LDAP_DEBUG: "true"
       # GRAPH_IGNORE_MFA_ERRORS: "true"
-      # DSM7: "true"  
+      # DSM7: "true"
+      # PUID: 1000
+      # PGID: 1000
     ports:
       - 389:13389
     volumes:
@@ -139,6 +143,8 @@ services:
       # LDAP_DEBUG: "true"
       # GRAPH_IGNORE_MFA_ERRORS: "true"
       # DSM7: "true"
+      # PUID: 1000
+      # PGID: 1000      
 ```
 
 {{< /tab >}}

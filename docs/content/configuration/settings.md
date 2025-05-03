@@ -169,3 +169,8 @@ Somehow this seems to be necessary to work with DSM 7.0. The default value is `f
 ### HTTPS_PROXY or HTTP_PROXY (optional)
 
 URL to your proxy, e.g. <http://192.168.1.2:3128>
+
+### PUID and PGID (optional)
+
+Override the default UID/GID (1000:1000) of the node user to enable better file permission handling on mounted volumes.
+Note: The values set in PUID and PGID must not already be in use by other internal users or groups inside the container.

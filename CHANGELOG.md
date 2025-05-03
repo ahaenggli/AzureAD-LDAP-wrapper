@@ -7,9 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+### Added
+
+- Support for `PUID` and `PGID` environment variables to override the default UID/GID (1000:1000) of the node user, enabling better file permission handling on mounted volumes.
+
 ### Fixed
 
-- Treat error code AADSAADSTS53003 also as successful login if env var `GRAPH_IGNORE_MFA_ERRORS` is set. (#115)
+- Treat error code AADSAADSTS53003 also as successful login if env var `GRAPH_IGNORE_MFA_ERRORS` is set. (#115)  
+  Note: It would be better to exclude the App in Entra from the [Conditional Access policy](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/bypass-mfa/).
 
 ## [2.0.4] - 2025-04-06
 
