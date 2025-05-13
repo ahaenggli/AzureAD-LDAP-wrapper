@@ -663,13 +663,11 @@ async function mergeAzureUserEntries(db) {
 
             let sambaNTPassword = (
                 db[upName] &&
-                db[upName].hasOwnProperty('sambaNTPassword') &&
-                user.accountEnabled
+                db[upName].hasOwnProperty('sambaNTPassword') 
             ) ? db[upName].sambaNTPassword : "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
             let sambaPwdLastSet = (
                 db[upName] &&
-                db[upName].hasOwnProperty('sambaPwdLastSet') &&
-                user.accountEnabled
+                db[upName].hasOwnProperty('sambaPwdLastSet')                
             ) ? db[upName].sambaPwdLastSet : 0;
 
             if (typeof db['tmp_user_to_groups'][user.id] === 'undefined' || !db['tmp_user_to_groups'][user.id]) {
@@ -698,7 +696,11 @@ async function mergeAzureUserEntries(db) {
                     return obj;
                 }, {});
 
-            let userDisabled = user.hasOwnProperty('accountEnabled') && user.accountEnabled === false;
+            let userDisabled = Boolean(user.hasOwnProperty('accountEnabled') && user.accountEnabled === false) ?? false;
+            
+            if (userDisabled) {
+                helper.warn("database.js", "mergeAzureUserEntries", 'user is disabled', upName);
+            }
 
             db[upName] = {
                 // default values

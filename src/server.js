@@ -100,7 +100,10 @@ function isUserENVBindUser(binduser) {
     return allowSensitiveAttributes;
 }
 
-function removeSensitiveAttributes(binduser, dn, attributes) {
+function removeSensitiveAttributes(binduser, dn, attrs) {
+    
+    // copy of attrs as attributes without reference
+    var attributes = JSON.parse(JSON.stringify(attrs));
 
     if (!attributes) return attributes;
     const isEnvBindUser = isUserENVBindUser(binduser);
@@ -114,12 +117,14 @@ function removeSensitiveAttributes(binduser, dn, attributes) {
             if ((attributes["sambaPwdLastSet"] + config.LDAP_SAMBANTPWD_MAXCACHETIME * 60) < Math.floor(Date.now() / 1000)) {
                 attributes["sambaNTPassword"] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
                 attributes["sambaPwdLastSet"] = 0;
+                helper.log("server.js", "removeSensitiveAttributes", "time is up", "dn:"+dn, "binduser:"+binduser);
             }
 
         // user is not allowed to see
         if (!allowSensitiveAttributes) {
             attributes["sambaNTPassword"] = "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
             attributes["sambaPwdLastSet"] = 0;
+            helper.log("server.js", "removeSensitiveAttributes", "not allowed", "dn:" + dn, "binduser:" + binduser);
         }
     }
 
