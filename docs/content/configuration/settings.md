@@ -151,7 +151,7 @@ You may also need to set `LDAP_PORT` to 636.
 
 ## Samba
 
-### SAMBA_BASESID (optional)
+### LDAP_SAMBASIDBASE (optional)
 
 Base SID for all sambaSIDs generated for sambaDomainName, groups and users. Default is `S-1-5-21-2475342291-1480345137-508597502`.
 
