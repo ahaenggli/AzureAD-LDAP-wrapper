@@ -731,6 +731,7 @@ async function mergeAzureUserEntries(db) {
                 "loginShell": "/bin/sh",
                 "mail": user.mail,
                 "memberOf": db['tmp_user_to_groups'][user.id],
+                "name": user.displayName,
                 "sambaAcctFlags": "[U          ]",
                 "sambaLMPassword": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
                 "sambaPasswordHistory": "0000000000000000000000000000000000000000000000000000000000000000",
