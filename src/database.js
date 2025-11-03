@@ -573,6 +573,20 @@ async function mergeAzureUserEntries(db) {
         let user = users[i];
         let userPrincipalName = user.userPrincipalName;
         let AzureADuserExternal = 0;
+        const businessPhones = Array.isArray(user.businessPhones)
+            ? [...new Set(user.businessPhones.filter(phone => typeof phone === 'string' && phone.trim().length > 0).map(phone => phone.trim()))]
+            : [];
+        const primaryBusinessPhone = businessPhones.length > 0 ? businessPhones[0] : null;
+        const secondaryBusinessPhones = businessPhones.slice(1);
+        const mobilePhones = (typeof user.mobilePhone === 'string' && user.mobilePhone.trim().length > 0)
+            ? [user.mobilePhone.trim()]
+            : [];
+        const homePhones = Array.isArray(user.homePhones)
+            ? [...new Set(user.homePhones.filter(phone => typeof phone === 'string' && phone.trim().length > 0).map(phone => phone.trim()))]
+            : [];
+        const primaryHomePhone = homePhones.length > 0 ? homePhones[0] : null;
+        const secondaryHomePhones = homePhones.slice(1);
+        const faxNumber = (typeof user.faxNumber === 'string' && user.faxNumber.trim().length > 0) ? user.faxNumber.trim() : null;
 
         let isGuestOrExternalUser = (user.userType == "Guest") || user.identities.filter(x => x.hasOwnProperty('issuer') && x.issuer == 'ExternalAzureAD').length > 0;
         let isExternalUserStateAccepted = (user.externalUserState == "Accepted");
@@ -792,6 +806,42 @@ async function mergeAzureUserEntries(db) {
                 "sambaAcctFlags": userDisabled ? "[DU         ]" : "[U          ]",
                 "shadowExpire": userDisabled ? 1 : -1,
             };
+
+            if (primaryBusinessPhone) {
+                db[upName].telephoneNumber = primaryBusinessPhone;
+            } else if (db[upName].hasOwnProperty('telephoneNumber')) {
+                delete db[upName].telephoneNumber;
+            }
+
+            if (secondaryBusinessPhones.length > 0) {
+                db[upName].otherTelephone = secondaryBusinessPhones;
+            } else if (db[upName].hasOwnProperty('otherTelephone')) {
+                delete db[upName].otherTelephone;
+            }
+
+            if (mobilePhones.length > 0) {
+                db[upName].mobile = mobilePhones.length === 1 ? mobilePhones[0] : mobilePhones;
+            } else if (db[upName].hasOwnProperty('mobile')) {
+                delete db[upName].mobile;
+            }
+
+            if (primaryHomePhone) {
+                db[upName].homePhone = primaryHomePhone;
+            } else if (db[upName].hasOwnProperty('homePhone')) {
+                delete db[upName].homePhone;
+            }
+
+            if (secondaryHomePhones.length > 0) {
+                db[upName].otherHomePhone = secondaryHomePhones;
+            } else if (db[upName].hasOwnProperty('otherHomePhone')) {
+                delete db[upName].otherHomePhone;
+            }
+
+            if (faxNumber) {
+                db[upName].facsimileTelephoneNumber = faxNumber;
+            } else if (db[upName].hasOwnProperty('facsimileTelephoneNumber')) {
+                delete db[upName].facsimileTelephoneNumber;
+            }
 
             // append all fetched data to the ldap entry
             if (user.hasOwnProperty('customSecurityAttributes') && user.customSecurityAttributes)
