@@ -843,6 +843,10 @@ async function mergeAzureUserEntries(db) {
                 delete db[upName].facsimileTelephoneNumber;
             }
 
+            if (db[upName].hasOwnProperty('AzureADRegisteredDevice')) {
+                delete db[upName].AzureADRegisteredDevice;
+            }
+
             // append all fetched data to the ldap entry
             if (user.hasOwnProperty('customSecurityAttributes') && user.customSecurityAttributes)
             {
@@ -851,6 +855,15 @@ async function mergeAzureUserEntries(db) {
             }
 
             db[upName] = customizer.ModifyLDAPUser(db[upName], user);
+
+            if (db[upName] && db[upName].hasOwnProperty('AzureADRegisteredDevice')) {
+                delete db[upName].AzureADRegisteredDevice;
+            }
+
+            if (config.LDAP_GETDEVICES && config.LDAP_USERS_INCLUDE_DEVICES) {
+                db['tmp_uuid_to_dn'] = db['tmp_uuid_to_dn'] || {};
+                db['tmp_uuid_to_dn'][user.id] = upName;
+            }
         }
     }
 
@@ -864,6 +877,16 @@ async function mergeAzureUserEntries(db) {
 async function mergeAzureDeviceEntries(db) {
     if (config.LDAP_GETDEVICES) {
         helper.log("database.js", "mergeAzureDevicesEntries", "try fetching the devices");
+        const includeUserDevices = config.LDAP_USERS_INCLUDE_DEVICES;
+        let userDevices = null;
+        let uuidToDn = null;
+
+        if (includeUserDevices) {
+            db['tmp_user_devices'] = {};
+            userDevices = db['tmp_user_devices'];
+            uuidToDn = db['tmp_uuid_to_dn'] || {};
+        }
+
         const devices = await fetch.getDevices();
         //const groups = await fetch.getGroups();
 
@@ -890,6 +913,8 @@ async function mergeAzureDeviceEntries(db) {
                 helper.log("database.js", "no groups found for user", devName);
                 db['tmp_device_to_groups'][device.id] = [];
             }
+
+            const registeredOwners = (includeUserDevices && Array.isArray(device.registeredOwners)) ? device.registeredOwners : [];
 
             for (let j = 0, jlen = db['tmp_device_to_groups'][device.id].length; j < jlen; j++) {
                 let g = db['tmp_device_to_groups'][device.id][j];
@@ -930,13 +955,45 @@ async function mergeAzureDeviceEntries(db) {
                 "displayName": deviceDisplayName,
                 "memberOf": db['tmp_device_to_groups'][device.id],
                 "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
-                "modifyTimestamp": helper.ldap_now() + "Z",
+                    "modifyTimestamp": helper.ldap_now() + "Z",
             };
 
             db[devName] = customizer.ModifyLDAPDevice(db[devName], device);
+
+            if (includeUserDevices) {
+                for (let r = 0, rlen = registeredOwners.length; r < rlen; r++) {
+                    const owner = registeredOwners[r];
+                    if (!owner || typeof owner !== 'object') continue;
+                    const ownerId = owner.id;
+                    if (!ownerId) continue;
+                    const ownerType = (typeof owner['@odata.type'] === 'string') ? owner['@odata.type'].toLowerCase() : '';
+                    const isUser = ownerType === '' ? Boolean(owner.userPrincipalName) : ownerType === '#microsoft.graph.user';
+                    if (!isUser) continue;
+
+                    userDevices[ownerId] = userDevices[ownerId] || [];
+                    if (!userDevices[ownerId].includes(devName)) {
+                        userDevices[ownerId].push(devName);
+                    }
+                }
+            }
+        }
+
+        if (includeUserDevices && uuidToDn) {
+            for (const [ownerId, dn] of Object.entries(uuidToDn)) {
+                if (!dn || !db.hasOwnProperty(dn)) continue;
+                const devicesForUser = userDevices[ownerId] || [];
+                if (devicesForUser.length > 0) {
+                    const uniqueDevices = [...new Set(devicesForUser)].sort();
+                    db[dn].AzureADRegisteredDevice = uniqueDevices;
+                } else if (db[dn].hasOwnProperty('AzureADRegisteredDevice')) {
+                    delete db[dn].AzureADRegisteredDevice;
+                }
+            }
         }
     }
     delete db['tmp_device_to_groups'];
+    if (db.hasOwnProperty('tmp_user_devices')) delete db['tmp_user_devices'];
+    if (db.hasOwnProperty('tmp_uuid_to_dn')) delete db['tmp_uuid_to_dn'];
 }
 
 /**

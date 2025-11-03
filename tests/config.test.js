@@ -115,6 +115,7 @@ describe('config tests', () => {
       test('LDAP devices configs', () => {
           // Run your test here
           expect(config.LDAP_GETDEVICES).toBe(exDebug);
+          expect(config.LDAP_USERS_INCLUDE_DEVICES).toBe(exDebug);
           expect(config.LDAP_DEVICESDN).toBe(`cn=devices,${exDN}`);
           expect(config.LDAP_DEVICESGROUPSBASEDN).toBe(`cn=devices,cn=groups,${exDN}`);
 
