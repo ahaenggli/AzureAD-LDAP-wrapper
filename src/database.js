@@ -917,13 +917,29 @@ async function mergeAzureDeviceEntries(db) {
             const registeredOwners = (includeUserDevices && Array.isArray(device.registeredOwners)) ? device.registeredOwners : [];
 
             for (let j = 0, jlen = db['tmp_device_to_groups'][device.id].length; j < jlen; j++) {
-                let g = db['tmp_device_to_groups'][device.id][j];
-                let gp = Object.values(db).find(x => x.entryDN.includes(g) && x.objectClass.includes('posixGroup')).entryDN;
-                //helper.log("database.js", "gp", gp);
-                if (gp) {
-                    //helper.log("database.js", "instance of gp", gp);
-                    if (!db[gp].member.includes(devName))
-                        db[gp].member.push(devName);
+                const groupDn = db['tmp_device_to_groups'][device.id][j];
+                if (typeof groupDn !== 'string' || groupDn.length === 0) continue;
+
+                const groupEntry = db[groupDn] || Object.values(db).find(entry =>
+                    entry &&
+                    typeof entry === 'object' &&
+                    entry.entryDN === groupDn &&
+                    Array.isArray(entry.objectClass) &&
+                    entry.objectClass.includes('posixGroup')
+                );
+
+                if (!groupEntry) {
+                    helper.warn("database.js", "mergeAzureDeviceEntries", "posixGroup not found for device", { device: devName, groupDn: groupDn });
+                    continue;
+                }
+
+                if (!db[groupEntry.entryDN]) {
+                    db[groupEntry.entryDN] = groupEntry;
+                }
+
+                const members = Array.isArray(groupEntry.member) ? groupEntry.member : (groupEntry.member = []);
+                if (!members.includes(devName)) {
+                    members.push(devName);
                 }
             }
 
