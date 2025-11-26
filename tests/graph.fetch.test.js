@@ -18,7 +18,7 @@ describe('Graph API Fetch without access token', () => {
 
     it('should not throw errors and be set as wished', async () => {
         expect(fetch.apiConfig.gri).toBe("https://graph.microsoft.com/v1.0/groups?$count=true");
-        expect(fetch.apiConfig.uri).toBe("https://graph.microsoft.com/v1.0/users?$count=true&$select=businessPhones,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState,accountEnabled,customSecurityAttributes");
+        expect(fetch.apiConfig.uri).toBe("https://graph.microsoft.com/v1.0/users?$count=true&$select=businessPhones,displayName,givenName,homePhones,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState,accountEnabled,customSecurityAttributes,faxNumber");
         expect(fetch.apiConfig.mri).toBe("https://graph.microsoft.com/v1.0/groups/{id}/members");
     });
 
@@ -44,7 +44,7 @@ describe('Graph API Fetch with access token', () => {
     it('should not throw errors and be set as wished', async () => {
 
         expect(fetch.apiConfig.gri).toBe("https://graph.microsoft.com/v1.0/groups?$count=true");
-        expect(fetch.apiConfig.uri).toBe("https://graph.microsoft.com/v1.0/users?$count=true&$select=businessPhones,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState,accountEnabled,customSecurityAttributes");
+        expect(fetch.apiConfig.uri).toBe("https://graph.microsoft.com/v1.0/users?$count=true&$select=businessPhones,displayName,givenName,homePhones,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState,accountEnabled,customSecurityAttributes,faxNumber");
         expect(fetch.apiConfig.mri).toBe("https://graph.microsoft.com/v1.0/groups/{id}/members");
         expect(async () => {
             await fetch.initAccessToken();
