@@ -1,5 +1,4 @@
 FROM node:18-alpine AS build
-
 ENV NODE_ENV="production"
 
 RUN mkdir -p /app && chown -R node:node /app
@@ -10,6 +9,7 @@ RUN npm install --omit=dev && npm prune --omit=dev
 
 FROM node:22-alpine AS final
 RUN apk add --no-cache tini su-exec
+RUN apk upgrade -U --no-cache
 
 ENV NODE_ENV="production"
 ENV LDAP_DOMAIN="example.com"
