@@ -16,7 +16,9 @@ services:
       LDAP_SAMBANTPWD_MAXCACHETIME: "-1"
       AZURE_APP_ID: ""
       AZURE_TENANTID: ""
-      AZURE_APP_SECRET: ""
+      AZURE_APP_SECRET: ""  # Use either AZURE_APP_SECRET or certificate authentication
+      # AZURE_APP_CERTIFICATE_PATH: "/path/to/certificate.pem"  # Alternative to AZURE_APP_SECRET
+      # AZURE_APP_CERTIFICATE_KEY_PATH: "/path/to/private-key.pem"  # Required if using certificate auth
       LDAP_SYNC_TIME: "30"
       DSM7: "false"
       GRAPH_FILTER_USERS: "userType eq 'Member'"

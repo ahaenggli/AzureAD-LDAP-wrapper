@@ -24,7 +24,9 @@ function validateDN(val) {
 const allConfigs = {
     // Azure
     AZURE_APP_ID: { format: "String", required: true, default: null, transform: (val) => (val === "*secret*") ? null : val },
-    AZURE_APP_SECRET: { format: "String", required: true, default: null, transform: (val) => (val === "*secret*") ? null : val },
+    AZURE_APP_SECRET: { format: "String", required: false, default: null, transform: (val) => (val === "*secret*") ? null : val },
+    AZURE_APP_CERTIFICATE_PATH: { format: "String", required: false, default: null, transform: "TRIM" },
+    AZURE_APP_CERTIFICATE_KEY_PATH: { format: "String", required: false, default: null, transform: "TRIM" },
     AZURE_TENANTID: { format: "String", required: true, default: null, transform: (val) => (val === "*secret*") ? null : val },
     AZURE_ENDPOINT: { format: "String", required: true, default: 'https://login.microsoftonline.com/', transform: (url) => url.replace(/\/$/, '') },
 
@@ -163,6 +165,37 @@ if ((config.LDAPS_CERTIFICATE || config.LDAPS_KEY) && !(config.LDAPS_CERTIFICATE
 }
 if (config.LDAPS_CERTIFICATE && config.LDAPS_KEY && config.LDAP_PORT != 636) {
     errors.push("config", "LDAPS usually runs on port 636. So you may need to set the env var `LDAP_PORT` to 636.");
+}
+
+// validate Azure authentication method (either secret or certificate)
+const hasSecret = config.AZURE_APP_SECRET !== null;
+const hasCertificate = config.AZURE_APP_CERTIFICATE_PATH !== null || config.AZURE_APP_CERTIFICATE_KEY_PATH !== null;
+
+if (!hasSecret && !hasCertificate) {
+    errors.push("config", "Either `AZURE_APP_SECRET` or both `AZURE_APP_CERTIFICATE_PATH` and `AZURE_APP_CERTIFICATE_KEY_PATH` must be set.");
+    validated = false;
+}
+
+if (hasSecret && hasCertificate) {
+    errors.push("config", "Cannot use both `AZURE_APP_SECRET` and certificate authentication. Please use either secret or certificate.");
+    validated = false;
+}
+
+if (hasCertificate) {
+    if (!config.AZURE_APP_CERTIFICATE_PATH || !config.AZURE_APP_CERTIFICATE_KEY_PATH) {
+        errors.push("config", "Both `AZURE_APP_CERTIFICATE_PATH` and `AZURE_APP_CERTIFICATE_KEY_PATH` must be set when using certificate authentication.");
+        validated = false;
+    } else {
+        // Check if certificate files exist
+        if (!fs.existsSync(config.AZURE_APP_CERTIFICATE_PATH)) {
+            errors.push("config", `Certificate file not found: ${config.AZURE_APP_CERTIFICATE_PATH}`);
+            validated = false;
+        }
+        if (!fs.existsSync(config.AZURE_APP_CERTIFICATE_KEY_PATH)) {
+            errors.push("config", `Certificate key file not found: ${config.AZURE_APP_CERTIFICATE_KEY_PATH}`);
+            validated = false;
+        }
+    }
 }
 
 
