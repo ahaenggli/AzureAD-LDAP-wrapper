@@ -102,9 +102,9 @@ Use "bridge" as your network.
 openssl genrsa -out app_monitor_key.pem 2048
 openssl req -new -x509 -key app_monitor_key.pem -out app_monitor_cert.pem -days 3650 -subj "/C=CN/ST=test/L=test/O=company-inc/CN=AppCredentialMonitor"
 ```
-upload the cert.pem to Azure AD 
+  upload the cert.pem to Azure AD 
 
-You can choose "AZURE_APP_SECRET" or " AZURE_APP_CERTIFICATE_PATH and AZURE_APP_CERTIFICATE_KEY_PATH"
+  You can choose "AZURE_APP_SECRET" or " AZURE_APP_CERTIFICATE_PATH and AZURE_APP_CERTIFICATE_KEY_PATH"
 
     ```bash
     TZ: "Europe/Zurich" # optional
