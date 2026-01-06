@@ -1,5 +1,4 @@
 FROM node:18-alpine AS build
-
 ENV NODE_ENV="production"
 
 RUN mkdir -p /app && chown -R node:node /app
@@ -10,6 +9,7 @@ RUN npm install --omit=dev && npm prune --omit=dev
 
 FROM node:22-alpine AS final
 RUN apk add --no-cache tini su-exec
+RUN apk upgrade -U --no-cache
 
 ENV NODE_ENV="production"
 ENV LDAP_DOMAIN="example.com"
@@ -20,7 +20,9 @@ ENV LDAP_ALLOWCACHEDLOGINONFAILURE="true"
 ENV LDAP_SAMBANTPWD_MAXCACHETIME="-1"
 #ENV AZURE_APP_ID="*secret*"
 #ENV AZURE_TENANTID="*secret*"
-#ENV AZURE_APP_SECRET=""
+#ENV AZURE_APP_SECRET=""  # Use either AZURE_APP_SECRET or certificate authentication
+#ENV AZURE_APP_CERTIFICATE_PATH="/path/to/certificate.pem"  # Alternative to AZURE_APP_SECRET
+#ENV AZURE_APP_CERTIFICATE_KEY_PATH="/path/to/private-key.pem"  # Required if using certificate auth
 ENV LDAP_SYNC_TIME="30"
 ENV DSM7="true"
 ENV GRAPH_FILTER_USERS="userType eq 'Member'"

@@ -2,6 +2,8 @@
 
 const config = require('./config');
 const helper = require('./helper');
+const fs = require('node:fs');
+const crypto = require('node:crypto');
 
 const msal = require('@azure/msal-node');
 const proxyUrl = process.env.HTTPS_PROXY || process.env.HTTP_PROXY || '';
@@ -24,13 +26,61 @@ auth.tokenRequest = {
     scopes: [`${config.GRAPH_ENDPOINT}/.default`],
 };
 
+/**
+ * Calculate SHA1 thumbprint from certificate
+ * @param {string} certificate - Certificate content in PEM format
+ * @returns {string} - SHA1 thumbprint in uppercase hex format
+ */
+function calculateThumbprint(certificate) {
+    // Remove PEM headers and whitespace
+    const certContent = certificate
+        .replace(/-----BEGIN CERTIFICATE-----/g, '')
+        .replace(/-----END CERTIFICATE-----/g, '')
+        .replace(/\s/g, '');
+    
+    // Decode base64 and calculate SHA1
+    const certBuffer = Buffer.from(certContent, 'base64');
+    const thumbprint = crypto.createHash('sha1').update(certBuffer).digest('hex').toUpperCase();
+    
+    return thumbprint;
+}
+
+// Build auth configuration based on authentication method
+const authConfig = {
+    clientId: config.AZURE_APP_ID,
+    authority: TOKEN_ENDPOINT,
+    knownAuthorities: [TOKEN_ENDPOINT],
+};
+
+// Use certificate authentication if certificate paths are provided
+if (config.AZURE_APP_CERTIFICATE_PATH && config.AZURE_APP_CERTIFICATE_KEY_PATH) {
+    try {
+        // Read certificate and private key files
+        const certificate = fs.readFileSync(config.AZURE_APP_CERTIFICATE_PATH, 'utf8');
+        const privateKey = fs.readFileSync(config.AZURE_APP_CERTIFICATE_KEY_PATH, 'utf8');
+        
+        // Calculate certificate thumbprint (SHA1)
+        const thumbprint = calculateThumbprint(certificate);
+        
+        // Configure certificate authentication
+        authConfig.clientCertificate = {
+            thumbprint: thumbprint,
+            privateKey: privateKey,
+        };
+        
+        helper.log('graph.auth.js', 'authConfig', `Using certificate authentication (thumbprint: ${thumbprint})`);
+    } catch (error) {
+        helper.error('graph.auth.js', 'authConfig', `Failed to load certificate files: ${error.message}`);
+        throw error;
+    }
+} else {
+    // Use secret authentication (default)
+    authConfig.clientSecret = config.AZURE_APP_SECRET;
+    helper.log('graph.auth.js', 'authConfig', 'Using secret authentication');
+}
+
 auth.msalConfig = {
-    auth: {
-        clientId: config.AZURE_APP_ID,
-        authority: TOKEN_ENDPOINT,
-        knownAuthorities: [TOKEN_ENDPOINT],
-        clientSecret: config.AZURE_APP_SECRET,
-    },
+    auth: authConfig,
     system: {
         loggerOptions: {
             loggerCallback: function (loglevel, message, containsPii) {

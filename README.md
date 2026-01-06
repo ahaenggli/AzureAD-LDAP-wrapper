@@ -97,11 +97,22 @@ Use "bridge" as your network.
 
 5. Configure the environment variables in "Advanced Settings". Be sure to double check your Microsoft Entra values and define at least one binduser. The binduser (superuser like root) does not need to exist in your tenant. Replace example.com with your domain. Here is an example of a minimum required configuration:
 
+6. Support the cert and key pem(optional)
+```
+openssl genrsa -out app_monitor_key.pem 2048
+openssl req -new -x509 -key app_monitor_key.pem -out app_monitor_cert.pem -days 3650 -subj "/C=CN/ST=test/L=test/O=company-inc/CN=AppCredentialMonitor"
+```
+upload the cert.pem to Azure AD 
+
+You can choose "AZURE_APP_SECRET" or " AZURE_APP_CERTIFICATE_PATH and AZURE_APP_CERTIFICATE_KEY_PATH"
+
     ```bash
     TZ: "Europe/Zurich" # optional
     AZURE_TENANTID: "0def2345-ff01-56789-1234-ab9d6dda1e1e"
     AZURE_APP_ID: "abc12345-ab01-0000-1111-a1e1eab9d6dd"
     AZURE_APP_SECRET: "iamasecret~yep-reallyreallysecret"
+    AZURE_APP_CERTIFICATE_PATH="/app/app_monitor_cert.pem"
+    AZURE_APP_CERTIFICATE_KEY_PATH="/app/app_monitor_key.pem"
     LDAP_DOMAIN: "example.com"
     LDAP_BASEDN: "dc=example,dc=com"
     LDAP_BINDUSER: "ldapsearch|*secretldapsearch123*||root|*secretroot*"

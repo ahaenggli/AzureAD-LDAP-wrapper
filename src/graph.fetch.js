@@ -17,10 +17,16 @@ function addFilter(val) { return (val === undefined || val === null) ? '' : "&$f
 
 // Default settings
 fetch.apiConfig = {
-    uri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/users?$count=true&$select=businessPhones,displayName,givenName,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState,accountEnabled,customSecurityAttributes${addFilter(config.GRAPH_FILTER_USERS)}`,
+    uri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/users?$count=true&$select=businessPhones,displayName,givenName,homePhones,jobTitle,mail,mobilePhone,officeLocation,preferredLanguage,surname,userPrincipalName,id,identities,userType,externalUserState,accountEnabled,customSecurityAttributes,faxNumber${addFilter(config.GRAPH_FILTER_USERS)}`,
     gri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/groups?$count=true${addFilter(config.GRAPH_FILTER_GROUPS)}`,
     mri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/groups/{id}/members`,
-    dri: `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/devices?$count=true${addFilter(config.GRAPH_FILTER_DEVICES)}`,
+    dri: (() => {
+        const baseSelect = "displayName,id,deviceId,operatingSystem,operatingSystemVersion";
+        const expandOwners = (config.LDAP_GETDEVICES && config.LDAP_USERS_INCLUDE_DEVICES)
+            ? "&$expand=registeredOwners($select=id,userPrincipalName,displayName)"
+            : "";
+        return `${config.GRAPH_ENDPOINT}/${config.GRAPH_API_VERSION}/devices?$count=true&$select=${baseSelect}${addFilter(config.GRAPH_FILTER_DEVICES)}${expandOwners}`;
+    })(),
 };
 
 // Settings can be overwritten by a customizer

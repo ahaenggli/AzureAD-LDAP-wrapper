@@ -7,9 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+## [2.0.5] - 2025-12-14
+
 ### Added
 
 - Support for `PUID` and `PGID` environment variables to override the default UID/GID (1000:1000) of the node user, enabling better file permission handling on mounted volumes.
+- Support for home and fax phone fields in Azure user sync (#132)
 
 ### Fixed
 

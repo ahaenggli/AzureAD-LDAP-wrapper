@@ -76,7 +76,7 @@ function checkDNS(url) {
     });
 }
 
-// try fetch a token to validate AppId and AppSecret for this tenant
+// try fetch a token to validate AppId and AppSecret/Certificate for this tenant
 async function checkApp() {
     let cApp = false;
 
@@ -86,7 +86,9 @@ async function checkApp() {
     catch (errToken) {
         // failed, no token, something must be wrong
         cApp = false;
+        const authMethod = (require('./config').AZURE_APP_CERTIFICATE_PATH) ? 'certificate' : 'secret';
         helper.error('graph.checkVars.js', 'checkApp', {
+            authMethod: authMethod,
             errorCode: errToken.errorCode,
             errorMessage: errToken.errorMessage,
             subError: errToken.subError || null,
