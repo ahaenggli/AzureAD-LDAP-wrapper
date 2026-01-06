@@ -100,7 +100,7 @@ Use "bridge" as your network.
 6. Support the cert and key pem(optional)
 ```
 openssl genrsa -out app_monitor_key.pem 2048
-openssl req -new -x509 -key app_monitor_key.pem -out app_monitor_cert.pem -days 3650 -subj "/C=CN/ST=test/L=test/O=company-inc/CN=AppCredentialMonitor"
+openssl req -new -x509 -key app_monitor_key.pem -out app_monitor_cert.pem -days 3650 -subj "/C=CN/ST=test/L=test/O=company-inc/CN=AZURE_APP_CERTIFICATE_KEY"
 ```
   upload the cert.pem to Azure AD 
 
