@@ -104,7 +104,7 @@ openssl req -new -x509 -key app_monitor_key.pem -out app_monitor_cert.pem -days 
 ```
   upload the cert.pem to Azure AD 
 
-  You can choose "AZURE_APP_SECRET" or " AZURE_APP_CERTIFICATE_PATH and AZURE_APP_CERTIFICATE_KEY_PATH"
+  You can choose `AZURE_APP_SECRET` or `AZURE_APP_CERTIFICATE_PATH` and `AZURE_APP_CERTIFICATE_KEY_PATH`.
 
     ```bash
     TZ: "Europe/Zurich" # optional
@@ -121,8 +121,8 @@ openssl req -new -x509 -key app_monitor_key.pem -out app_monitor_cert.pem -days 
     DSM7: "true" # set this to false if you are running DSM 6 or lower
     ```
 
-    ![env vars](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/syno/syno_docker_env.png)
-    A full list of all environment variables can be found [here](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/).
+  ![env vars](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/syno/syno_docker_env.png)
+  A full list of all environment variables can be found [here](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/configuration/settings/).
 
 6. Set local Port 389 to the Container Port 13389. If you receive the error Local port 389 conflicts with other ports used by other services, make sure that Synology Directory Service and Synology LDAP Server are not installed - they also use this port.
 ![syno port](https://ahaenggli.github.io/AzureAD-LDAP-wrapper/installation/syno/syno_docker_port.png)

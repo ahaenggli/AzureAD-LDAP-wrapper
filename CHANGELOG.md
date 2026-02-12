@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+### Added
+
+- Support custom certs to connect to AzureAD (#135)
+
 ## [2.0.5] - 2025-12-14
 
 ### Added

@@ -19,6 +19,15 @@ Your `Tenant ID` from [azure](https://docs.microsoft.com/en-us/azure/active-dire
 ### AZURE_APP_SECRET
 
 A `Client secret`-value from [azure](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal#option-2-create-a-new-application-secret)
+You can choose `AZURE_APP_SECRET` or `AZURE_APP_CERTIFICATE_PATH` and `AZURE_APP_CERTIFICATE_KEY_PATH`.
+
+### AZURE_APP_CERTIFICATE_PATH
+
+Path to your cert.pem.
+
+### AZURE_APP_CERTIFICATE_KEY_PATH
+
+Path to your key.pem.
 
 ### AZURE_ENDPOINT (optional)
 
