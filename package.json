@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@azure/msal-node": "3.8.4",
-    "axios": "~1.13.2",
+    "axios": "~1.13.5",
     "diacritic": "0.0.2",
     "dotenv": "^17.2.3",
     "hashcode": "1.0.3",
