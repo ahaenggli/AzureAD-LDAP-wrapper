@@ -50,7 +50,11 @@ spec:
             - name: AZURE_TENANTID
               value: ""   
             - name: AZURE_APP_SECRET
-              value: "" 
+              value: ""  # Use either AZURE_APP_SECRET or certificate authentication
+            # - name: AZURE_APP_CERTIFICATE_PATH
+            #   value: "/path/to/certificate.pem"  # Alternative to AZURE_APP_SECRET
+            # - name: AZURE_APP_CERTIFICATE_KEY_PATH
+            #   value: "/path/to/private-key.pem"  # Required if using certificate auth
             - name: LDAP_SYNC_TIME
               value: "15"
             - name: DSM7
