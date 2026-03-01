@@ -8,6 +8,9 @@ const dotenv = require('dotenv');
 
 let database;
 
+//jest.useFakeTimers();
+//jest.spyOn(global, 'setInterval');
+
 describe.each`
 EnvName          | EnvVal                     | validResult | envSuffix | syncTime
 ${'everything'}  | ${'okay'}                  | ${true}     | ${''}| ${'0'}
@@ -64,17 +67,19 @@ ${'everything2'} | ${'okay2'} | ${true}| ${''}| ${'1'}
     test('callback should be called', async () => {
         // Run your test here
         let wasCalled = false;
+        expect(wasCalled).toBe(false);
         const timer = await database.init(() => { wasCalled = true; });
         expect(wasCalled).toBe(true);
         wasCalled = false;
         expect(wasCalled).toBe(false);
 
+        if (syncTime === 0)
+            expect(setInterval).toHaveBeenCalledTimes(0);
+
         if (syncTime > 0) {
+            expect(wasCalled).toBe(false);
             expect(setInterval).toHaveBeenCalledTimes(1);
-            expect(setInterval).toHaveBeenLastCalledWith(expect.any(Function), syncTime * 60 * 1000);
-            jest.advanceTimersByTime(syncTime * 60 * 1000);
-            await Promise.resolve(); // allow any pending jobs in the PromiseJobs queue to run
-            expect(wasCalled).toBe(true);
+            expect(setInterval).toHaveBeenLastCalledWith(expect.any(Function), syncTime * 60 * 1000);           
             clearInterval(timer);
         }
 

@@ -10,7 +10,7 @@ let validated = true;
 let errors = [];
 
 function nonWhiteSpaceLowerCase(val) { return (val === undefined || val === null) ? val : val.toLowerCase().replace(/ /g, ''); }
-function nonWhiteSpaceUpperCase(val) { return val.toUpperCase().replace(/ /g, ''); }
+function nonWhiteSpaceUpperCase(val) { return (val === undefined || val === null) ? val : val.toUpperCase().replace(/ /g, ''); }
 
 function validateDN(val) {
     let res = true;

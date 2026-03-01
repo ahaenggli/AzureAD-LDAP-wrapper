@@ -20,10 +20,10 @@
     "url": "https://github.com/ahaenggli/AzureAD-LDAP-wrapper"
   },
   "dependencies": {
-    "@azure/msal-node": "5.0.4",
-    "axios": "~1.13.5",
+    "@azure/msal-node": "5.0.5",
+    "axios": "~1.13.6",
     "diacritic": "0.0.2",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.3.1",
     "hashcode": "1.0.3",
     "https-proxy-agent": "7.0.6",
     "ldapjs": "~3.0.7"

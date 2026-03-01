@@ -33,7 +33,7 @@ const schemaEntries = {
 /**
  * timestamp last refresh of in-memory database entries
  */
-let lastRefresh = 0;
+var lastRefresh = 0;
 /**
  * interval in ms to refresh the in-memory database entries
  */
@@ -400,8 +400,9 @@ async function refreshDBentries() {
     if (Date.now() > lastRefresh + refreshInterval) {
         helper.log("database.js", "refreshDBentries", "refresh dbEntries()");
         // set lastRefresh to past to ensure that the next refresh is triggered after refreshInterval even if the function execution took a long time
-        lastRefresh = Date.now() - 1000; 
-
+        lastRefresh = Date.now() - 1000;
+        //helper.forceLog("database.js", "refreshDBentries", {"lR": lastRefresh, "now": Date.now(), "rI": refreshInterval});
+        
         // init newDbEntries from file or empty
         let newDbEntries = helper.ReadJSONfile(config.LDAP_DATAFILE);
 

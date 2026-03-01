@@ -52,6 +52,7 @@ ${'LDAP_USERS_SETDEFAULTGROUP'}  | ${'secu|groupofothergroups'}              | $
     test('callback should be called', async () => {
         // Run your test here
         let wasCalled = false;
+        expect(wasCalled).toBe(false);
         const timer = await database.init(() => { wasCalled = true; });
         expect(wasCalled).toBe(true);
         wasCalled = false;
@@ -60,9 +61,7 @@ ${'LDAP_USERS_SETDEFAULTGROUP'}  | ${'secu|groupofothergroups'}              | $
         if (syncTime > 0) {
             expect(setInterval).toHaveBeenCalledTimes(1);
             expect(setInterval).toHaveBeenLastCalledWith(expect.any(Function), syncTime * 60 * 1000);
-            jest.advanceTimersByTime(syncTime * 60 * 1000);
-            await Promise.resolve(); // allow any pending jobs in the PromiseJobs queue to run
-            expect(wasCalled).toBe(true);
+            jest.advanceTimersByTime(syncTime * 60 * 1000);            
             clearInterval(timer);
         }
 

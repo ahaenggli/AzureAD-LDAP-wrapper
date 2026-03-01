@@ -1,9 +1,9 @@
-from ldap3 import Server, Connection, ALL, SUBTREE
+from ldap3 import Server, Connection, ALL, SUBTREE, BASE, LEVEL
 
 LDAP_URI = "ldap://127.0.0.1:13389"
 BIND_DN = "uid=root,cn=users,dc=domain,dc=tld"
 PASSWORD = "mystrongpw"
-BASE_DN = "dc=domain,dc=tld"
+BASE_DN = "cn=groups,dc=domain,dc=tld"
 
 # 1 Server mit Schema laden
 server = Server(LDAP_URI, get_info=ALL)
@@ -16,7 +16,7 @@ conn = Connection(
 )
 
 # Schema-Informationen für uid inspizieren
-uid_schema = server.schema.attribute_types.get("department")  # Ersetzen Sie "uid" durch den tatsächlichen Attributnamen, den Sie untersuchen möchten
+uid_schema = server.schema.attribute_types.get("cn")  # Ersetzen Sie "uid" durch den tatsächlichen Attributnamen, den Sie untersuchen möchten
 
 if uid_schema:
     print("=== UID Schema Info ===")
@@ -30,11 +30,11 @@ else:
     print("uid not found in schema")
 
 # 3 Query nach spezifischem uid
-uid_value = "testuser"
+uid_value = "sample team site"
 
 conn.search(
     search_base=BASE_DN,
-    search_filter=f"(departmentNumber={uid_value})",
+    search_filter=f"(cn={uid_value})",
     search_scope=SUBTREE,
     attributes=["departmentNumber", "uid", "cn", "sn", "mail"]
 )
