@@ -399,6 +399,8 @@ function cleanUpOldEntries(db, compDate) {
 async function refreshDBentries() {
     if (Date.now() > lastRefresh + refreshInterval) {
         helper.log("database.js", "refreshDBentries", "refresh dbEntries()");
+        // set lastRefresh to past to ensure that the next refresh is triggered after refreshInterval even if the function execution took a long time
+        lastRefresh = Date.now() - 1000; 
 
         // init newDbEntries from file or empty
         let newDbEntries = helper.ReadJSONfile(config.LDAP_DATAFILE);
@@ -426,9 +428,8 @@ async function refreshDBentries() {
         helper.log("database.js", "refreshDBentries", "end");
 
         // overwrite dbEntries with newDbEntries
-        dbEntries = newDbEntries;
-        lastRefresh = Date.now();
-    }
+        dbEntries = newDbEntries;        
+    } else helper.error("database.js", "refreshDBentries", "refresh interval not reached yet");
 }
 
 /**
@@ -596,7 +597,7 @@ async function mergeAzureUserEntries(db) {
 
         // guest has not joined (yet) - so we cannot know if the user has a login for MicrosoftAccount or ExternalAzureAD
         if (isGuestOrExternalUser && !isExternalUserStateAccepted) {
-            helper.warn("database.js", "mergeAzureUserEntries", 'Guest user (#EXT#) has not yet accepted invitation',
+            helper.log("database.js", "mergeAzureUserEntries", 'Guest user (#EXT#) has not yet accepted invitation',
                 {
                     mail: user.mail,
                     userPrincipalName: user.userPrincipalName,
@@ -605,7 +606,7 @@ async function mergeAzureUserEntries(db) {
         }
         // ignore personal microsoft accounts, because RPOC is not possible
         else if (isMicrosoftAccount) {
-            helper.warn("database.js", "mergeAzureUserEntries", 'Guest user (#EXT#) ignored',
+            helper.log("database.js", "mergeAzureUserEntries", 'Guest user (#EXT#) ignored',
                 {
                     mail: user.mail,
                     userPrincipalName: user.userPrincipalName,

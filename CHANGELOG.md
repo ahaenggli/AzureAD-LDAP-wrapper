@@ -7,9 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+## Changed
+
+### Fixed
+
+- RefreshDBEntries not executed every time it was called #141
+
 ### Added
 
 - Support custom certs to connect to AzureAD (#135)
+- Attributes title and department (#140, #136)
 
 ## [2.0.5] - 2025-12-14
 

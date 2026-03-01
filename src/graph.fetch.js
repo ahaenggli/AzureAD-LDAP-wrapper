@@ -71,7 +71,7 @@ fetch.getGroups = async function () {
 fetch.getMembers = async function (group) {
     let members = await fetch.callApi(fetch.apiConfig.mri, accessToken, { id: group.id });
     if (members.length === 0) {
-        helper.warn("graph.fetch.js", "getMembers()", "no members found");
+        helper.warn("graph.fetch.js", "getMembers()", "no members found for group", group.displayName);
     }
     return members;
 };
