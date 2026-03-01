@@ -306,6 +306,7 @@ function mergeDnGroups(db) {
         "entryCSN": helper.ldap_now() + ".000000Z#000000#000#000000",
         "modifyTimestamp": helper.ldap_now() + "Z",
     };
+
 }
 
 /**
@@ -362,7 +363,16 @@ function mergeDnUserDefaultGroup(db) {
     };
 
     db[config.LDAP_USERSGROUPSBASEDN] = customizer.ModifyLDAPGroup(db[config.LDAP_USERSGROUPSBASEDN], {});
+
+    let gpOUName = config.LDAP_USERSGROUPSBASEDN.replace('cn=', 'ou=').toLowerCase();
+    // remove all *gpOUName entries from db to ensure that deleted groups are removed from nested group memberships
+    Object.keys(db).forEach(key => {
+        if (key.endsWith(gpOUName)) {
+            delete db[key];
+        }
+    });
 }
+
 
 /**
  * Create and/or merge the LDAP entry for Users
@@ -520,6 +530,15 @@ async function mergeAzureGroupEntries(db) {
             helper.SaveJSONtoFile(members, './.cache/members_' + groupDisplayNameClean + '.json');
             helper.log("database.js", 'members_' + groupDisplayNameClean + '.json' + " saved.");
         }
+
+        let gpOUName = "ou=" + groupDisplayNameClean + "," + config.LDAP_GROUPSDN;
+        gpOUName = gpOUName.toLowerCase();
+        // remove all *gpOUName entries from db to ensure that deleted groups are removed from nested group memberships
+        Object.keys(db).forEach(key => {
+            if (key.endsWith(gpOUName)) {
+                delete db[key];                
+            } 
+        });
 
         for (let t = 0, tlen = members.length; t < tlen; t++) {
             let member = members[t];
@@ -696,6 +715,34 @@ async function mergeAzureUserEntries(db) {
 
             for (let j = 0, jlen = db['tmp_user_to_groups'][user.id].length; j < jlen; j++) {
                 let g = db['tmp_user_to_groups'][user.id][j];
+
+                if (config.LDAP_CREATE_USERINGROUP_OU) {
+                    let aux_oug = g.replace("cn=", "ou=",);
+                    let aux_ou = "cn=" + userPrincipalName.toLowerCase() + "," + aux_oug;
+                
+                    db[aux_oug] = {
+                        objectClass: ["top", "alias", "extensibleObject"],
+                        aliasedObjectName: g,
+                        entryDN: aux_oug,
+                        structuralObjectClass: "alias",
+                        hasSubordinates: "FALSE",
+                        subschemaSubentry: "cn=subschema",
+                        createTimestamp: helper.ldap_now() + "Z",
+                        entryCSN: helper.ldap_now() + ".000000Z#000000#000#000000",
+                        modifyTimestamp: helper.ldap_now() + "Z",
+                    }
+
+                    db[aux_ou] = {
+                        ...db[upName],
+                        objectClass: ["top", "alias", "extensibleObject"],
+                        aliasedObjectName: upName,
+                        entryDN: aux_ou,                        
+                        structuralObjectClass: "alias",
+                        hasSubordinates: "FALSE",
+                        subschemaSubentry: "cn=subschema"                        
+                    }
+                }
+
                 if (!db[g].member.includes(upName))
                     db[g].member.push(upName);
 

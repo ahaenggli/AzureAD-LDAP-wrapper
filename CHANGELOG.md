@@ -17,6 +17,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Support custom certs to connect to AzureAD (#135)
 - Attributes title and department (#140, #136)
+- Experimental env var `LDAP_CREATE_USERINGROUP_OU`. If set, it creates an OU entry for each group and each user in it.
+  For example user 'abc123' has groups 'sales' and 'marketing' it will create following additional ldap entries:
+  - ou=sales,cn=group,...
+  - ou=marketing,cn=group,...
+  - cn=abc123,ou=sales,cn=group,...
+  - cn=abc123,ou=marketing,cn=group,...
+  With this, the base_dn can be set to 'ou=marketing,cn=group,...' so only its users are found in searches. This should fix #125.
 
 ## [2.0.5] - 2025-12-14
 
