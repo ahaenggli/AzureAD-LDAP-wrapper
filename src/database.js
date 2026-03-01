@@ -50,7 +50,7 @@ database.removeSpecialChars = removeSpecialChars;
 /**
  * Converts GUID from azure to byte array
  * used to calculate a SID from GUID
- * @param {string} guid 
+ * @param {string} guid
  * @returns {array} byte array of guid
  */
 function guidToBytes(guid) {
@@ -70,16 +70,16 @@ database.guidToBytes = guidToBytes;
 
 /**
  * Generate SIDs for the LDAP entries
- * @param {number} 
+ * @param {number}
  * undefined: use hash for SID
  * false: use hash*2+1001 (always odd) for groups
  * false: use hash*2+1000 (always even) for users
  * true: use existing objectId for groups
  * true: use existing objectId for users
  * @param {number} level 0 = groups; 1 = users;
- * @param {*} smbaSIDbase 
- * @param {*} hash 
- * @param {*} objectId 
+ * @param {*} smbaSIDbase
+ * @param {*} hash
+ * @param {*} objectId
  * @returns {string} SID for user or group
  */
 function generateSID(modus, level, smbaSIDbase, hash, objectId) {
@@ -135,7 +135,7 @@ function mergeDnBase(db) {
     renameEntryByUUID(db, 'e927be8d-aab8-42f2-80c3-b2762415aed1', config.LDAP_BASEDN);
 
     db[config.LDAP_BASEDN] = {
-        // default values     
+        // default values
         "objectClass": "domain",
         "dc": config.LDAP_BASEDN.replace('dc=', '').split(",")[0],
         "entryDN": config.LDAP_BASEDN,
@@ -151,7 +151,7 @@ function mergeDnBase(db) {
         // merge existing values
         ...db[config.LDAP_BASEDN],
 
-        // overwrite values from before        
+        // overwrite values from before
         "objectClass": "domain",
         "dc": config.LDAP_BASEDN.replace('dc=', '').split(",")[0],
         "entryDN": config.LDAP_BASEDN,
@@ -409,7 +409,7 @@ async function refreshDBentries() {
 
         // add required basic entries
         if (config.VARS_VALIDATED) {
-            mergeDnBase(newDbEntries); // domain        
+            mergeDnBase(newDbEntries); // domain
             mergeDnSambaDomainName(newDbEntries); // samba
             mergeDnUsers(newDbEntries); // users
             mergeDnDevices(newDbEntries); // devices
@@ -594,7 +594,7 @@ async function mergeAzureUserEntries(db) {
             user.identities.filter(x => x.hasOwnProperty('issuer') && x.issuer == 'ExternalAzureAD')
                 .length == 0);
 
-        // guest has not joined (yet) - so we cannot know if the user has a login for MicrosoftAccount or ExternalAzureAD 
+        // guest has not joined (yet) - so we cannot know if the user has a login for MicrosoftAccount or ExternalAzureAD
         if (isGuestOrExternalUser && !isExternalUserStateAccepted) {
             helper.warn("database.js", "mergeAzureUserEntries", 'Guest user (#EXT#) has not yet accepted invitation',
                 {
@@ -603,7 +603,7 @@ async function mergeAzureUserEntries(db) {
                     info: 'RPOC is not possible for Guest user without accepted invitation'
                 });
         }
-        // ignore personal microsoft accounts, because RPOC is not possible 
+        // ignore personal microsoft accounts, because RPOC is not possible
         else if (isMicrosoftAccount) {
             helper.warn("database.js", "mergeAzureUserEntries", 'Guest user (#EXT#) ignored',
                 {
@@ -677,18 +677,18 @@ async function mergeAzureUserEntries(db) {
 
             let sambaNTPassword = (
                 db[upName] &&
-                db[upName].hasOwnProperty('sambaNTPassword') 
+                db[upName].hasOwnProperty('sambaNTPassword')
             ) ? db[upName].sambaNTPassword : "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
             let sambaPwdLastSet = (
                 db[upName] &&
-                db[upName].hasOwnProperty('sambaPwdLastSet')                
+                db[upName].hasOwnProperty('sambaPwdLastSet')
             ) ? db[upName].sambaPwdLastSet : 0;
 
             if (typeof db['tmp_user_to_groups'][user.id] === 'undefined' || !db['tmp_user_to_groups'][user.id]) {
                 helper.log("database.js", "no groups found for user", upName);
                 db['tmp_user_to_groups'][user.id] = [];
             }
-            
+
             // add default `users`-group
             db['tmp_user_to_groups'][user.id].push(config.LDAP_USERSGROUPSBASEDN);
 
@@ -711,7 +711,7 @@ async function mergeAzureUserEntries(db) {
                 }, {});
 
             let userDisabled = Boolean(user.hasOwnProperty('accountEnabled') && user.accountEnabled === false) ?? false;
-            
+
             if (userDisabled) {
                 helper.warn("database.js", "mergeAzureUserEntries", 'user is disabled', upName);
             }
@@ -772,10 +772,12 @@ async function mergeAzureUserEntries(db) {
                 "AccountDisabled": "FALSE",
                 "nsAccountLock": "FALSE",
                 "UserAccountControl": 512,
+                "title": user.jobTitle,
+                "department": user.department,
                 // merge existing values except values staring with cusSecAtt
                 //...db[upName],
                 ...filtered,
-                
+
                 // overwrite values from before
                 "cn": userPrincipalNameOU.toLowerCase(),
                 "AzureADuserPrincipalName": user.userPrincipalName,
@@ -850,7 +852,7 @@ async function mergeAzureUserEntries(db) {
             // append all fetched data to the ldap entry
             if (user.hasOwnProperty('customSecurityAttributes') && user.customSecurityAttributes)
             {
-                let flattendAttributes = helper.flattenObjectAndIgnoreOdata({ "cusSecAtt": user.customSecurityAttributes });                
+                let flattendAttributes = helper.flattenObjectAndIgnoreOdata({ "cusSecAtt": user.customSecurityAttributes });
                 db[upName] = Object.assign(db[upName], flattendAttributes);
             }
 
