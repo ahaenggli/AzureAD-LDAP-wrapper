@@ -428,6 +428,11 @@ server.compare(SUFFIX, authorize, (req, res, next) => {
 
 // add entries  
 server.add(SUFFIX, authorize, (req, res, next) => {
+    if (config.LDAP_READONLY) {
+        helper.log("server.js", "add", "client attempted forbidden write operation (LDAP_READONLY)");
+        return next(new ldap.ProtocolError('write operations not allowed'));
+    }
+
     const dn = req.dn.toString().toLowerCase().replace(/ {2,}/g, ' ').replace(/, /g, ',');
 
     if (db[dn]) {
@@ -454,6 +459,11 @@ server.add(SUFFIX, authorize, (req, res, next) => {
 
 // delete entries
 server.del(SUFFIX, authorize, (req, res, next) => {
+    if (config.LDAP_READONLY) {
+        helper.log("server.js", "del", "client attempted forbidden write operation (LDAP_READONLY)");
+        return next(new ldap.ProtocolError('write operations not allowed'));
+    }
+
     const dn = req.dn.toString().toLowerCase().replace(/ {2,}/g, ' ').replace(/, /g, ',');
 
     if (!db[dn]) {
@@ -469,6 +479,10 @@ server.del(SUFFIX, authorize, (req, res, next) => {
 });
 
 server.modifyDN(SUFFIX, authorize, (req, res, next) => {
+    if (config.LDAP_READONLY) {
+        helper.log("server.js", "modifyDN", "client attempted forbidden write operation (LDAP_READONLY)");
+        return next(new ldap.ProtocolError('write operations not allowed'));
+    }
 
     helper.error("server.js", "modifyDN", "not yet implemented");
     return next(new ldap.ProtocolError('not yet implemented'));
@@ -483,6 +497,11 @@ server.modifyDN(SUFFIX, authorize, (req, res, next) => {
 
 // edit entries
 server.modify(SUFFIX, authorize, (req, res, next) => {
+    if (config.LDAP_READONLY) {
+        helper.log("server.js", "add", "client attempted forbidden write operation (LDAP_READONLY)");
+        return next(new ldap.ProtocolError('write operations not allowed'));
+    }
+
     const dn = req.dn.toString().toLowerCase().replace(/ {2,}/g, ' ').replace(/, /g, ',');
 
     if (!req.changes.length) {

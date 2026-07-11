@@ -55,6 +55,7 @@ const allConfigs = {
     LDAP_SENSITIVE_ATTRIBUTES: { format: "String", required: false, transform: nonWhiteSpaceLowerCase },
     LDAP_SECURE_ATTRIBUTES: { format: "String", required: false, transform: nonWhiteSpaceLowerCase },
     LDAP_ALLOWCACHEDLOGINONFAILURE: { format: "Boolean", required: false, default: true },
+    LDAP_READONLY: { format: "Boolean", default: false },
 
     LDAP_GROUPSDN: { format: "String", required: true, default: () => "cn=groups," + config.LDAP_BASEDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
     LDAP_USERSDN: { format: "String", required: true, default: () => "cn=users," + config.LDAP_BASEDN, transform: nonWhiteSpaceLowerCase, validate: validateDN },
