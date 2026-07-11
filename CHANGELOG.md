@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - cn=abc123,ou=sales,cn=group,...
   - cn=abc123,ou=marketing,cn=group,...
   With this, the base_dn can be set to 'ou=marketing,cn=group,...' so only its users are found in searches. This should fix #125.
+- Add LDAP_READONLY configuration to enforce read-only mode #153, thx @catdog2
 
 ## [2.0.5] - 2025-12-14
 

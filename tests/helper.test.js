@@ -265,6 +265,27 @@ describe('helper tests debug = false', () => {
       "animals_exampleMultiText": ["ex1","ex2"]
     });
 
+
+    // next check
+    obj = {
+      "animals": {
+        "@odata.type": "#microsoft.graph.customSecurityAttributeValue",
+        "hasPermissionToFish": true,
+        "FavoriteAnimal": "dogs",
+        "fishs": ["Tuna", "Salmon"],
+        "exampleMultiText@odata.type": "#Collection(String)",
+        "exampleMultiText": null,       
+      }
+    };
+
+    result = helper.flattenObjectAndIgnoreOdata(obj);
+    expect(result).toEqual({
+      "animals_hasPermissionToFish": true,
+      "animals_FavoriteAnimal": "dogs",
+      "animals_fishs": ["Tuna", "Salmon"]      
+    });
+
+
     // last check
     obj = {
       "animals": {

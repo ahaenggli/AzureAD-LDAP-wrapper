@@ -1,12 +1,12 @@
-from ldap3 import Server, Connection, ALL, SUBTREE, BASE, LEVEL
+from ldap3 import Server, Connection, ALL, SUBTREE, BASE, LEVEL, DEREF_ALWAYS
 
 LDAP_URI = "ldap://127.0.0.1:13389"
 BIND_DN = "uid=root,cn=users,dc=domain,dc=tld"
 PASSWORD = "mystrongpw"
-BASE_DN = "cn=groups,dc=domain,dc=tld"
+BASE_DN = "ou=secu,cn=groups,dc=domain,dc=tld"
 
 # 1 Server mit Schema laden
-server = Server(LDAP_URI, get_info=ALL)
+server = Server(LDAP_URI)#//, get_info=ALL)
 
 conn = Connection(
     server,
@@ -30,13 +30,14 @@ else:
     print("uid not found in schema")
 
 # 3 Query nach spezifischem uid
-uid_value = "sample team site"
+uid_value = "*"
 
 conn.search(
     search_base=BASE_DN,
     search_filter=f"(cn={uid_value})",
     search_scope=SUBTREE,
-    attributes=["departmentNumber", "uid", "cn", "sn", "mail"]
+    attributes=["departmentNumber", "objectClass", "uid", "cn", "sn", "mail"],
+    dereference_aliases=DEREF_ALWAYS,          # <-- follow aliases
 )
 
 print("=== Search Results ===")
@@ -46,6 +47,7 @@ for entry in conn.entries:
     print("cn:", entry.cn.value)
     print("sn:", entry.sn.value)
     print("mail:", entry.mail.value)
+    print("objectClass:", entry.objectClass.values)
     print("departmentNumber:", entry.departmentNumber.value)
     print("-" * 40)
 
