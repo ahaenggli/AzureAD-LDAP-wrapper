@@ -118,6 +118,12 @@ Multiple attributes can be split by "|". (e.g. `middlename|PrivatePhoneNumber`).
 allows login from cached sambaNTPassword.
 If set to true, the login has failed and the error does NOT say "wrong credentials", the password is checked against the cached sambaNTPassword. If it matches, the authentification is successfull.
 
+### LDAP_READONLY (default: false)
+
+Controls whether the LDAP server runs in read-only mode.
+
+When set to `true`, all LDAP write operations are disabled. Only read operations are allowed, and this restriction applies to all users, including superusers.
+
 ### LDAP_SAMBANTPWD_MAXCACHETIME (optional, default: infinity)
 
 Maximum time in minutes that defines how long a cached sambaNTPassword hash can be used (for login and samba access).
