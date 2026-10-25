@@ -1,13 +1,13 @@
-FROM node:18-alpine AS build
+FROM node:24-alpine AS build
 ENV NODE_ENV="production"
 
-RUN mkdir -p /app && chown -R node:node /app
 WORKDIR /app
-COPY . .
+COPY --chown=node:node . .
 
-RUN npm install --omit=dev && npm prune --omit=dev
+RUN npm install --omit=dev \
+    && npm prune --omit=dev
 
-FROM node:22-alpine AS final
+FROM node:24-alpine AS final
 RUN apk add --no-cache tini su-exec
 RUN apk upgrade -U --no-cache
 

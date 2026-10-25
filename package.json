@@ -1,6 +1,6 @@
 {
   "name": "AzureAD-LDAP-wrapper",
-  "version": "2.0.5",
+  "version": "2.1.0",
   "type": "commonjs",
   "engines": {
     "node": ">=17"
@@ -10,7 +10,6 @@
   "main": "index.js",
   "scripts": {
     "start": "node --openssl-legacy-provider index.js",
-    "lint": "npm exec --no -- eslint *.js",
     "test": "set \"NODE_OPTIONS=--openssl-legacy-provider\" && jest --runInBand --coverage",
     "test:watch": "jest --watchAll --coverage"
   },
@@ -20,24 +19,17 @@
     "url": "https://github.com/ahaenggli/AzureAD-LDAP-wrapper"
   },
   "dependencies": {
-    "@azure/msal-node": "5.4.0",
+    "@azure/msal-node": "^7.1.1",
     "axios": "~1.20.0",
     "diacritic": "0.0.2",
-    "dotenv": "^17.4.2",
+    "dotenv": "^18.0.8",
     "hashcode": "1.0.3",
     "https-proxy-agent": "^7.0.6",
     "ldapjs": "~3.0.7",
-    "node-fetch": "^2.7.0"
+    "node-fetch": "^3.3.2"
   },
   "devDependencies": {
-    "eslint": "^9.39.5",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-jest": "^29.15.4",
-    "eslint-plugin-n": "^18.2.2",
-    "eslint-plugin-node": "~11.1.0",
-    "eslint-plugin-promise": "^7.3.0",
-    "eslint-plugin-security": "~4.0.1",
-    "jest": "^30.4.2"
+    "jest": "^30.5.2"
   },
   "overrides": {
     "ldapjs": {

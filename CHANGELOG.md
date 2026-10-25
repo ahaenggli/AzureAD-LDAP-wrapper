@@ -7,7 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased] (in 'dev')
 
+## [2.1.0] - 2026-10-25
+
 ## Changed
+
+- Updated npm dependencies.
+- Dockerfile Upgraded from Node.js 22 to Node.js 24 LTS.  
+Docker images are now built for `linux/amd64` and `linux/arm64` only. The official `node:24-alpine` base image does not provide `linux/arm/v6` or `linux/arm/v7` variants, so these architectures are no longer supported.
 
 ### Fixed
 
